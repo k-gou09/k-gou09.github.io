@@ -1,0 +1,97 @@
+/* Importation des polices Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap');
+
+/* Réinitialisation de base et box-sizing */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Styles globaux pour le corps de la page */
+body {
+    overflow: hidden;
+    font-family: 'Poppins', sans-serif;
+
+    background:
+        linear-gradient(rgba(10, 10, 18, 0.7), rgba(10, 10, 18, 0.8)), /* filtre noir */
+        url('../body.png');                                          /* image */
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    color: #f1f1f3;
+}
+
+
+
+/* Classe utilitaire pour la police technologique/futuriste */
+.tech-font {
+    font-family: 'Orbitron', sans-serif;
+}
+
+.gradient-text1 {
+        background: linear-gradient(90deg, #232222, #545152);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-fill-color: transparent;
+        }
+
+/* Classe pour créer un effet de texte en dégradé */
+.gradient-text {
+    background: linear-gradient(90deg, #00f0ff, #5773ff, #ff007a);
+    -webkit-background-clip: text; /* Pour la compatibilité Webkit */
+    background-clip: text;
+    color: transparent; /* Rend le texte lui-même transparent pour montrer le fond dégradé */
+}
+
+/* Classe pour créer une bordure en dégradé */
+.gradient-border {
+    position: relative;
+}
+
+.gradient-border::before {
+    content: '';
+    position: absolute;
+    inset: -2px; /* Légèrement plus grand que l'élément parent */
+    z-index: -1;
+    background: linear-gradient(90deg, #00f0ff, #5773ff, #ff007a);
+    border-radius: inherit; /* Hérite du border-radius du parent */
+    padding: 2px; /* Épaisseur de la bordure */
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude; /* Technique de masquage pour créer l'effet de bordure */
+}
+
+/* Style des liens de navigation */
+.nav-link {
+    position: relative;
+}
+
+.nav-link::after { /* Soulignement animé au survol */
+    content: '';
+    position: absolute;
+    width: 0; /* Initialement invisible */
+    height: 4px;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(90deg, #00f0ff, #5773ff, #ff007a);
+    transition: width 0.3s ease;
+}
+
+.nav-link:hover::after {
+    width: 60%; /* S'étend sur toute la largeur au survol */
+}
+
+/* Indicateur de défilement vers le bas */
+.scroll-down {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: bounce 2s infinite;
+}
