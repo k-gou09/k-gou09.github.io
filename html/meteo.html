@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>K-gou prod | KGP Meteo</title>
+        <!-- Tailwind CSS via CDN -->
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        
+        <!-- TON FICHIER CSS POUR LE BACKGROUND -->
+        <link rel="stylesheet" href="../css/news.css">
+        
+        <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
+
+        <style>
+            /* --- Styles d'origine du template --- */
+            .home-text {
+                color: #6b21a8; 
+                font-family: 'Permanent Marker', cursive;
+                font-size: 2rem;
+                font-weight: bold;
+                margin-left: 10px;
+            }
+                
+            .home-mess {
+                text-align: center;
+                font-family: 'Permanent Marker', cursive;
+                font-size: 2rem;
+                font-weight: bold;
+                padding-bottom: 15px;
+            }
+
+            .home-mess1 {
+                text-align: center;
+                font-family: 'Permanent Marker', cursive;
+                font-size: 1.5rem;
+                font-weight: bold;
+                padding-bottom: 15px;
+            }    
+
+            .btn-nano {
+                background: linear-gradient(145deg, #1a1a2a, #0a0a1a);
+                color: #ffffff;
+                border: 1px solid #807f7f;
+                padding: 10px 24px;
+                font-size: 14px;
+                font-weight: bold;
+                border-radius: 8px;
+                cursor: pointer;
+                position: relative;
+                overflow: hidden;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+            }
+
+            .btn-nano::before {
+                content: '';
+                position: absolute;
+                top: 0; left: -100%; width: 100%; height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+                transition: left 0.6s ease;
+            }
+
+            .btn-nano:hover::before { left: 100%; }
+
+            .btn-nano:hover {
+                box-shadow: 0 0 25px rgba(255, 255, 255, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+                text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+            }
+
+            /* --- Styles Animation Hacker --- */
+            #hack-title {
+                margin-top: 15px;
+                line-height: 1.2;
+                font-family: monospace;
+                font-size: 1.3rem;
+                color: #a855f7;
+                letter-spacing: 2px;
+                white-space: nowrap;
+                overflow: hidden;
+                border-right: 4px solid #a855f7;
+                width: 0;
+                opacity: 0;
+                transition: opacity 1s ease-out;
+            }
+
+            .start-typing {
+                opacity: 1 !important;
+                animation: typing 1.5s steps(13) forwards, blink .5s step-end infinite alternate;
+            }
+
+            @keyframes typing { from { width: 0 } to { width: 14ch } }
+            @keyframes blink { 50% { border-color: transparent } }
+
+            /* --- Masquer toutes les Scrollbars par defaut --- */
+            * { scrollbar-width: none; -ms-overflow-style: none; }
+            *::-webkit-scrollbar { display: none; }
+
+            /* ========================================= */
+            /*        STYLES SPÉCIFIQUES APP METEO       */
+            /* ========================================= */
+            
+            .app-chassis {
+                background: linear-gradient(to bottom, #111115, #08080a);
+                border: 2px solid #2d2d35;
+                border-radius: 12px;
+                box-shadow: 0 20px 40px rgba(0,0,0,0.9), inset 0 2px 2px rgba(255,255,255,0.05);
+            }
+
+            .cyber-input {
+                background: #050505; border: 1px solid #333; color: #a855f7;
+                box-shadow: inset 0 2px 5px rgba(0,0,0,1);
+            }
+            .cyber-input:focus { border-color: #a855f7; outline: none; box-shadow: inset 0 0 5px rgba(168,85,247,0.3); }
+
+            /* Effet Radar */
+            .radar-box {
+                background: radial-gradient(circle, #1a1a24 0%, #050505 80%);
+                border: 2px solid #333;
+                box-shadow: inset 0 0 20px rgba(168, 85, 247, 0.3), 0 0 10px rgba(0,0,0,0.8);
+                position: relative;
+                overflow: hidden;
+            }
+            .radar-grid {
+                position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+                background-image: 
+                    linear-gradient(rgba(168, 85, 247, 0.2) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(168, 85, 247, 0.2) 1px, transparent 1px);
+                background-size: 20px 20px;
+                border-radius: 50%;
+            }
+            .radar-sweep {
+                position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+                background: conic-gradient(from 0deg, transparent 70%, rgba(168,85,247,0.6) 100%);
+                border-radius: 50%;
+                animation: radar-spin 3s linear infinite;
+            }
+            @keyframes radar-spin { 100% { transform: rotate(360deg); } }
+
+            /* Affichage Data */
+            .data-screen {
+                background: #020005; border: 1px solid #111;
+                box-shadow: inset 0 0 15px rgba(168, 85, 247, 0.05);
+                position: relative;
+            }
+            .data-screen::after {
+                content: ''; position: absolute; inset: 0;
+                background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.1) 2px, rgba(0,0,0,0.1) 4px);
+                pointer-events: none;
+            }
+
+            /* Ré-activer la scrollbar pour la grille si nécessaire */
+            .custom-scrollbar {
+                scrollbar-width: thin;
+                scrollbar-color: #a855f7 #000;
+            }
+            .custom-scrollbar::-webkit-scrollbar {
+                display: block; width: 6px;
+            }
+            .custom-scrollbar::-webkit-scrollbar-thumb {
+                background-color: #a855f7; border-radius: 4px;
+            }
+
+        </style>
+    </head>
+    <body class="bg-black text-white">
+
+        <!-- Section de Navigation -->
+        <nav class="fixed w-full z-50 bg-black bg-opacity-60 backdrop-filter backdrop-blur-lg border-b border-gray-800">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-20 items-center">
+                    <!-- Logo GAUCHE -->
+                    <div class="flex-shrink-0 flex items-center">
+                        <a href="javascript:void(0)" class="home-link flex items-center">
+                            <span class="text-4xl font-bold tech-font">KGP</span><span id="kpg-subtitle" class="home-text">meteo</span>
+                        </a>
+                    </div>
+
+                    <!-- Menu DROITE -->
+                    <div class="flex items-center">
+                        <div class="hidden md:block">
+                            <div class="ml-10 flex items-center space-x-8"></div>
+                        </div>
+
+                        <div class="md:hidden flex items-center">
+                            <button id="hamburger-button" class="text-white focus:outline-none">
+                                <i id="hamburger-icon" class="fas fa-bars text-2xl"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Menu Mobile -->
+            <div id="mobile-menu" class="md:hidden fixed top-0 left-0 w-full h-screen bg-black bg-opacity-95 backdrop-blur-lg flex flex-col items-center pt-24 pb-12 overflow-y-auto space-y-8 transform translate-x-full transition-transform duration-300 ease-in-out z-40">
+                
+                <!-- Catégories -->
+                <div class="flex flex-col items-center space-y-4 w-full">
+                    <h2 class="text-2xl font-semibold tech-font gradient-text1 border-b border-gray-700 pb-2 w-2/3 text-center">Catégories</h2>
+                    <a href="home.html" class="text-xl text-#b[5aca8] hover:text-purple-400 transition-colors duration-300 category-link" data-category="All"><i class="fa-regular fa-hand-point-right text-purple-800"></i> Home</a>
+                    <a href="home.html#it-news" class="text-xl text-[#b5aca8] hover:text-purple-400 transition-colors duration-300 category-link" data-category="I.T"><i class="fa-regular fa-hand-point-right text-purple-800"></i> I.T</a>
+                    <a href="home.html#Quizz" class="text-xl text-[#b5aca8] hover:text-purple-400 transition-colors duration-300 category-link" data-category="Tuto"><i class="fa-regular fa-hand-point-right text-purple-800"></i> Quiz</a>
+                    <a href="home.html#Movie" class="text-xl text-[#b5aca8] hover:text-purple-400 transition-colors duration-300 category-link" data-category="News"><i class="fa-regular fa-hand-point-right text-purple-800"></i> Movie</a>
+                    <a href="home.html#Music" class="text-xl text-[#b5aca8] hover:text-purple-400 transition-colors duration-300 category-link" data-category="Music"><i class="fa-regular fa-hand-point-right text-purple-800"></i> Music</a>
+                    <a href="home.html#Cooking" class="text-xl text-[#b5aca8] hover:text-purple-400 transition-colors duration-300 category-link" data-category="Cuisine"><i class="fa-regular fa-hand-point-right text-purple-800"></i> Cuisine</a>
+                </div>
+
+                <!-- Nos Apps -->
+                <div class="flex flex-col items-center space-y-4 w-full">
+                    <h2 class="text-2xl font-semibold tech-font gradient-text1 border-b border-gray-700 pb-2 w-2/3 text-center mt-4">Nos Apps</h2>
+                    <a href="clock.html" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">worldtime</span></a>
+                    <a href="converter.html" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">converter</span></a>
+                    <a href="meteo.html" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">meteo</span></a>
+                    <a href="caddy3.html" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">caddy</span></a>
+                    <a href="timer.html" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">timer</span></a>
+                    <a href="draw.html" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">draw</span></a>
+                    <a href="radio.html" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">radio</span></a>
+                    <a href="notes.html" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">notes</span></a>
+                    <a href="https://k-gou09.github.io/KGP_Compta/index.html" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">Compta</span></a>
+                    <a href="https://k-gou09.github.io/KGP_QRcode/" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">QRcode</span></a>
+                    <a href="https://k-gou09.github.io/KGP_SHA/" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">SHA</span></a>
+                </div>
+
+                <!-- Support -->
+                <div class="flex flex-col items-center space-y-5 w-full">
+                    <h2 class="text-2xl font-semibold tech-font gradient-text1 border-b border-gray-700 pb-2 w-2/3 text-center mt-4">Support</h2>
+                    <a href="https://www.facebook.com/nc.prod.794?locale=fr_FR" target="_blank" class="text-xl text-[#b5aca8] hover:text-purple-400 transition-colors duration-300 flex items-center w-36"><i class="fab fa-facebook text-blue-600 text-2xl w-10"></i> Facebook</a>
+                    <a href="https://www.youtube.com/@kgpsound" target="_blank" class="text-xl text-[#b5aca8] hover:text-purple-400 transition-colors duration-300 flex items-center w-36"><i class="fab fa-youtube text-red-600 text-2xl w-10"></i> YouTube</a>
+                    <a href="https://github.com/k-gou09" target="_blank" class="text-xl text-[#b5aca8] hover:text-purple-400 transition-colors duration-300 flex items-center w-36 mb-10"><i class="fab fa-github text-white text-2xl w-10"></i> GitHub</a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Section Principale du Fil d'Actualité -->
+        <main class="flex h-screen pt-20">
+            <!-- Colonne de Gauche -->
+            <aside class="w-1/5 h-full bg-gray-900 bg-opacity-30 p-6 border-r border-gray-700 hidden sm:block overflow-y-auto pb-10">
+                <h2 class="text-xl font-semibold tech-font gradient-text1 mb-6 ">Catégories</h2>
+
+                <ul class="space-y-3" style="color: #b5aca8;">
+                    <li><a href="home.html" class="hover:text-purple-400 transition-colors duration-300 category-link" data-category="All"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp;Home</a></li>
+                    <li><a href="home.html#it-news" class="hover:text-purple-400 transition-colors duration-300 category-link" data-category="I.T"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp;I.T</a></li>
+                    <li><a href="home.html#Quizz" class="hover:text-purple-400 transition-colors duration-300 category-link" data-category="Tuto"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp;Quiz</a></li>
+                    <li><a href="home.html#Movie" class="hover:text-purple-400 transition-colors duration-300 category-link" data-category="News"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp;Movie</a></li>
+                    <li><a href="home.html#Music" class="hover:text-purple-400 transition-colors duration-300 category-link" data-category="Music"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp;Music</a></li>
+                    <li><a href="home.html#Cooking" class="hover:text-purple-400 transition-colors duration-300 category-link" data-category="Cuisine"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp;Cuisine</a></li>
+                </ul>
+                <div class="mt-10">
+                    <h3 class="text-lg font-medium tech-font gradient-text1 mb-3">Nos Apps</h3>
+                    <ul class="space-y-3" style="color: #b5aca8;">
+                        <li><a href="clock.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">worldtime</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="converter.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">converter</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="qrcode.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">qrcode</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="meteo.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">meteo</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="caddy3.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">caddy</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="timer.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">timer</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="draw.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">draw</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="radio.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">radio</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="notes.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">notes</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="gps.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">gps</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="https://k-gou09.github.io/KGP_Compta/index.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">Compta</span></a></li>
+                        <li><a href="https://k-gou09.github.io/KGP_QRcode/" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">QRcode</span></a></li>
+                        <li><a href="https://k-gou09.github.io/KGP_SHA/" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">SHA</span></a></li>
+                    </ul>
+                </div>
+            </aside>
+
+            <!-- Colonne Centrale (APP METEO) -->
+            <section id="news-feed" class="flex-1 h-full overflow-y-auto bg-opacity-50 p-4 md:p-8">
+                
+                <!-- EN-TETE -->
+                <div class="mb-8 flex flex-col items-center">
+                    <div class="flex items-center justify-center space-x-4 bg-black bg-opacity-40 border border-gray-700 rounded-xl p-4 shadow-xl w-fit mx-auto">
+                        <img src="../img/v.svg" alt="Chef" class="w-16 h-16">                
+                        <h1 id="kpg-header" class="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold tech-font gradient-text1 text-center">K-GOU PROD</h1>
+                        <img src="../img/v.svg" alt="Chef" class="w-16 h-16">
+                    </div>
+
+                    <!-- Animation Hacker CENTRE -->
+                    <div id="anim" class="hidden sm:flex flex-1 justify-center">
+                        <h2 id="hack-title">!#?%& $#@!?{}</h2>
+                    </div>
+                </div>
+
+                <!-- MODULE METEO -->
+                <div class="app-chassis w-full max-w-5xl p-6 flex flex-col lg:flex-row gap-8 mx-auto mb-20">
+                    
+                    <!-- Colonne Gauche : Radar et Contrôles -->
+                    <div class="w-full lg:w-1/3 flex flex-col gap-6 items-center">
+                        <!-- Sélecteur de ville -->
+                        <div class="w-full">
+                            <label class="block text-xs font-mono text-gray-500 mb-2 tracking-widest">CIBLE (COORDONNÉES)</label>
+                            <select id="city-selector" class="cyber-input w-full p-3 rounded font-mono text-sm [&>option]:bg-gray-900 cursor-pointer">
+                                <option value="-22.2758,166.4580">Nouméa</option>
+                                <option value="-21.0595,164.9833">Koné</option>
+                                <option value="-21.5667,165.4833">Bourail</option>
+                                <option value="-20.5667,164.2833">Koumac</option>
+                                <option value="-20.9000,167.2667">Lifou (Wé)</option>
+                                <option value="-21.5333,167.8833">Maré (Tadine)</option>
+                                <option value="-20.6500,166.2667">Ouvéa (Fayaoué)</option>
+                                <option value="-22.2667,166.8667">Yaté</option>
+                                <option value="-20.2333,164.0167">Poum</option>
+                            </select>
+                        </div>
+
+                        <!-- Faux Radar -->
+                        <div class="radar-box w-48 h-48 sm:w-56 sm:h-56 rounded-full flex items-center justify-center">
+                            <div class="radar-grid"></div>
+                            <div class="radar-sweep"></div>
+                            <i class="fas fa-crosshairs text-purple-500 text-4xl z-10 opacity-50"></i>
+                            <div class="absolute w-2 h-2 bg-purple-400 rounded-full z-10 shadow-[0_0_10px_#a855f7] animate-ping"></div>
+                        </div>
+
+                        <button id="btn-refresh" class="btn-nano w-full"><i class="fas fa-sync-alt"></i> SCAN MANUEL</button>
+                    </div>
+
+                    <!-- Colonne Droite : Données Météo -->
+                    <div class="w-full lg:w-2/3 data-screen rounded-lg p-6 flex flex-col justify-between">
+                        
+                        <!-- Status Bar -->
+                        <div class="flex justify-between items-center border-b border-gray-800 pb-2 mb-4 z-10 relative">
+                            <span class="text-xs font-mono text-gray-500">STATUS: <span id="status-text" class="text-green-500">EN LIGNE</span></span>
+                            <span class="text-xs font-mono text-purple-600 animate-pulse">LIVE FEED</span>
+                        </div>
+
+                        <!-- Ecran de chargement -->
+                        <div id="loading-screen" class="flex-1 flex flex-col items-center justify-center text-purple-500 font-mono hidden z-10 relative">
+                            <i class="fas fa-circle-notch fa-spin text-4xl mb-4"></i>
+                            <p>DÉMODULATION DU SIGNAL...</p>
+                        </div>
+
+                        <!-- Erreur -->
+                        <div id="error-screen" class="flex-1 flex flex-col items-center justify-center text-red-500 font-mono hidden z-10 relative">
+                            <i class="fas fa-exclamation-triangle text-4xl mb-4"></i>
+                            <p>ERREUR DE CONNEXION SATELLITE</p>
+                        </div>
+
+                        <!-- Données Météo Complètes -->
+                        <div id="weather-data" class="flex-1 flex flex-col justify-center z-10 relative">
+                            
+                            <!-- Entête : Ville + Météo Actuelle -->
+                            <div class="flex items-center justify-between">
+                                <div class="flex flex-col">
+                                    <span id="city-name" class="text-2xl font-bold font-mono text-gray-200">NOUMÉA</span>
+                                    <span id="weather-desc" class="text-sm font-mono text-purple-400 tracking-widest mt-1">CIEL DÉGAGÉ</span>
+                                </div>
+                                <i id="weather-icon" class="fas fa-sun text-5xl text-yellow-500 drop-shadow-[0_0_10px_rgba(234,179,8,0.5)]"></i>
+                            </div>
+
+                            <!-- Température principale -->
+                            <div class="mt-4 flex items-baseline">
+                                <span id="temperature" class="text-7xl font-bold font-mono text-gray-100 drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]">--</span>
+                                <span class="text-3xl font-mono text-purple-600 ml-2">°C</span>
+                                <span class="text-xs font-mono text-gray-400 ml-4 hidden sm:inline">RESSENTI: <span id="app-temp" class="text-purple-400">--</span>°C</span>
+                            </div>
+                            <span class="text-xs font-mono text-gray-400 sm:hidden mt-1 block">RESSENTI: <span id="app-temp-mobile" class="text-purple-400">--</span>°C</span>
+
+                            <!-- Grille de données avancées -->
+                            <div class="mt-6 grid grid-cols-2 md:grid-cols-3 gap-2 border-t border-gray-800 pt-4 max-h-[350px] overflow-y-auto custom-scrollbar pr-2">
+                                
+                                <!-- Vent -->
+                                <div class="flex items-center gap-2 bg-black/50 p-2 rounded border border-gray-800">
+                                    <i class="fas fa-wind text-gray-400 w-5 text-center"></i>
+                                    <div class="flex flex-col">
+                                        <span class="text-[9px] font-mono text-gray-500">VENT</span>
+                                        <span class="font-mono font-bold text-gray-300 text-xs"><span id="wind-speed">--</span> km/h <span id="wind-dir" class="text-purple-400 ml-1">--</span></span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Humidité -->
+                                <div class="flex items-center gap-2 bg-black/50 p-2 rounded border border-gray-800">
+                                    <i class="fas fa-tint text-blue-400 w-5 text-center"></i>
+                                    <div class="flex flex-col">
+                                        <span class="text-[9px] font-mono text-gray-500">HUMIDITÉ</span>
+                                        <span class="font-mono font-bold text-gray-300 text-xs"><span id="humidity">--</span> %</span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Précipitations -->
+                                <div class="flex items-center gap-2 bg-black/50 p-2 rounded border border-gray-800">
+                                    <i class="fas fa-cloud-showers-heavy text-blue-500 w-5 text-center"></i>
+                                    <div class="flex flex-col">
+                                        <span class="text-[9px] font-mono text-gray-500">PRÉCIPITATIONS</span>
+                                        <span class="font-mono font-bold text-gray-300 text-xs"><span id="precip">--</span> mm</span>
+                                    </div>
+                                </div>
+
+                                <!-- Pression -->
+                                <div class="flex items-center gap-2 bg-black/50 p-2 rounded border border-gray-800">
+                                    <i class="fas fa-tachometer-alt text-gray-400 w-5 text-center"></i>
+                                    <div class="flex flex-col">
+                                        <span class="text-[9px] font-mono text-gray-500">PRESSION</span>
+                                        <span class="font-mono font-bold text-gray-300 text-xs"><span id="pressure">--</span> hPa</span>
+                                    </div>
+                                </div>
+
+                                <!-- Visibilité -->
+                                <div class="flex items-center gap-2 bg-black/50 p-2 rounded border border-gray-800">
+                                    <i class="fas fa-eye text-purple-400 w-5 text-center"></i>
+                                    <div class="flex flex-col">
+                                        <span class="text-[9px] font-mono text-gray-500">VISIBILITÉ</span>
+                                        <span class="font-mono font-bold text-gray-300 text-xs"><span id="visibility">--</span></span>
+                                    </div>
+                                </div>
+
+                                <!-- UV Index -->
+                                <div class="flex items-center gap-2 bg-black/50 p-2 rounded border border-gray-800">
+                                    <i class="fas fa-sun text-yellow-500 w-5 text-center"></i>
+                                    <div class="flex flex-col">
+                                        <span class="text-[9px] font-mono text-gray-500">INDEX UV MAX</span>
+                                        <span class="font-mono font-bold text-gray-300 text-xs"><span id="uv-index">--</span></span>
+                                    </div>
+                                </div>
+
+                                <!-- AQI (Qualité de l'air) -->
+                                <div class="flex items-center gap-2 bg-black/50 p-2 rounded border border-gray-800 col-span-2 md:col-span-1">
+                                    <i class="fas fa-leaf text-green-500 w-5 text-center"></i>
+                                    <div class="flex flex-col">
+                                        <span class="text-[9px] font-mono text-gray-500">QUALITÉ AIR (PM2.5)</span>
+                                        <span class="font-mono font-bold text-gray-300 text-xs" id="aqi-text">--</span>
+                                    </div>
+                                </div>
+
+                                <!-- Soleil (Lever/Coucher) -->
+                                <div class="flex items-center gap-2 bg-black/50 p-2 rounded border border-gray-800 col-span-2 md:col-span-1">
+                                    <i class="fas fa-cloud-sun text-orange-400 w-5 text-center"></i>
+                                    <div class="flex flex-col w-full">
+                                        <span class="text-[9px] font-mono text-gray-500">SOLEIL</span>
+                                        <div class="font-mono font-bold text-gray-300 text-[11px] flex justify-between items-center pr-1">
+                                            <span><i class="fas fa-arrow-up text-orange-400 mr-1"></i><span id="sunrise">--:--</span></span>
+                                            <span><i class="fas fa-arrow-down text-orange-600 mr-1"></i><span id="sunset">--:--</span></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Lune (Phase) -->
+                                <div class="flex items-center gap-2 bg-black/50 p-2 rounded border border-gray-800 col-span-2 md:col-span-1">
+                                    <i class="fas fa-moon text-gray-200 w-5 text-center"></i>
+                                    <div class="flex flex-col">
+                                        <span class="text-[9px] font-mono text-gray-500">PHASE LUNAIRE</span>
+                                        <span class="font-mono font-bold text-gray-300 text-xs"><span id="moon-phase">--</span></span>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- Deco KGP -->
+                        <p class="text-right text-xs font-mono mt-4 pt-2 border-t border-gray-800 z-10 relative">
+                            <span class="text-gray-600 font-bold tech-font">KGP</span><span class="text-purple-800">radar</span>
+                        </p>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- Colonne de Droite -->
+            <aside class="w-1/5 h-full bg-gray-900 bg-opacity-30 p-6 border-l border-gray-700 hidden lg:block">
+                <h2 class="text-xl font-semibold tech-font gradient-text1 mb-6 mt-6">Liens Utiles</h2>
+                <ul class="space-y-3">
+                    <li><a href="https://github.com/k-gou09" class="hover:text-purple-400 transition-colors duration-300"><i class="fab fa-github" style="color: white;"></i>&nbsp;&nbsp;&nbsp;GITHUB</a></li>
+                    <li><a href="https://www.facebook.com/nc.prod.794?locale=fr_FR" class="hover:text-purple-400 transition-colors duration-300"><i class="fab fa-facebook" style="color: blue;"></i>&nbsp;&nbsp;&nbsp;FACEBOOK</a></li>
+                    <li><a href="https://www.youtube.com/@kgpsound" class="hover:text-purple-400 transition-colors duration-300"><i class="fab fa-youtube" style="color: rgb(245, 3, 3);"></i>&nbsp;&nbsp;&nbsp;YOUTUBE</a></li>
+                </ul>
+                <div class="mt-20 p-4 rounded-lg">
+                    <a href="maintenance.html"><img src="../img/log_kgp1.png" alt="Logo KGP" class="w-full h-auto" style="border-radius: 35%;"></a>                
+                </div>
+            </aside>
+        </main>
+
+        <!-- Footer -->
+        <p class="fixed left-2 bottom-2 z-10 bg-black bg-opacity-80 text-white text-xs px-2 py-1 rounded-md flex items-center gap-1 tech-font border border-gray-800">
+            K-gou_Prod
+            <img src="../img/v.svg" alt="Logo" class="w-4 h-4 inline-block filter brightness-0 invert">
+            <a href="https://www.facebook.com/nc.prod.794" class="text-white underline hover:text-purple-300" target="_blank">Studio</a>
+        </p>
+
+        <!-- Scripts -->
+        <script>
+            window.addEventListener('load', () => {
+                // --- Menu Hamburger ---
+                const hamburgerButton = document.getElementById('hamburger-button');
+                const mobileMenu = document.getElementById('mobile-menu');
+                
+                if(hamburgerButton && mobileMenu) {
+                    hamburgerButton.addEventListener('click', () => {
+                        mobileMenu.classList.toggle('translate-x-full');
+                    });
+                }
+
+                // ===================================
+                // LOGIQUE METEO COMPLETE (Sécurisée)
+                // ===================================
+                const citySelector = document.getElementById('city-selector');
+                const btnRefresh = document.getElementById('btn-refresh');
+                
+                const screenData = document.getElementById('weather-data');
+                const screenLoad = document.getElementById('loading-screen');
+                const screenErr = document.getElementById('error-screen');
+                const statusText = document.getElementById('status-text');
+
+                // Codes WMO -> Descriptions et icônes
+                const weatherCodes = {
+                    0: { desc: "CIEL DÉGAGÉ", icon: "fa-sun", color: "text-yellow-500" },
+                    1: { desc: "PRINCIPALEMENT CLAIR", icon: "fa-cloud-sun", color: "text-yellow-400" },
+                    2: { desc: "PARTIELLEMENT NUAGEUX", icon: "fa-cloud-sun", color: "text-gray-400" },
+                    3: { desc: "COUVERT", icon: "fa-cloud", color: "text-gray-500" },
+                    45: { desc: "BROUILLARD", icon: "fa-smog", color: "text-gray-400" },
+                    48: { desc: "BROUILLARD GIVRANT", icon: "fa-smog", color: "text-gray-400" },
+                    51: { desc: "BRUINE LÉGÈRE", icon: "fa-cloud-rain", color: "text-blue-300" },
+                    53: { desc: "BRUINE MODÉRÉE", icon: "fa-cloud-rain", color: "text-blue-400" },
+                    55: { desc: "BRUINE FORTE", icon: "fa-cloud-showers-heavy", color: "text-blue-500" },
+                    61: { desc: "PLUIE FAIBLE", icon: "fa-cloud-rain", color: "text-blue-400" },
+                    63: { desc: "PLUIE MODÉRÉE", icon: "fa-cloud-showers-heavy", color: "text-blue-500" },
+                    65: { desc: "PLUIE FORTE", icon: "fa-cloud-showers-heavy", color: "text-blue-600" },
+                    80: { desc: "AVERSES LÉGÈRES", icon: "fa-cloud-rain", color: "text-blue-400" },
+                    81: { desc: "AVERSES MODÉRÉES", icon: "fa-cloud-showers-water", color: "text-blue-500" },
+                    82: { desc: "AVERSES VIOLENTES", icon: "fa-cloud-showers-heavy", color: "text-blue-600" },
+                    95: { desc: "ORAGE", icon: "fa-bolt", color: "text-yellow-400" },
+                    96: { desc: "ORAGE ET GRÊLE", icon: "fa-poo-storm", color: "text-yellow-500" },
+                    99: { desc: "ORAGE VIOLENT", icon: "fa-poo-storm", color: "text-red-500" }
+                };
+
+                // Conversion Direction Vent (Degrés vers Rose des vents)
+                function getWindDirection(deg) {
+                    if (deg >= 337.5 || deg < 22.5) return 'N';
+                    if (deg >= 22.5 && deg < 67.5) return 'NE';
+                    if (deg >= 67.5 && deg < 112.5) return 'E';
+                    if (deg >= 112.5 && deg < 157.5) return 'SE';
+                    if (deg >= 157.5 && deg < 202.5) return 'S';
+                    if (deg >= 202.5 && deg < 247.5) return 'SO';
+                    if (deg >= 247.5 && deg < 292.5) return 'O';
+                    if (deg >= 292.5 && deg < 337.5) return 'NO';
+                    return '-';
+                }
+
+                // Calcul algorithmique simplifié de la phase lunaire (Sécurisé)
+                function getMoonPhaseName(date = new Date()) {
+                    const lp = 2551443; 
+                    const now = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 20, 35, 0);
+                    const new_moon = new Date(1970, 0, 7, 20, 35, 0);
+                    const phase = ((now.getTime() - new_moon.getTime()) / 1000) % lp;
+                    const days = Math.floor(phase / (24 * 3600));
+                    
+                    if (days < 1) return "Nouvelle Lune";
+                    if (days < 7) return "1er Croissant";
+                    if (days < 8) return "1er Quartier";
+                    if (days < 14) return "Gibbeuse Croiss.";
+                    if (days < 16) return "Pleine Lune";
+                    if (days < 22) return "Gibbeuse Décroiss.";
+                    if (days < 23) return "Dernier Quartier";
+                    return "Dernier Croissant";
+                }
+
+                async function fetchWeather() {
+                    // UI - Loading
+                    screenData.classList.add('hidden');
+                    screenErr.classList.add('hidden');
+                    screenLoad.classList.remove('hidden');
+                    statusText.textContent = "CONNEXION SATELLITE...";
+                    statusText.className = "text-yellow-500";
+
+                    const coords = citySelector.value.split(',');
+                    const lat = coords[0];
+                    const lon = coords[1];
+                    // On récupère le texte du select, tout sera injecté via textContent (aucun XSS possible)
+                    const cityName = citySelector.options[citySelector.selectedIndex].text;
+
+                    // 1. Météo globale & Soleil & UV
+                    const urlWeather = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,surface_pressure,visibility,wind_speed_10m,wind_direction_10m&daily=sunrise,sunset,uv_index_max&timezone=Pacific/Noumea`;
+                    
+                    // 2. Qualité de l'Air (endpoint spécifique)
+                    const urlAQI = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lon}&current=european_aqi,pm2_5&timezone=Pacific/Noumea`;
+
+                    try {
+                        // Lancer les requêtes en parallèle
+                        const [resWeather, resAQI] = await Promise.all([fetch(urlWeather), fetch(urlAQI)]);
+                        
+                        if (!resWeather.ok) throw new Error("API Weather Error");
+                        
+                        const dataWeather = await resWeather.json();
+                        let dataAQI = null;
+                        
+                        // L'API AQI peut échouer selon les zones isolées, on ne fait pas planter le script pour ça.
+                        if (resAQI.ok) {
+                            dataAQI = await resAQI.json();
+                        }
+
+                        const curW = dataWeather.current;
+                        const dailyW = dataWeather.daily;
+                        
+                        // MAJ UI En-tête
+                        document.getElementById('city-name').textContent = cityName.toUpperCase();
+                        
+                        // MAJ UI Température Principale & Ressenti
+                        document.getElementById('temperature').textContent = Math.round(curW.temperature_2m);
+                        document.getElementById('app-temp').textContent = Math.round(curW.apparent_temperature);
+                        document.getElementById('app-temp-mobile').textContent = Math.round(curW.apparent_temperature);
+                        
+                        // MAJ UI Vent
+                        document.getElementById('wind-speed').textContent = Math.round(curW.wind_speed_10m);
+                        document.getElementById('wind-dir').textContent = getWindDirection(curW.wind_direction_10m);
+
+                        // MAJ UI Nouvelles variables
+                        document.getElementById('humidity').textContent = curW.relative_humidity_2m;
+                        document.getElementById('pressure').textContent = Math.round(curW.surface_pressure);
+                        
+                        // Formatage de la visibilité (passage en km si >= 1000m)
+                        let vis = curW.visibility;
+                        document.getElementById('visibility').textContent = (vis >= 1000) ? (vis/1000).toFixed(1) + " km" : vis + " m";
+                        
+                        document.getElementById('precip').textContent = curW.precipitation;
+                        document.getElementById('uv-index').textContent = (dailyW.uv_index_max && dailyW.uv_index_max[0]) ? dailyW.uv_index_max[0] : '--';
+                        
+                        // Formatage Qualité air
+                        if(dataAQI && dataAQI.current) {
+                            document.getElementById('aqi-text').textContent = `AQI: ${dataAQI.current.european_aqi} | ${dataAQI.current.pm2_5}µg`;
+                        } else {
+                            document.getElementById('aqi-text').textContent = `HORS LIGNE`;
+                        }
+
+                        // Formatage Soleil (on extrait juste l'heure du timestamp "2023-10-12T05:30")
+                        if (dailyW.sunrise && dailyW.sunset) {
+                            document.getElementById('sunrise').textContent = dailyW.sunrise[0].split('T')[1];
+                            document.getElementById('sunset').textContent = dailyW.sunset[0].split('T')[1];
+                        }
+
+                        // Formatage Lune
+                        document.getElementById('moon-phase').textContent = getMoonPhaseName();
+
+                        // Icone et description globale
+                        const code = curW.weather_code;
+                        const weatherInfo = weatherCodes[code] || { desc: "INCONNU", icon: "fa-satellite", color: "text-gray-400" };
+                        document.getElementById('weather-desc').textContent = weatherInfo.desc;
+                        
+                        const iconEl = document.getElementById('weather-icon');
+                        iconEl.className = "fas text-5xl"; // reset classes
+                        iconEl.classList.add(weatherInfo.icon, weatherInfo.color);
+                        if(weatherInfo.color.includes('yellow')) iconEl.classList.add('drop-shadow-[0_0_10px_rgba(234,179,8,0.5)]');
+                        if(weatherInfo.color.includes('blue')) iconEl.classList.add('drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]');
+                        if(weatherInfo.color.includes('gray')) iconEl.classList.add('drop-shadow-[0_0_10px_rgba(156,163,175,0.5)]');
+
+                        // Fin du chargement
+                        setTimeout(() => {
+                            screenLoad.classList.add('hidden');
+                            screenData.classList.remove('hidden');
+                            statusText.textContent = "EN LIGNE";
+                            statusText.className = "text-green-500";
+                        }, 500);
+
+                    } catch (error) {
+                        console.error(error);
+                        screenLoad.classList.add('hidden');
+                        screenErr.classList.remove('hidden');
+                        statusText.textContent = "SIGNAL PERDU";
+                        statusText.className = "text-red-500";
+                    }
+                }
+
+                // Initialisation des écouteurs
+                if(citySelector && btnRefresh) {
+                    citySelector.addEventListener('change', fetchWeather);
+                    btnRefresh.addEventListener('click', fetchWeather);
+                    // Lancer la première requête au démarrage
+                    fetchWeather();
+                }
+            });
+        </script>
+    </body>
+</html>

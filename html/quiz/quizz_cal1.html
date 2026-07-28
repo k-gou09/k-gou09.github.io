@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz 2</title>
+    <!-- Open Graph Meta Tags for social sharing (Facebook, etc.) -->
+    <meta property="og:title" content="Quiz | k-gou prod" />
+    <meta property="og:description" content="Un quiz sur le caillou"/>
+    <meta property="og:url" content="https://www.k-gou.com/html/quiz/quizz_cal1.html"/>
+    <meta property="og:image" content="https://www.k-gou.com/img/quizz2.png"/>
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="K-gou prod" />
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts for a modern look -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: #0d0211; }
+::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #bf00ff, #7a00cc); border-radius: 5px; border: 2px solid #0d0211; }
+::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #d400ff, #bf00ff); }
+        html {
+            scroll-behavior: smooth;
+        }
+        /* Custom styles for the dark theme and overall feel */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111827; /* gray-900 */
+            color: #d1d5db; /* gray-300 */
+        }
+
+        /* Custom scrollbar for a more integrated look */
+        
+        
+        
+        
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+
+        <!-- Header Section -->
+        <header class="flex justify-between items-center mb-10 pb-4 border-b border-gray-700">
+            <h1 class="text-3xl md:text-4xl font-black tracking-tighter">
+                <span class="bg-gradient-to-r from-fuchsia-600 via-purple-500 to-pink-500 text-transparent bg-clip-text">
+                    k-gou prod
+                </span>
+            </h1>
+            <a href="../news.html#quizz2" rel="noopener noreferrer" class="bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 transition-colors duration-300">
+                Retour
+            </a>
+        </header>
+
+        <!-- Results Section (hidden by default) -->
+        <div id="results-container" class="hidden text-center bg-gray-800 p-8 rounded-2xl shadow-2xl mb-8">
+            <h2 class="text-3xl font-bold mb-4">Votre résultat</h2>
+            <p class="text-5xl font-black mb-6" id="score-display"></p>
+            <p class="text-xl text-gray-300" id="score-message"></p>
+            <div class="mt-8 flex flex-col sm:flex-row justify-center items-center gap-4">
+                <button type="button" id="restart-btn" class="w-full sm:w-auto bg-indigo-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-indigo-500 transition-colors duration-300">
+                    Recommencer le quiz
+                </button>
+                <a href="#quiz-form" class="w-full sm:w-auto bg-gray-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-gray-500 transition-colors duration-300">
+                    Voir les réponses
+                </a>
+            </div>
+        </div>
+
+        <main id="quiz-container">
+            <h2 class="text-2xl font-bold text-center mb-2">Quiz Calédonien 2</h2>
+            <p class="text-center text-gray-400 mb-8">Testez vos connaissances sur la nature du Caillou !</p>
+            
+            <form id="quiz-form" class="space-y-8">
+                <!-- Questions will be dynamically inserted here by JavaScript -->
+            </form>
+
+            <!-- Validation Button -->
+            <div class="mt-12 text-center">
+                <button type="button" id="submit-btn" class="bg-green-600 text-white text-xl font-bold py-3 px-8 rounded-lg hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition-all duration-300 transform hover:scale-105">
+                    Valider mes réponses
+                </button>
+            </div>
+        </main>
+
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <button id="scroll-to-top-btn" title="Remonter en haut" class="hidden fixed bottom-6 right-6 bg-indigo-600 text-white w-12 h-12 rounded-full shadow-lg hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 transition-all duration-300 flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
+        </svg>
+    </button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const quizData = [
+                {
+                    question: "Le 'Niaouli' est un arbre célèbre pour son...",
+                    name: "q1",
+                    answers: [
+                        { text: "Écorce qui pèle", points: 2 },
+                        { text: "Bois très dur", points: -1 },
+                        { text: "Fruit comestible", points: -1 },
+                        { text: "Absence de feuilles", points: -2 }
+                    ]
+                },
+                {
+                    question: "Le 'ver de bancoule' est en réalité...",
+                    name: "q2",
+                    answers: [
+                        { text: "Un vrai ver de terre", points: -2 },
+                        { text: "Une larve de coléoptère", points: 2 },
+                        { text: "Un petit serpent", points: -1 },
+                        { text: "Une racine comestible", points: -1 }
+                    ]
+                },
+                {
+                    question: "Quel est le plus grand gecko du monde, endémique à la Nouvelle-Calédonie ?",
+                    name: "q3",
+                    answers: [
+                        { text: "Le gecko léopard", points: -2 },
+                        { text: "Le gecko tokay", points: -1 },
+                        { text: "Le gecko à crête", points: 1 },
+                        { text: "Le gecko géant (Rhacodactylus leachianus)", points: 2 }
+                    ]
+                },
+                {
+                    question: "Le 'Dugong', mammifère marin herbivore, est aussi appelé...",
+                    name: "q4",
+                    answers: [
+                        { text: "Vache de mer", points: 2 },
+                        { text: "Cochon de mer", points: -1 },
+                        { text: "Cheval de mer", points: -2 },
+                        { text: "Loup de mer", points: -1 }
+                    ]
+                },
+                {
+                    question: "Le 'flamboyant' est un arbre spectaculaire connu pour ses fleurs de couleur...",
+                    name: "q5",
+                    answers: [
+                        { text: "Bleue", points: -2 },
+                        { text: "Jaune", points: 0 },
+                        { text: "Rouge vif", points: 2 },
+                        { text: "Blanche", points: -1 }
+                    ]
+                },
+                {
+                    question: "Le 'Notou' est un gros pigeon endémique. Quelle est sa particularité ?",
+                    name: "q6",
+                    answers: [
+                        { text: "Il ne peut pas voler", points: -1 },
+                        { text: "Son cri ressemble à un aboiement", points: -1 },
+                        { text: "Il est le plus grand pigeon arboricole du monde", points: 2 },
+                        { text: "Il est entièrement blanc", points: -2 }
+                    ]
+                },
+                {
+                    question: "La 'crevette de Boulouparis' est réputée pour...",
+                    name: "q7",
+                    answers: [
+                        { text: "Sa taille minuscule", points: -2 },
+                        { text: "Sa couleur bleue", points: 1 },
+                        { text: "Sa qualité gustative", points: 2 },
+                        { text: "Sa capacité à vivre hors de l'eau", points: -2 }
+                    ]
+                },
+                {
+                    question: "L'Amborella trichopoda est une plante unique au monde car elle est...",
+                    name: "q8",
+                    answers: [
+                        { text: "La plus ancienne plante à fleurs connue", points: 2 },
+                        { text: "Une plante carnivore géante", points: -1 },
+                        { text: "La seule plante sans chlorophylle", points: -2 },
+                        { text: "Une plante qui pousse sous l'eau", points: -1 }
+                    ]
+                },
+                {
+                    question: "Le cerf 'Rusa', très présent en brousse, a été introduit depuis...",
+                    name: "q9",
+                    answers: [
+                        { text: "L'Europe", points: -1 },
+                        { text: "L'Australie", points: -1 },
+                        { text: "L'Indonésie", points: 2 },
+                        { text: "L'Amérique du Sud", points: -2 }
+                    ]
+                },
+                {
+                    question: "Qu'est-ce qu'un 'Nautile' ?",
+                    name: "q10",
+                    answers: [
+                        { text: "Un oiseau marin", points: -1 },
+                        { text: "Un 'fossile vivant' marin à coquille", points: 2 },
+                        { text: "Un type de palmier", points: -1 },
+                        { text: "Un lézard du désert", points: -2 }
+                    ]
+                },
+                {
+                    question: "Le bois de 'Santal' était historiquement recherché pour...",
+                    name: "q11",
+                    answers: [
+                        { text: "La construction navale", points: -1 },
+                        { text: "Son parfum", points: 2 },
+                        { text: "Faire des arcs", points: -1 },
+                        { text: "Ses propriétés médicinales", points: 0 }
+                    ]
+                },
+                {
+                    question: "Quel animal est souvent (et à tort) confondu avec un serpent terrestre ?",
+                    name: "q12",
+                    answers: [
+                        { text: "Le tricot rayé", points: 0 },
+                        { text: "L'orvet", points: -2 },
+                        { text: "Le scinque", points: 2 },
+                        { text: "La couleuvre", points: -1 }
+                    ]
+                },
+                {
+                    question: "Le 'Kauri' est un...",
+                    name: "q13",
+                    answers: [
+                        { text: "Petit marsupial", points: -2 },
+                        { text: "Arbre géant et millénaire", points: 2 },
+                        { text: "Coquillage rare", points: -1 },
+                        { text: "Fruit exotique", points: -1 }
+                    ]
+                },
+                {
+                    question: "La 'roussette' (ou renard volant) est un animal qui se nourrit principalement de...",
+                    name: "q14",
+                    answers: [
+                        { text: "Insectes", points: -1 },
+                        { text: "Petits rongeurs", points: -2 },
+                        { text: "Fruits", points: 2 },
+                        { text: "Poissons", points: -2 }
+                    ]
+                },
+                {
+                    question: "La 'Roche Percée' et le 'Bonhomme' sont des formations rocheuses célèbres situées à... ?",
+                    name: "q15",
+                    answers: [
+                        { text: "Hienghène", points: 0 },
+                        { text: "Bourail", points: 2 },
+                        { text: "Poindimié", points: -1 },
+                        { text: "Yaté", points: -2 }
+                    ]
+                },
+                {
+                    question: "Le 'Crabe de cocotier' est connu pour...",
+                    name: "q16",
+                    answers: [
+                        { text: "Vivre exclusivement dans l'eau", points: -2 },
+                        { text: "Sa capacité à casser des noix de coco", points: 2 },
+                        { text: "Sa couleur bleu fluo", points: -1 },
+                        { text: "Être le plus petit crabe du monde", points: -2 }
+                    ]
+                },
+                {
+                    question: "L'eucalyptus, très présent, a été majoritairement importé de...",
+                    name: "q17",
+                    answers: [
+                        { text: "Nouvelle-Zélande", points: -1 },
+                        { text: "Australie", points: 2 },
+                        { text: "Indonésie", points: -1 },
+                        { text: "France", points: -2 }
+                    ]
+                },
+                {
+                    question: "Le 'Bulime' est un escargot endémique célèbre, notamment celui de...",
+                    name: "q18",
+                    answers: [
+                        { text: "Lifou", points: -1 },
+                        { text: "L'Île des Pins", points: 2 },
+                        { text: "Ouvéa", points: -1 },
+                        { text: "Maré", points: -1 }
+                    ]
+                },
+                {
+                    question: "Quel est le point culminant de la Nouvelle-Calédonie ?",
+                    name: "q19",
+                    answers: [
+                        { text: "Le Mont Humboldt", points: 1 },
+                        { text: "Le Mont Dore", points: -1 },
+                        { text: "Le Mont Panié", points: 2 },
+                        { text: "Le Pic du Grand Kaori", points: -2 }
+                    ]
+                },
+                {
+                    question: "La 'vanille', cultivée notamment dans les îles Loyauté, est une...",
+                    name: "q20",
+                    answers: [
+                        { text: "Racine", points: -2 },
+                        { text: "Feuille", points: -1 },
+                        { text: "Orchidée", points: 2 },
+                        { text: "Graine d'arbre", points: -1 }
+                    ]
+                }
+            ];
+
+            const quizForm = document.getElementById('quiz-form');
+            const submitBtn = document.getElementById('submit-btn');
+            const quizContainer = document.getElementById('quiz-container');
+            const resultsContainer = document.getElementById('results-container');
+            const scoreDisplay = document.getElementById('score-display');
+            const scoreMessage = document.getElementById('score-message');
+            const restartBtn = document.getElementById('restart-btn');
+            const scrollToTopBtn = document.getElementById('scroll-to-top-btn');
+
+            // Function to load and display the quiz questions
+            function loadQuiz() {
+                quizForm.innerHTML = ''; // Clear previous questions
+                quizData.forEach((q, index) => {
+                    const questionElement = document.createElement('div');
+                    questionElement.className = 'bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700';
+
+                    const questionText = document.createElement('p');
+                    questionText.className = 'text-xl font-bold mb-5';
+                    // Utiliser textContent est plus sûr pour éviter les injections XSS
+                    questionText.textContent = `${index + 1}. ${q.question}`;
+
+                    const answersContainer = document.createElement('div');
+                    answersContainer.className = 'space-y-3';
+
+                    q.answers.forEach(answer => {
+                        const label = document.createElement('label');
+                        label.className = 'block bg-gray-700 p-4 rounded-lg cursor-pointer hover:bg-gray-600 has-[:checked]:bg-indigo-600 has-[:checked]:ring-2 has-[:checked]:ring-indigo-400 transition-all duration-200';
+
+                        const radio = document.createElement('input');
+                        radio.type = 'radio';
+                        radio.name = q.name;
+                        radio.value = answer.points;
+                        radio.className = 'hidden';
+
+                        const span = document.createElement('span');
+                        span.className = 'text-lg';
+                        span.textContent = answer.text; // Utiliser textContent est plus sûr
+
+                        label.appendChild(radio);
+                        label.appendChild(span);
+                        answersContainer.appendChild(label);
+                    });
+
+                    questionElement.appendChild(questionText);
+                    questionElement.appendChild(answersContainer);
+                    quizForm.appendChild(questionElement);
+                });
+                 // Re-enable submit button
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+            
+            // Function to calculate and display results
+            function showResults() {
+                const selectedAnswers = quizForm.querySelectorAll('input[type="radio"]:checked');
+                
+                if (selectedAnswers.length < quizData.length) {
+                    alert("Veuillez répondre à toutes les questions avant de valider !");
+                    return;
+                }
+
+                let score = 0;
+                let userPositiveScore = 0;
+                selectedAnswers.forEach(input => {
+                    const points = parseInt(input.value, 10);
+                    score += points;
+                    if (points > 0) {
+                        userPositiveScore += points;
+                    }
+                });
+
+                const maxPositiveScore = quizData.reduce((total, question) => {
+                    const maxPoints = Math.max(0, ...question.answers.map(a => a.points));
+                    return total + maxPoints;
+                }, 0);
+
+                scoreDisplay.textContent = `${userPositiveScore} / ${maxPositiveScore} points`;
+
+                let message = '';
+                const percentage = (userPositiveScore / maxPositiveScore) * 100;
+
+                if (percentage === 100) {
+                    message = "Score parfait ! La faune et la flore calédonienne n'ont aucun secret pour vous !";
+                    scoreDisplay.className = 'text-5xl font-black mb-6 text-green-400';
+                } else if (percentage >= 75) {
+                    message = "Excellent score ! Vous êtes un vrai connaisseur de la nature du Caillou.";
+                    scoreDisplay.className = 'text-5xl font-black mb-6 text-purple-500';
+                } else if (percentage >= 50) {
+                    message = "Pas mal du tout ! Vous avez de bonnes bases en botanique et zoologie locale.";
+                    scoreDisplay.className = 'text-5xl font-black mb-6 text-yellow-400';
+                } else if (percentage >= 25) {
+                    message = "C'est un début. La biodiversité calédonienne est riche, continuez à l'explorer !";
+                    scoreDisplay.className = 'text-5xl font-black mb-6 text-orange-400';
+                } else {
+                    message = "Oups... On dirait que vous confondez un pin colonnaire et un cocotier ! Retentez !";
+                    scoreDisplay.className = 'text-5xl font-black mb-6 text-red-500';
+                }
+                scoreMessage.textContent = message;
+
+                // Cacher le bouton de validation, afficher les résultats et les corrections
+                submitBtn.parentElement.classList.add('hidden');
+                resultsContainer.classList.remove('hidden');
+
+                quizData.forEach((q, index) => {
+                    const questionElement = quizForm.children[index];
+                    if (!questionElement) return;
+
+                    const answerLabels = questionElement.querySelectorAll('label');
+                    const answersData = q.answers;
+                    const correctAnswer = answersData.reduce((prev, current) => (current.points > prev.points) ? current : prev);
+
+                    answerLabels.forEach((label, i) => {
+                        const radio = label.querySelector('input');
+                        const answerData = answersData[i];
+                        radio.disabled = true;
+                        label.classList.remove('cursor-pointer', 'hover:bg-gray-600', 'has-[:checked]:bg-indigo-600', 'has-[:checked]:ring-2', 'has-[:checked]:ring-indigo-400');
+                        label.classList.add('cursor-default');
+                        const isSelected = radio.checked;
+                        const isCorrect = answerData.points === correctAnswer.points && correctAnswer.points > 0;
+
+                        if (isSelected) {
+                            if (isCorrect) {
+                                // Réponse correcte sélectionnée : fond et cadre verts
+                                label.classList.add('bg-green-600', 'text-white', 'ring-2', 'ring-green-400');
+                            } else {
+                                // Réponse incorrecte sélectionnée : cadre rouge
+                                label.classList.add('ring-2', 'ring-red-500');
+                            }
+                        } else if (isCorrect) {
+                            // La bonne réponse (non sélectionnée) : cadre vert pour la signaler
+                            label.classList.add('ring-2', 'ring-green-500');
+                        } else {
+                            // Les autres mauvaises réponses : opacité réduite
+                            label.classList.add('opacity-60');
+                        }
+                    });
+                });
+
+                // Scroll to top to see results
+                window.scrollTo(0, 0);
+            }
+
+            // Function to restart the quiz
+            function restartQuiz() {
+                resultsContainer.classList.add('hidden');
+                submitBtn.parentElement.classList.remove('hidden');
+                loadQuiz();
+                window.scrollTo(0, 0);
+            }
+
+            // Event Listeners
+            submitBtn.addEventListener('click', showResults);
+            restartBtn.addEventListener('click', restartQuiz);
+
+            // --- Scroll to Top Button Logic ---
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    scrollToTopBtn.classList.remove('hidden');
+                } else {
+                    scrollToTopBtn.classList.add('hidden');
+                }
+            });
+            scrollToTopBtn.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            // Initial load of the quiz
+            loadQuiz();
+        });
+    </script>
+</body>
+</html>
+
+

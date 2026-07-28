@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>K-gou prod | Caddy Malin</title>
+        <!-- Tailwind CSS via CDN -->
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link rel="stylesheet" href="../css/news.css">
+        <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
+
+        <style>
+            .home-text {
+                color: #6b21a8; /* texte en violet */
+                font-family: 'Permanent Marker', cursive;
+                font-size: 2rem;
+                font-weight: bold;
+                margin-left: 10px;
+            }
+                
+            .home-mess {
+                text-align: center;
+                font-family: 'Permanent Marker', cursive;
+                font-size: 2rem;
+                font-weight: bold;
+                padding-bottom: 15px;
+            }
+
+            .home-mess1 {
+                text-align: center;
+                font-family: 'Permanent Marker', cursive;
+                font-size: 1.5rem;
+                font-weight: bold;
+                padding-bottom: 15px;
+            }    
+
+            .btn-nano {
+                background: linear-gradient(145deg, #1a1a2a, #0a0a1a);
+                color: #ffffff;
+                border: 1px solid #807f7f;
+                padding: 10px 24px;
+                font-size: 14px;
+                font-weight: bold;
+                border-radius: 8px;
+                cursor: pointer;
+                position: relative;
+                overflow: hidden;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+                text-decoration: none;
+                display: inline-block;
+            }
+
+            .btn-nano::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+                transition: left 0.6s ease;
+            }
+
+            .btn-nano:hover::before {
+                left: 100%;
+            }
+
+            .btn-nano:hover {
+                box-shadow: 0 0 25px rgba(255, 255, 255, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+                text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+            }
+
+            .btn-nano i {
+                margin-right: 8px;
+            }
+
+            /* --- Styles Animation Hacker --- */
+            #hack-title {
+                margin-top: 15px;
+                line-height: 1.2;
+                font-family: monospace;
+                font-size: 1.3rem;
+                color: #a855f7;
+                letter-spacing: 2px;
+                white-space: nowrap;
+                overflow: hidden;
+                border-right: 4px solid #a855f7;
+                width: 0;
+                opacity: 0;
+                transition: opacity 1s ease-out;
+            }
+
+            .start-typing {
+                opacity: 1 !important;
+                animation: typing 1.5s steps(13) forwards,
+                           blink .5s step-end infinite alternate;
+            }
+
+            @keyframes typing {
+                from { width: 0 }
+                to   { width: 14ch } /* HELLO WORLD ! = 13 caractères */
+            }
+
+            @keyframes blink {
+                50% { border-color: transparent }
+            }
+
+            /* --- Scrollbar Personnalisée --- */
+            ::-webkit-scrollbar {
+                width: 0;
+                height: 0;
+            }
+            
+            /* --- Scrollbar interne pour l'app Caddy Malin (Thème Sombre) --- */
+            .caddy-scroll::-webkit-scrollbar {
+                width: 6px;
+                height: 6px;
+            }
+            .caddy-scroll::-webkit-scrollbar-track {
+                background: rgba(17, 24, 39, 0.5);
+                border-radius: 4px;
+            }
+            .caddy-scroll::-webkit-scrollbar-thumb {
+                background: #4b5563; 
+                border-radius: 4px;
+            }
+            .caddy-scroll::-webkit-scrollbar-thumb:hover {
+                background: #6b7280; 
+            }
+
+            /* Suppression des flèches sur les inputs number */
+            .no-spinners::-webkit-outer-spin-button,
+            .no-spinners::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+            .no-spinners { 
+                appearance: textfield;
+                -moz-appearance: textfield; }
+        </style>
+    </head>
+    <body class="bg-black text-white selection:bg-purple-600 selection:text-white">
+
+        <!-- Section de Navigation -->
+        <nav class="fixed w-full z-50 bg-black bg-opacity-60 backdrop-filter backdrop-blur-lg border-b border-gray-800">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-20 items-center">
+                    <!-- Logo GAUCHE -->
+                    <div class="flex-shrink-0 flex items-center">
+                        <a href="javascript:void(0)" class="home-link flex items-center">
+                            <span class="text-4xl font-bold tech-font">KGP</span><span id="kpg-subtitle" class="home-text">caddy</span>
+                        </a>
+                    </div>
+
+                    <!-- Menu DROITE -->
+                    <div class="flex items-center">
+                        <div class="hidden md:block">
+                            <div class="ml-10 flex items-center space-x-8">
+                                <!-- Vos liens ici si nécessaire -->
+                            </div>
+                        </div>
+
+                        <div class="md:hidden flex items-center">
+                            <button id="hamburger-button" class="text-white focus:outline-none">
+                                <i id="hamburger-icon" class="fas fa-bars text-2xl"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Menu Mobile -->
+            <div id="mobile-menu" class="md:hidden fixed top-0 left-0 w-full h-screen bg-black bg-opacity-95 backdrop-blur-lg flex flex-col items-center pt-24 pb-12 overflow-y-auto space-y-8 transform translate-x-full transition-transform duration-300 ease-in-out z-40">
+                
+                <!-- Catégories -->
+                <div class="flex flex-col items-center space-y-4 w-full">
+                    <h2 class="text-2xl font-semibold tech-font gradient-text1 border-b border-gray-700 pb-2 w-2/3 text-center">Catégories</h2>
+                    <a href="home.html" class="text-xl text-#b[5aca8] hover:text-purple-400 transition-colors duration-300 category-link" data-category="All"><i class="fa-regular fa-hand-point-right text-purple-800"></i> Home</a>
+                    <a href="home.html#it-news" class="text-xl text-[#b5aca8] hover:text-purple-400 transition-colors duration-300 category-link" data-category="I.T"><i class="fa-regular fa-hand-point-right text-purple-800"></i> I.T</a>
+                    <a href="home.html#Quizz" class="text-xl text-[#b5aca8] hover:text-purple-400 transition-colors duration-300 category-link" data-category="Tuto"><i class="fa-regular fa-hand-point-right text-purple-800"></i> Quiz</a>
+                    <a href="home.html#Movie" class="text-xl text-[#b5aca8] hover:text-purple-400 transition-colors duration-300 category-link" data-category="News"><i class="fa-regular fa-hand-point-right text-purple-800"></i> Movie</a>
+                    <a href="home.html#Music" class="text-xl text-[#b5aca8] hover:text-purple-400 transition-colors duration-300 category-link" data-category="Music"><i class="fa-regular fa-hand-point-right text-purple-800"></i> Music</a>
+                    <a href="home.html#Cooking" class="text-xl text-[#b5aca8] hover:text-purple-400 transition-colors duration-300 category-link" data-category="Cuisine"><i class="fa-regular fa-hand-point-right text-purple-800"></i> Cuisine</a>
+                </div>
+
+                <!-- Nos Apps -->
+                <div class="flex flex-col items-center space-y-4 w-full">
+                    <h2 class="text-2xl font-semibold tech-font gradient-text1 border-b border-gray-700 pb-2 w-2/3 text-center mt-4">Nos Apps</h2>
+                    <a href="clock.html" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">worldtime</span></a>
+                    <a href="converter.html" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">converter</span></a>
+                    <a href="meteo.html" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">meteo</span></a>
+                    <a href="caddy3.html" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">caddy</span></a>
+                    <a href="timer.html" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">timer</span></a>
+                    <a href="draw.html" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">draw</span></a>
+                    <a href="radio.html" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">radio</span></a>
+                    <a href="notes.html" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">notes</span></a>
+                    <a href="https://k-gou09.github.io/KGP_Compta/index.html" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">Compta</span></a>
+                    <a href="https://k-gou09.github.io/KGP_QRcode/" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">QRcode</span></a>
+                    <a href="https://k-gou09.github.io/KGP_SHA/" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">SHA</span></a>
+                </div>
+
+                <!-- Support -->
+                <div class="flex flex-col items-center space-y-5 w-full">
+                    <h2 class="text-2xl font-semibold tech-font gradient-text1 border-b border-gray-700 pb-2 w-2/3 text-center mt-4">Support</h2>
+                    <a href="https://www.facebook.com/nc.prod.794?locale=fr_FR" target="_blank" class="text-xl text-[#b5aca8] hover:text-purple-400 transition-colors duration-300 flex items-center w-36"><i class="fab fa-facebook text-blue-600 text-2xl w-10"></i> Facebook</a>
+                    <a href="https://www.youtube.com/@kgpsound" target="_blank" class="text-xl text-[#b5aca8] hover:text-purple-400 transition-colors duration-300 flex items-center w-36"><i class="fab fa-youtube text-red-600 text-2xl w-10"></i> YouTube</a>
+                    <a href="https://github.com/k-gou09" target="_blank" class="text-xl text-[#b5aca8] hover:text-purple-400 transition-colors duration-300 flex items-center w-36 mb-10"><i class="fab fa-github text-white text-2xl w-10"></i> GitHub</a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Section Principale du Fil d'Actualité -->
+        <main class="flex h-screen pt-20">
+            <!-- Colonne de Gauche -->
+            <aside class="w-1/5 h-full bg-gray-900 bg-opacity-30 p-6 border-r border-gray-700 hidden sm:block overflow-y-auto pb-10">
+                <h2 class="text-xl font-semibold tech-font gradient-text1 mb-6 ">Catégories</h2>
+
+                <ul class="space-y-3" style="color: #b5aca8;">
+                    <li><a href="home.html" class="hover:text-purple-400 transition-colors duration-300 category-link" data-category="All"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp;Home</a></li>
+                    <li><a href="home.html#it-news" class="hover:text-purple-400 transition-colors duration-300 category-link" data-category="I.T"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp;I.T</a></li>
+                    <li><a href="home.html#Quizz" class="hover:text-purple-400 transition-colors duration-300 category-link" data-category="Tuto"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp;Quiz</a></li>
+                    <li><a href="home.html#Movie" class="hover:text-purple-400 transition-colors duration-300 category-link" data-category="News"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp;Movie</a></li>
+                    <li><a href="home.html#Music" class="hover:text-purple-400 transition-colors duration-300 category-link" data-category="Music"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp;Music</a></li>
+                    <li><a href="home.html#Cooking" class="hover:text-purple-400 transition-colors duration-300 category-link" data-category="Cuisine"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp;Cuisine</a></li>
+                </ul>
+                <div class="mt-10">
+                    <h3 class="text-lg font-medium tech-font gradient-text1 mb-3">Nos Apps</h3>
+                    <ul class="space-y-3" style="color: #b5aca8;">
+                        <li><a href="clock.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">worldtime</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="converter.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">converter</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="qrcode.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">qrcode</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="meteo.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">meteo</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="caddy3.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">caddy</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="timer.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">timer</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="draw.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">draw</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="radio.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">radio</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="notes.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">notes</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="gps.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">gps</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="https://k-gou09.github.io/KGP_Compta/index.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">Compta</span></a></li>
+                        <li><a href="https://k-gou09.github.io/KGP_QRcode/" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">QRcode</span></a></li>
+                        <li><a href="https://k-gou09.github.io/KGP_SHA/" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">SHA</span></a></li>
+                    </ul>
+                </div>
+            </aside>
+
+            <div class="h-4"></div>
+            <!-- Colonne Centrale (Contenu App) -->
+            <section id="news-feed" class="flex-1 h-full overflow-y-auto bg-opacity-50 p-4 md:p-8 flex flex-col">
+                <div class="mb-4 flex-shrink-0 hidden md:block">
+                    <div class="flex items-center justify-center space-x-4 bg-black bg-opacity-40 border border-gray-700 rounded-xl p-4 shadow-xl w-fit mx-auto">
+                        <img src="../img/v.svg" alt="Chef" class="w-16 h-16">                
+                        <h1 id="kpg-header" class="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold tech-font gradient-text1 text-center">K-GOU PROD</h1>
+                        <img src="../img/v.svg" alt="Chef" class="w-16 h-16">
+                    </div>
+                    <!-- Animation Hacker CENTRE -->
+                    <div id="anim" class="hidden sm:flex flex-1 justify-center">
+                        <h2 id="hack-title">!#?%& $#@!?{}</h2>
+                    </div>
+                </div>
+
+                <!-- ========================================== -->
+                <!-- INTÉGRATION DE L'APP CADDY MALIN ICI       -->
+                <!-- ========================================== -->
+                <div id="caddy-app-container" class="mt-4 flex-1 w-full bg-gray-900 bg-opacity-80 backdrop-blur-md text-white rounded-2xl shadow-2xl overflow-hidden border border-gray-700 flex flex-col relative font-sans min-h-[600px]">
+                    
+                    <!-- App Header -->
+                    <header class="bg-gray-800 bg-opacity-60 border-b border-gray-700 p-4 space-y-3 z-20 flex-shrink-0">
+                        <p class="text-right text-xs font-mono pr-6 mt-2 mb-6 pb-2 border-b border-gray-700 text-gray-400">
+                                <span class="text-2xl text-gray-500 font-bold tech-font">KGP</span><span class="home-text">caddy</span><br><span class="text-xs text-red-800 font-bold tech-font pr-2">malin</span>
+                            </p>
+                        <!-- Screen Navigator -->
+                        <div class="bg-gray-900 border border-gray-700 rounded-lg p-1 flex justify-around max-w-md mx-auto shadow-inner relative">
+
+                            <button id="btn-choix" class="w-full py-2 px-2 rounded-md font-bold transition-all duration-300 text-sm md:text-base flex justify-center items-center gap-2">
+                                <i class="fas fa-list"></i> Catalogue
+                            </button>
+                            <button id="btn-panier" class="w-full py-2 px-2 rounded-md font-bold transition-all duration-300 text-sm md:text-base flex justify-center items-center gap-2">
+                                <i class="fas fa-shopping-cart"></i> Mon Panier
+                                <span id="cart-badge" class="bg-purple-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
+                            </button>
+                        </div>
+
+                        <!-- Contextual Toolbars -->
+                        <!-- Choix Toolbar -->
+                        <div id="toolbar-choix" class="flex flex-col md:flex-row justify-center gap-2 max-w-lg mx-auto">
+                            <button id="btn-open-add-modal" class="flex-1 flex items-center justify-center gap-2 btn-nano">
+                                <i class="fas fa-plus"></i> Nouveau
+                            </button>
+                            <button id="btn-add-favorites" class="flex-1 flex items-center justify-center gap-2 btn-nano">
+                                <i class="fas fa-star text-yellow-500"></i> Mes Favoris
+                            </button>
+                            <button id="btn-reset-selection" class="flex-1 flex items-center justify-center gap-2 btn-nano">
+                                <i class="fas fa-rotate-left text-red-500"></i> Réinitialiser
+                            </button>
+                        </div>
+
+                        <!-- Panier Toolbar -->
+                        <div id="toolbar-panier" class="hidden flex justify-center gap-2 max-w-lg mx-auto">
+                            <button id="btn-share-cart" class="flex-1 flex items-center justify-center gap-2 btn-nano">
+                                <i class="fas fa-share-nodes text-blue-500"></i> Partager
+                            </button>
+                            <button id="btn-empty-cart" class="flex-1 flex items-center justify-center gap-2 btn-nano">
+                                <i class="fas fa-trash-can text-red-500"></i> Vider le panier
+                            </button>
+                        </div>
+                    </header>
+
+                    <!-- App Main Content Area -->
+                    <div class="flex-1 flex overflow-hidden">
+
+                        <!-- CHOIX SCREEN -->
+                        <div id="choix-screen" class="flex flex-1 overflow-hidden">
+                            <!-- Sidebar (Categories) -->
+                            <aside class="w-32 lg:w-56 bg-gray-800 bg-opacity-40 p-2 lg:p-4 border-r border-gray-700 caddy-scroll overflow-y-auto hidden md:block z-10">
+                                <div>
+                                    <h3 class="font-bold text-sm lg:text-lg mb-4 text-gray-200 border-b border-gray-700 pb-2">Rayons</h3>
+                                    <div id="category-list" class="space-y-1">
+                                        <!-- Category links injected by JS -->
+                                    </div>
+                                </div>
+                            </aside>
+
+                            <!-- Product List -->
+                            <div id="product-list-container" class="flex-1 p-3 md:p-4 caddy-scroll overflow-y-auto bg-transparent relative">
+                                <div class="mb-4 sticky top-0 z-20">
+                                    <div class="relative">
+                                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                        <input id="search-input" type="text" placeholder="Rechercher un produit..." class="w-full pl-10 pr-4 py-2 border border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 bg-gray-800 text-white placeholder-gray-400">
+                                    </div>
+                                </div>
+                                <div id="product-list" class="space-y-6">
+                                    <!-- Product groups injected by JS -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- PANIER SCREEN -->
+                        <div id="panier-screen" class="hidden flex-1 p-3 md:p-6 caddy-scroll overflow-y-auto bg-transparent">
+                            <div class="max-w-3xl mx-auto space-y-6">
+                                <!-- Budget Summary -->
+                                <div class="bg-gray-800 border border-gray-700 p-4 rounded-xl shadow-lg space-y-4">
+                                    <div class="flex items-center justify-between gap-2">
+                                        <label for="budget-input" class="font-semibold text-gray-300 text-sm md:text-base">Budget :</label>
+                                        <div class="relative">
+                                            <input type="number" id="budget-input" class="w-28 md:w-36 text-right pr-10 pl-2 py-1.5 border border-gray-600 rounded-md bg-gray-900 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 no-spinners">
+                                            <span class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 text-sm">xpf</span>
+                                        </div>
+                                    </div>
+                                    <div class="w-full bg-gray-900 rounded-full h-3 border border-gray-700 overflow-hidden">
+                                        <div id="progress-bar" class="bg-gradient-to-r from-purple-500 to-blue-500 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                                    </div>
+                                    <div class="text-right font-bold text-lg md:text-xl text-gray-200">
+                                        Total : <span id="cart-total-cost" class="text-purple-400">0 xpf</span>
+                                    </div>
+                                </div>
+
+                                <!-- Cart Item List Grouped -->
+                                <div id="cart-list" class="space-y-6 pb-8">
+                                    <!-- Cart items injected by JS -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- ========================================== -->
+                <!-- FIN INTÉGRATION CADDY MALIN                -->
+                <!-- ========================================== -->
+
+            </section>
+
+            <!-- Colonne de Droite -->
+            <aside class="w-1/5 h-full bg-gray-900 bg-opacity-30 p-6 border-l border-gray-700 hidden lg:block">
+                <h2 class="text-xl font-semibold tech-font gradient-text1 mb-6 mt-6">Liens Utiles</h2>
+                <ul class="space-y-3">
+                    <li><a href="https://github.com/k-gou09" class="hover:text-purple-400 transition-colors duration-300"><i class="fab fa-github" style="color: white;"></i>&nbsp;&nbsp;&nbsp;GITHUB</a></li>
+                    <li><a href="https://www.facebook.com/nc.prod.794?locale=fr_FR" class="hover:text-purple-400 transition-colors duration-300"><i class="fab fa-facebook" style="color: blue;"></i>&nbsp;&nbsp;&nbsp;FACEBOOK</a></li>
+                    <li><a href="https://www.youtube.com/@kgpsound" class="hover:text-purple-400 transition-colors duration-300"><i class="fab fa-youtube" style="color: rgb(245, 3, 3);"></i>&nbsp;&nbsp;&nbsp;YOUTUBE</a></li>
+                </ul>
+                <div class="mt-20 p-4 rounded-lg">
+                    <a href="maintenance.html"><img src="../img/log_kgp1.png" alt="Logo KGP" class="w-full h-auto opacity-80 hover:opacity-100 transition-opacity" style="border-radius: 35%;"></a>                
+                </div>
+            </aside>
+        </main>
+
+        <!-- Footer -->
+        <p class="fixed left-2 bottom-2 z-10 bg-black bg-opacity-80 text-white text-xs px-2 py-1 rounded-md flex items-center gap-1 tech-font border border-gray-800">
+            K-gou_Prod
+            <img src="../img/v.svg" alt="Logo" class="w-4 h-4 inline-block filter brightness-0 invert">
+            <a href="https://www.facebook.com/nc.prod.794" class="text-purple-400 underline hover:text-purple-300" target="_blank">Studio</a>
+        </p>
+
+        <!-- =================================== -->
+        <!-- MODAL (AJOUTER / ÉDITER)            -->
+        <!-- =================================== -->
+        <div id="product-modal" class="fixed inset-0 bg-black bg-opacity-80 backdrop-blur-sm z-[100] flex items-center justify-center p-4 hidden font-sans">
+            <div class="bg-gray-800 rounded-xl shadow-2xl w-full max-w-md border border-gray-700 transform transition-all">
+                <div class="flex justify-between items-center p-4 border-b border-gray-700">
+                    <h3 id="modal-title" class="text-xl font-semibold text-white">Ajouter un produit</h3>
+                    <button id="btn-close-modal" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fas fa-xmark text-2xl"></i>
+                    </button>
+                </div>
+                <form id="product-form" class="p-5 space-y-4">
+                    <input type="hidden" id="edit-product-id">
+                    <div>
+                        <label for="modal-product-name" class="block text-sm font-medium text-gray-300 mb-1">Nom du produit</label>
+                        <input type="text" id="modal-product-name" required class="w-full px-4 py-2 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 bg-gray-700 text-white">
+                    </div>
+                    <div>
+                        <label for="modal-product-price" class="block text-sm font-medium text-gray-300 mb-1">Prix (xpf)</label>
+                        <input type="number" id="modal-product-price" required min="0" class="w-full px-4 py-2 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 bg-gray-700 text-white no-spinners">
+                    </div>
+                    <div>
+                        <label for="modal-product-category" class="block text-sm font-medium text-gray-300 mb-1">Rayon (Catégorie)</label>
+                        <select id="modal-product-category" required class="w-full px-4 py-2 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 bg-gray-700 text-white">
+                            <!-- Options injectées par JS -->
+                        </select>
+                    </div>
+                    <div class="pt-3 flex justify-end">
+                        <button type="submit" id="modal-submit-btn" class="bg-purple-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-purple-700 transition-colors shadow-md">
+                            Sauvegarder
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- =================================== -->
+        <!-- MODAL (SELECTION DES FAVORIS)       -->
+        <!-- =================================== -->
+        <div id="favorites-modal" class="fixed inset-0 bg-black bg-opacity-80 backdrop-blur-sm z-[100] flex items-center justify-center p-4 hidden font-sans">
+            <div class="bg-gray-800 rounded-xl shadow-2xl w-full max-w-md border border-gray-700 transform transition-all max-h-[85vh] flex flex-col">
+                <div class="flex justify-between items-center p-4 border-b border-gray-700 flex-shrink-0">
+                    <h3 class="text-xl font-semibold text-white"><i class="fas fa-star text-yellow-400 mr-2"></i>Mes Favoris</h3>
+                    <button id="btn-close-fav-modal" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fas fa-xmark text-2xl"></i>
+                    </button>
+                </div>
+                <div id="favorites-list" class="p-4 space-y-2 overflow-y-auto caddy-scroll flex-1">
+                    <!-- Favoris injectés par JS -->
+                </div>
+                <div class="p-4 border-t border-gray-700 flex-shrink-0">
+                    <button id="btn-confirm-favorites" class="w-full flex items-center justify-center gap-2 bg-yellow-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-yellow-500 transition-colors shadow-md">
+                        <i class="fas fa-cart-plus"></i> Ajouter au panier
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scripts originaux du site -->
+        <script src="../js/news.js"></script>
+        
+        <script>
+            // --- Logique du Template KGP (Menus & Animations) ---
+            window.addEventListener('load', () => {
+                const hamburgerButton = document.getElementById('hamburger-button');
+                const mobileMenu = document.getElementById('mobile-menu');
+                const hamburgerIcon = document.getElementById('hamburger-icon');
+                const menuLinks = document.querySelectorAll('#mobile-menu a');
+                const title = document.getElementById('hack-title');
+
+                const toggleMenu = () => {
+                    mobileMenu.classList.toggle('translate-x-full');
+                    if (hamburgerIcon.classList.contains('fa-bars')) {
+                        hamburgerIcon.classList.remove('fa-bars');
+                        hamburgerIcon.classList.add('fa-xmark');
+                    } else {
+                        hamburgerIcon.classList.remove('fa-xmark');
+                        hamburgerIcon.classList.add('fa-bars');
+                    }
+                    document.body.classList.toggle('overflow-hidden');
+                };
+
+                if (hamburgerButton) hamburgerButton.addEventListener('click', toggleMenu);
+                menuLinks.forEach(link => {
+                    link.addEventListener('click', () => {
+                        if (!mobileMenu.classList.contains('translate-x-full')) {
+                            toggleMenu();
+                        }
+                    });
+                });
+
+               
+            });
+
+            // --- Logique Avancée de l'App Caddy Malin ---
+            document.addEventListener('DOMContentLoaded', () => {
+                const initialData = {
+                    categories: [
+                        "Crèmerie", "Fruits & Légumes", "Boulangerie", "Boissons", 
+                        "Épicerie Salée", "Épicerie Sucrée", "Boucherie & Poissonnerie", "Hygiène & Entretien"
+                    ],
+                    // Intégration de tous tes 12 produits initiaux + le nouveau
+                    products: [
+                        { id: 1, name: "Lait", category: "Crèmerie", price: 110, quantity: 0, checked: false, favorite: false },
+                        { id: 2, name: "Yaourt Nature", category: "Crèmerie", price: 50, quantity: 0, checked: false, favorite: false },
+                        { id: 3, name: "Beurre", category: "Crèmerie", price: 250, quantity: 0, checked: false, favorite: false },
+                        { id: 4, name: "Bananes", category: "Fruits & Légumes", price: 200, quantity: 0, checked: false, favorite: false },
+                        { id: 5, name: "Tomates", category: "Fruits & Légumes", price: 350, quantity: 0, checked: false, favorite: false },
+                        { id: 6, name: "Baguette", category: "Boulangerie", price: 100, quantity: 0, checked: false, favorite: false },
+                        { id: 7, name: "Eau Minérale 1.5L", category: "Boissons", price: 80, quantity: 0, checked: false, favorite: false },
+                        { id: 8, name: "Jus d'orange 1L", category: "Boissons", price: 220, quantity: 0, checked: false, favorite: false },
+                        { id: 9, name: "Pâtes 500g", category: "Épicerie Salée", price: 150, quantity: 0, checked: false, favorite: false },
+                        { id: 10, name: "Riz 1kg", category: "Épicerie Salée", price: 180, quantity: 0, checked: false, favorite: false },
+                        { id: 11, name: "Biscuits", category: "Épicerie Sucrée", price: 200, quantity: 0, checked: false, favorite: false },
+                        { id: 12, name: "Steak Haché", category: "Boucherie & Poissonnerie", price: 450, quantity: 0, checked: false, favorite: false },
+                        { id: 13, name: "Papier Toilette", category: "Hygiène & Entretien", price: 450, quantity: 0, checked: false, favorite: false },
+                    ],
+                    budget: 10000,
+                    currentScreen: 'choix', 
+                    searchTerm: '',
+                    nextProductId: 14, 
+                };
+
+                let state = {};
+
+                // --- Persistence ---
+                function saveState() {
+                    localStorage.setItem('caddyMalinData_v3', JSON.stringify(state));
+                }
+
+                function loadState() {
+                    const savedData = localStorage.getItem('caddyMalinData_v3');
+                    try {
+                        if (savedData) {
+                            state = JSON.parse(savedData);
+                            // Patch : ajout de la propriété favorite si manquante (pour ne rien casser)
+                            state.products.forEach(p => { if (p.favorite === undefined) p.favorite = false; });
+                            // Patch des catégories (si de nouvelles ont été ajoutées dans le code)
+                            initialData.categories.forEach(cat => {
+                                if (!state.categories.includes(cat)) state.categories.push(cat);
+                            });
+                        } else { throw new Error("Aucune sauvegarde"); }
+                    } catch (e) {
+                        state = JSON.parse(JSON.stringify(initialData)); 
+                    }
+                }
+
+                // --- Éléments du DOM ---
+                const DOM = {
+                    btnChoix: document.getElementById('btn-choix'),
+                    btnPanier: document.getElementById('btn-panier'),
+                    toolbarChoix: document.getElementById('toolbar-choix'),
+                    toolbarPanier: document.getElementById('toolbar-panier'),
+                    choixScreen: document.getElementById('choix-screen'),
+                    panierScreen: document.getElementById('panier-screen'),
+                    productList: document.getElementById('product-list'),
+                    categoryList: document.getElementById('category-list'),
+                    searchInput: document.getElementById('search-input'),
+                    cartList: document.getElementById('cart-list'),
+                    cartTotalCost: document.getElementById('cart-total-cost'),
+                    budgetInput: document.getElementById('budget-input'),
+                    progressBar: document.getElementById('progress-bar'),
+                    cartBadge: document.getElementById('cart-badge'),
+                    
+                    // Nouveaux Boutons
+                    btnAddFav: document.getElementById('btn-add-favorites'),
+                    btnEmptyCart: document.getElementById('btn-empty-cart'),
+                    btnShareCart: document.getElementById('btn-share-cart'),
+                    btnResetSelection: document.getElementById('btn-reset-selection'),
+
+                    // Modal Unifiée (Add / Edit)
+                    modal: document.getElementById('product-modal'),
+                    btnOpenModal: document.getElementById('btn-open-add-modal'),
+                    btnCloseModal: document.getElementById('btn-close-modal'),
+                    form: document.getElementById('product-form'),
+                    modalTitle: document.getElementById('modal-title'),
+                    modalBtn: document.getElementById('modal-submit-btn'),
+                    inputId: document.getElementById('edit-product-id'),
+                    inputName: document.getElementById('modal-product-name'),
+                    inputPrice: document.getElementById('modal-product-price'),
+                    inputCat: document.getElementById('modal-product-category'),
+
+                    // Modale Favoris
+                    favModal: document.getElementById('favorites-modal'),
+                    favList: document.getElementById('favorites-list'),
+                    btnCloseFavModal: document.getElementById('btn-close-fav-modal'),
+                    btnConfirmFavorites: document.getElementById('btn-confirm-favorites')
+                };
+
+                // Sélection temporaire de quantités dans la modale Favoris (id -> quantité)
+                let favSelection = {};
+
+                // --- Moteur de rendu ---
+                function render() {
+                    renderScreenNav();
+                    updateBadge();
+                    if (state.currentScreen === 'choix') {
+                        DOM.choixScreen.classList.remove('hidden');
+                        DOM.panierScreen.classList.add('hidden');
+                        renderCategoryLinks();
+                        renderProductList();
+                    } else {
+                        DOM.choixScreen.classList.add('hidden');
+                        DOM.panierScreen.classList.remove('hidden');
+                        renderCart();
+                    }
+                    saveState();
+                }
+
+                function updateBadge() {
+                    const count = state.products.reduce((acc, p) => acc + (p.quantity > 0 ? 1 : 0), 0);
+                    if(count > 0) {
+                        DOM.cartBadge.textContent = count;
+                        DOM.cartBadge.classList.remove('hidden');
+                    } else {
+                        DOM.cartBadge.classList.add('hidden');
+                    }
+                }
+
+                function renderScreenNav() {
+                    const activeClasses = ['bg-purple-600', 'text-white', 'shadow'];
+                    const inactiveClasses = ['text-gray-400', 'hover:text-gray-300'];
+
+                    if (state.currentScreen === 'choix') {
+                        DOM.btnChoix.classList.add(...activeClasses);
+                        DOM.btnChoix.classList.remove(...inactiveClasses);
+                        DOM.btnPanier.classList.remove(...activeClasses);
+                        DOM.btnPanier.classList.add(...inactiveClasses);
+                        DOM.toolbarChoix.classList.remove('hidden');
+                        DOM.toolbarPanier.classList.add('hidden');
+                    } else {
+                        DOM.btnPanier.classList.add(...activeClasses);
+                        DOM.btnPanier.classList.remove(...inactiveClasses);
+                        DOM.btnChoix.classList.remove(...activeClasses);
+                        DOM.btnChoix.classList.add(...inactiveClasses);
+                        DOM.toolbarPanier.classList.remove('hidden');
+                        DOM.toolbarChoix.classList.add('hidden');
+                    }
+                }
+
+                function renderCategoryLinks() {
+                    const fragment = document.createDocumentFragment();
+                    state.categories.forEach(cat => {
+                        const btn = document.createElement('button');
+                        btn.className = 'w-full text-left px-2 py-2 rounded-md hover:bg-gray-700 transition-colors text-gray-300 text-sm font-medium';
+                        btn.textContent = cat;
+                        btn.dataset.category = cat;
+                        fragment.appendChild(btn);
+                    });
+                    DOM.categoryList.innerHTML = '';
+                    DOM.categoryList.appendChild(fragment);
+                }
+
+                function renderProductList() {
+                    const fragment = document.createDocumentFragment();
+                    const term = state.searchTerm.toLowerCase();
+                    const filtered = state.products.filter(p => p.name.toLowerCase().includes(term));
+
+                    state.categories.forEach(cat => {
+                        const inCat = filtered.filter(p => p.category === cat);
+                        if (inCat.length === 0) return;
+
+                        const catDiv = document.createElement('div');
+                        catDiv.id = `cat-${cat.replace(/[^a-zA-Z0-9]/g, '-')}`;
+                        catDiv.innerHTML = `<h3 class="font-bold text-sm text-purple-300 sticky -top-4 bg-gray-900/95 backdrop-blur-md py-2 px-1 z-10 border-b border-gray-700 mb-2">${cat}</h3>`;
+
+                        const wrapper = document.createElement('div');
+                        wrapper.className = 'space-y-2';
+            
+                        inCat.forEach(p => {
+                            const isCart = p.quantity > 0;
+                            const pDiv = document.createElement('div');
+                            pDiv.className = `flex flex-col sm:flex-row justify-between items-start sm:items-center p-3 rounded-lg shadow-sm border transition-colors ${
+                                isCart ? 'bg-purple-900 bg-opacity-30 border-purple-500' : 'bg-gray-800 border-gray-700'
+                            }`;
+            
+                            // Ligne du haut : Nom + Actions
+                            const topRow = document.createElement('div');
+                            topRow.className = 'flex items-center justify-between w-full sm:w-auto mb-2 sm:mb-0 gap-2';
+                            
+                            const starIcon = document.createElement('button');
+                            starIcon.dataset.id = p.id;
+                            starIcon.className = `btn-star text-lg ${p.favorite ? 'text-yellow-400 fas fa-star' : 'text-gray-500 far fa-star hover:text-yellow-400'}`;
+                            
+                            const nameSpan = document.createElement('span');
+                            nameSpan.className = 'font-medium text-gray-100 flex-1 truncate';
+                            nameSpan.textContent = p.name;
+
+                            const actionsDiv = document.createElement('div');
+                            actionsDiv.className = 'flex gap-3 text-gray-400';
+                            actionsDiv.innerHTML = `
+                                <button class="btn-edit hover:text-blue-400" data-id="${p.id}"><i class="fas fa-pen"></i></button>
+                                <button class="btn-delete hover:text-red-400" data-id="${p.id}"><i class="fas fa-trash"></i></button>
+                            `;
+
+                            topRow.append(starIcon, nameSpan, actionsDiv);
+            
+                            // Ligne du bas : Prix + Contrôles
+                            const botRow = document.createElement('div');
+                            botRow.className = 'flex items-center justify-between sm:justify-end w-full sm:w-auto gap-3';
+                            
+                            botRow.innerHTML = `
+                                <div class="relative">
+                                    <input type="number" class="price-input w-20 text-right pr-8 pl-2 py-1 border border-gray-600 rounded bg-gray-700 text-white focus:border-purple-500 no-spinners text-sm" data-id="${p.id}" value="${p.price}">
+                                    <span class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 text-xs">xpf</span>
+                                </div>
+                                <div class="flex items-center gap-1 bg-gray-700 rounded-full p-1 border border-gray-600">
+                                    <button class="btn-minus w-7 h-7 rounded-full bg-gray-600 text-white flex items-center justify-center font-bold disabled:opacity-30" data-id="${p.id}" ${p.quantity === 0 ? 'disabled' : ''}>-</button>
+                                    <span class="w-6 text-center font-bold text-white text-sm">${p.quantity}</span>
+                                    <button class="btn-plus w-7 h-7 rounded-full bg-purple-600 text-white flex items-center justify-center font-bold" data-id="${p.id}">+</button>
+                                </div>
+                            `;
+
+                            pDiv.append(topRow, botRow);
+                            wrapper.appendChild(pDiv);
+                        });
+
+                        catDiv.appendChild(wrapper);
+                        fragment.appendChild(catDiv);
+                    });
+
+                    DOM.productList.innerHTML = '';
+                    if (fragment.childNodes.length === 0) {
+                        DOM.productList.innerHTML = `<p class="text-gray-400 text-center mt-4">Aucun produit.</p>`;
+                    } else {
+                        DOM.productList.appendChild(fragment);
+                    }
+                }
+
+                function renderCart() {
+                    const cartItems = state.products.filter(p => p.quantity > 0);
+                    let totalCost = 0;
+                    DOM.cartList.innerHTML = '';
+                    
+                    if (cartItems.length === 0) {
+                        DOM.cartList.innerHTML = `<div class="text-center text-gray-500 mt-10"><i class="fas fa-shopping-basket text-4xl mb-3 opacity-50"></i><p>Votre panier est vide.</p></div>`;
+                        DOM.cartTotalCost.textContent = `0 xpf`;
+                        DOM.progressBar.style.width = `0%`;
+                        return;
+                    }
+
+                    // Séparation : À prendre vs Déjà pris
+                    const toBuy = cartItems.filter(p => !p.checked);
+                    const bought = cartItems.filter(p => p.checked);
+
+                    const fragment = document.createDocumentFragment();
+
+                    // --- SECTION : À PRENDRE (Triée par rayon) ---
+                    if (toBuy.length > 0) {
+                        state.categories.forEach(cat => {
+                            const itemsInCat = toBuy.filter(p => p.category === cat);
+                            if (itemsInCat.length === 0) return;
+
+                            const catBlock = document.createElement('div');
+                            catBlock.className = 'mb-4';
+                            catBlock.innerHTML = `<h4 class="text-purple-400 font-bold border-b border-gray-700 pb-1 mb-2 text-sm"><i class="fas fa-tag mr-2"></i>${cat}</h4>`;
+                            
+                            itemsInCat.forEach(item => {
+                                totalCost += item.quantity * item.price;
+                                catBlock.appendChild(createCartItemDOM(item));
+                            });
+                            fragment.appendChild(catBlock);
+                        });
+                    }
+
+                    // --- SECTION : DÉJÀ DANS LE CADDY ---
+                    if (bought.length > 0) {
+                        const boughtBlock = document.createElement('div');
+                        boughtBlock.className = 'mt-6 pt-4 border-t border-gray-700 opacity-60';
+                        boughtBlock.innerHTML = `<h4 class="text-green-400 font-bold mb-3 text-sm"><i class="fas fa-check-circle mr-2"></i>Déjà dans le caddy</h4>`;
+                        
+                        bought.forEach(item => {
+                            totalCost += item.quantity * item.price;
+                            boughtBlock.appendChild(createCartItemDOM(item));
+                        });
+                        fragment.appendChild(boughtBlock);
+                    }
+
+                    DOM.cartList.appendChild(fragment);
+
+                    // Mise à jour Budget
+                    DOM.cartTotalCost.textContent = `${totalCost} xpf`;
+                    DOM.budgetInput.value = state.budget;
+                    const progress = state.budget > 0 ? Math.min((totalCost / state.budget) * 100, 100) : 0;
+                    DOM.progressBar.style.width = `${progress}%`;
+                    DOM.progressBar.className = progress >= 100 
+                        ? "bg-red-500 h-full rounded-full transition-all duration-500" 
+                        : "bg-gradient-to-r from-purple-500 to-blue-500 h-full rounded-full transition-all duration-500";
+                }
+
+                function createCartItemDOM(item) {
+                    const itemTotal = item.quantity * item.price;
+                    const div = document.createElement('div');
+                    div.className = `btn-toggle-cart flex justify-between items-center p-3 mb-2 rounded-lg cursor-pointer transition-colors border ${
+                        item.checked ? 'bg-green-900/20 border-green-800' : 'bg-gray-800 border-gray-600 hover:border-purple-500'
+                    }`;
+                    div.dataset.id = item.id;
+                    
+                    div.innerHTML = `
+                        <div class="flex items-center gap-3">
+                            <div class="w-6 h-6 border-2 rounded flex items-center justify-center transition-colors ${item.checked ? 'bg-green-600 border-green-600' : 'border-gray-500'}">
+                                ${item.checked ? '<i class="fas fa-check text-white text-xs"></i>' : ''}
+                            </div>
+                            <div>
+                                <div class="font-medium ${item.checked ? 'line-through text-gray-400' : 'text-gray-100'}">${item.name}</div>
+                                <div class="text-xs text-gray-400">${item.quantity} x ${item.price} xpf</div>
+                            </div>
+                        </div>
+                        <span class="font-bold text-gray-200">${itemTotal} xpf</span>
+                    `;
+                    return div;
+                }
+
+                // --- Utilitaires de Modale ---
+                function openModal(mode, productId = null) {
+                    // Populate select
+                    DOM.inputCat.innerHTML = '';
+                    state.categories.forEach(c => {
+                        const opt = document.createElement('option');
+                        opt.value = c; opt.textContent = c;
+                        DOM.inputCat.appendChild(opt);
+                    });
+
+                    if (mode === 'edit' && productId) {
+                        const p = state.products.find(x => x.id === productId);
+                        DOM.modalTitle.textContent = "Modifier le produit";
+                        DOM.modalBtn.textContent = "Enregistrer";
+                        DOM.inputId.value = p.id;
+                        DOM.inputName.value = p.name;
+                        DOM.inputPrice.value = p.price;
+                        DOM.inputCat.value = p.category;
+                    } else {
+                        DOM.modalTitle.textContent = "Nouveau produit";
+                        DOM.modalBtn.textContent = "Créer";
+                        DOM.form.reset();
+                        DOM.inputId.value = "";
+                    }
+                    DOM.modal.classList.remove('hidden');
+                }
+
+                // --- Modale Favoris : ouverture, rendu, quantités ---
+                function openFavoritesModal() {
+                    const favs = state.products.filter(p => p.favorite);
+                    if (favs.length === 0) {
+                        alert("Vous n'avez pas encore de favoris. Cliquez sur l'étoile ⭐ à côté d'un produit dans le catalogue pour l'ajouter à vos favoris.");
+                        return;
+                    }
+                    // Initialise la sélection temporaire avec les quantités déjà présentes dans le panier
+                    favSelection = {};
+                    favs.forEach(p => { favSelection[p.id] = p.quantity; });
+                    renderFavoritesList();
+                    DOM.favModal.classList.remove('hidden');
+                }
+
+                function renderFavoritesList() {
+                    const favs = state.products.filter(p => p.favorite);
+                    DOM.favList.innerHTML = '';
+                    const fragment = document.createDocumentFragment();
+
+                    favs.forEach(p => {
+                        const qty = favSelection[p.id] || 0;
+                        const row = document.createElement('div');
+                        row.className = `flex items-center justify-between gap-2 p-3 rounded-lg border ${qty > 0 ? 'bg-yellow-900 bg-opacity-20 border-yellow-600' : 'bg-gray-900 border-gray-700'}`;
+                        row.innerHTML = `
+                            <div class="flex-1 min-w-0">
+                                <div class="font-medium text-gray-100 truncate">${p.name}</div>
+                                <div class="text-xs text-gray-400">${p.price} xpf • ${p.category}</div>
+                            </div>
+                            <div class="flex items-center gap-1 bg-gray-700 rounded-full p-1 border border-gray-600 flex-shrink-0">
+                                <button class="fav-minus w-7 h-7 rounded-full bg-gray-600 text-white flex items-center justify-center font-bold disabled:opacity-30" data-id="${p.id}" ${qty === 0 ? 'disabled' : ''}>-</button>
+                                <span class="w-6 text-center font-bold text-white text-sm">${qty}</span>
+                                <button class="fav-plus w-7 h-7 rounded-full bg-yellow-600 text-white flex items-center justify-center font-bold" data-id="${p.id}">+</button>
+                            </div>
+                        `;
+                        fragment.appendChild(row);
+                    });
+
+                    DOM.favList.appendChild(fragment);
+                }
+
+                // --- Handlers & Events ---
+                function initEvents() {
+                    // Navigation
+                    DOM.btnChoix.addEventListener('click', () => { state.currentScreen = 'choix'; render(); });
+                    DOM.btnPanier.addEventListener('click', () => { state.currentScreen = 'panier'; render(); });
+                    DOM.searchInput.addEventListener('input', (e) => { state.searchTerm = e.target.value; renderProductList(); });
+                    
+                    // Clics dans la liste (Choix)
+                    DOM.productList.addEventListener('click', (e) => {
+                        const target = e.target.closest('button');
+                        if (!target) return;
+                        
+                        const id = parseInt(target.dataset.id, 10);
+                        const p = state.products.find(x => x.id === id);
+                        if (!p) return;
+
+                        if (target.classList.contains('btn-plus')) p.quantity++;
+                        else if (target.classList.contains('btn-minus')) p.quantity = Math.max(0, p.quantity - 1);
+                        else if (target.classList.contains('btn-star')) p.favorite = !p.favorite;
+                        else if (target.classList.contains('btn-delete')) {
+                            if(confirm(`Supprimer définitivement "${p.name}" du catalogue ?`)) {
+                                state.products = state.products.filter(x => x.id !== id);
+                            }
+                        }
+                        else if (target.classList.contains('btn-edit')) {
+                            openModal('edit', id);
+                            return; // Empêche le render immédiat
+                        }
+                        render();
+                    });
+
+                    // Input prix
+                    DOM.productList.addEventListener('change', (e) => {
+                        if (e.target.classList.contains('price-input')) {
+                            const p = state.products.find(x => x.id === parseInt(e.target.dataset.id, 10));
+                            const val = parseInt(e.target.value, 10);
+                            if (p && !Number.isNaN(val) && val >= 0) { p.price = val; render(); }
+                        }
+                    });
+
+                    // Clic dans Panier
+                    DOM.cartList.addEventListener('click', (e) => {
+                        const item = e.target.closest('.btn-toggle-cart');
+                        if (item) {
+                            const p = state.products.find(x => x.id === parseInt(item.dataset.id, 10));
+                            if (p) { p.checked = !p.checked; render(); }
+                        }
+                    });
+
+                    // Modale Save
+                    DOM.form.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        const id = DOM.inputId.value ? parseInt(DOM.inputId.value, 10) : null;
+                        const name = DOM.inputName.value.trim();
+                        const price = parseInt(DOM.inputPrice.value, 10);
+                        const cat = DOM.inputCat.value;
+
+                        if (name && !Number.isNaN(price) && price >= 0) {
+                            if (id) { // Edit
+                                const p = state.products.find(x => x.id === id);
+                                if(p) { p.name = name; p.price = price; p.category = cat; }
+                            } else { // Add
+                                state.products.push({ id: state.nextProductId++, name, category: cat, price, quantity: 0, checked: false, favorite: false });
+                            }
+                            state.products.sort((a, b) => a.name.localeCompare(b.name));
+                            DOM.modal.classList.add('hidden');
+                            render();
+                        }
+                    });
+
+                    DOM.btnOpenModal.addEventListener('click', () => openModal('add'));
+                    DOM.btnCloseModal.addEventListener('click', () => DOM.modal.classList.add('hidden'));
+                    
+                    // Nouvelles Actions Toolbar
+
+                    // Fonction partagée : remet à zéro les quantités et coches (prix/favoris conservés)
+                    function resetSelection() {
+                        if(confirm("Réinitialiser toutes les sélections du panier ? (Les prix et favoris seront conservés)")) {
+                            state.products.forEach(p => { p.quantity = 0; p.checked = false; });
+                            render();
+                        }
+                    }
+
+                    DOM.btnEmptyCart.addEventListener('click', resetSelection);
+                    DOM.btnResetSelection.addEventListener('click', resetSelection);
+
+                    // Bouton "Mes Favoris" : ouvre la modale de sélection des quantités
+                    DOM.btnAddFav.addEventListener('click', openFavoritesModal);
+                    DOM.btnCloseFavModal.addEventListener('click', () => DOM.favModal.classList.add('hidden'));
+
+                    // Clics +/- dans la modale Favoris (ajuste favSelection, pas encore le state réel)
+                    DOM.favList.addEventListener('click', (e) => {
+                        const btn = e.target.closest('button');
+                        if (!btn) return;
+                        const id = parseInt(btn.dataset.id, 10);
+                        if (btn.classList.contains('fav-plus')) {
+                            favSelection[id] = (favSelection[id] || 0) + 1;
+                            renderFavoritesList();
+                        } else if (btn.classList.contains('fav-minus')) {
+                            favSelection[id] = Math.max(0, (favSelection[id] || 0) - 1);
+                            renderFavoritesList();
+                        }
+                    });
+
+                    // Confirmation : applique les quantités choisies au panier réel
+                    DOM.btnConfirmFavorites.addEventListener('click', () => {
+                        let added = 0;
+                        Object.keys(favSelection).forEach(idStr => {
+                            const id = parseInt(idStr, 10);
+                            const p = state.products.find(x => x.id === id);
+                            if (p && favSelection[id] !== p.quantity) added++;
+                            if (p) p.quantity = favSelection[id];
+                        });
+                        DOM.favModal.classList.add('hidden');
+                        if (added > 0) render();
+                    });
+
+                    // Partage de la liste de courses sous forme de fichier .txt
+                    DOM.btnShareCart.addEventListener('click', async () => {
+                        const toBuy = state.products.filter(p => p.quantity > 0);
+                        if(toBuy.length === 0) { alert("Le panier est vide."); return; }
+
+                        let text = "Ma Liste Caddy Malin\n\n";
+                        let total = 0;
+                        state.categories.forEach(cat => {
+                            const items = toBuy.filter(p => p.category === cat);
+                            if(items.length > 0) {
+                                text += `-- ${cat} --\n`;
+                                items.forEach(p => {
+                                    text += `[${p.checked?'x':' '}] ${p.quantity}x ${p.name} (${p.price}xpf)\n`;
+                                    total += p.quantity * p.price;
+                                });
+                                text += "\n";
+                            }
+                        });
+                        text += `Total estime : ${total} XPF`;
+
+                        const fileName = `liste-courses-${new Date().toISOString().slice(0, 10)}.txt`;
+                        const file = new File([text], fileName, { type: 'text/plain' });
+
+                        // 1) Si le partage de fichiers est supporté (mobile principalement) : vrai fichier .txt joint
+                        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                            try {
+                                await navigator.share({ files: [file], title: 'Liste de courses' });
+                                return;
+                            } catch (err) {
+                                if (err.name === 'AbortError') return; // l'utilisateur a annulé
+                                // sinon on continue vers le fallback ci-dessous
+                            }
+                        }
+
+                        // 2) Fallback (desktop / navigateurs non compatibles) : téléchargement direct du .txt
+                        const url = URL.createObjectURL(file);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = fileName;
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+                        alert(`Fichier "${fileName}" téléchargé. Vous pouvez maintenant le partager depuis vos téléchargements.`);
+                    });
+
+                    // Scroll Categories
+                    DOM.categoryList.addEventListener('click', (e) => {
+                        const btn = e.target.closest('button');
+                        if (btn) {
+                            const el = document.getElementById(`cat-${btn.dataset.category.replace(/[^a-zA-Z0-9]/g, '-')}`);
+                            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }
+                    });
+
+                    // Budget Change
+                    DOM.budgetInput.addEventListener('change', (e) => {
+                        const v = parseInt(e.target.value, 10);
+                        if (!Number.isNaN(v) && v >= 0) { state.budget = v; renderCart(); saveState(); }
+                    });
+                }
+
+                // --- Init ---
+                loadState();
+                initEvents();
+                render();
+            });
+        </script>
+    </body>
+</html>

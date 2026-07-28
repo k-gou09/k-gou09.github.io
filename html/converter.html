@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>K-gou prod | KGP Converter</title>
+        <!-- Tailwind CSS via CDN -->
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        
+        <!-- TON FICHIER CSS -->
+        <link rel="stylesheet" href="../css/news.css">
+        
+        <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
+
+        <style>
+            /* --- Styles d'origine du template --- */
+            .home-text {
+                color: #6b21a8; 
+                font-family: 'Permanent Marker', cursive;
+                font-size: 2rem;
+                font-weight: bold;
+                margin-left: 10px;
+            }
+
+            .btn-nano {
+                background: linear-gradient(145deg, #1a1a2a, #0a0a1a);
+                color: #ffffff;
+                border: 1px solid #807f7f;
+                padding: 10px 16px;
+                font-size: 14px;
+                font-weight: bold;
+                border-radius: 8px;
+                cursor: pointer;
+                position: relative;
+                overflow: hidden;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+            }
+
+            .btn-nano::before {
+                content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+                transition: left 0.6s ease;
+            }
+
+            .btn-nano:hover::before { left: 100%; }
+            .btn-nano:hover, .active-tab {
+                box-shadow: 0 0 20px rgba(168, 85, 247, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+                border-color: #a855f7; color: #a855f7;
+            }
+
+            /* --- Styles Animation Hacker --- */
+            #hack-title {
+                margin-top: 15px; line-height: 1.2; font-family: monospace; font-size: 1.3rem;
+                color: #a855f7; letter-spacing: 2px; white-space: nowrap; overflow: hidden;
+                border-right: 4px solid #a855f7; width: 0; opacity: 0; transition: opacity 1s ease-out;
+            }
+            .start-typing {
+                opacity: 1 !important;
+                animation: typing 1.5s steps(13) forwards, blink .5s step-end infinite alternate;
+            }
+            @keyframes typing { from { width: 0 } to { width: 14ch } }
+            @keyframes blink { 50% { border-color: transparent } }
+
+            /* --- Masquer toutes les Scrollbars --- */
+            * { scrollbar-width: none; -ms-overflow-style: none; }
+            *::-webkit-scrollbar { display: none; }
+
+            /* ========================================= */
+            /*     STYLES SPÉCIFIQUES APP CONVERTER      */
+            /* ========================================= */
+            
+            .app-chassis {
+                background: linear-gradient(to bottom, #111115, #08080a);
+                border: 2px solid #2d2d35;
+                border-radius: 12px;
+                box-shadow: 0 20px 40px rgba(0,0,0,0.9), inset 0 2px 2px rgba(255,255,255,0.05);
+            }
+
+            .cyber-input {
+                background: #050505; border: 1px solid #333; color: #a855f7;
+                box-shadow: inset 0 2px 10px rgba(0,0,0,1);
+                transition: all 0.3s ease;
+            }
+            .cyber-input:focus { border-color: #a855f7; outline: none; box-shadow: inset 0 0 10px rgba(168,85,247,0.3); }
+            
+            select.cyber-input option {
+                background: #050505;
+                color: #a855f7;
+            }
+
+            /* Icône d'échange animée */
+            .exchange-icon {
+                color: #4ade80;
+                text-shadow: 0 0 10px rgba(74,222,128,0.6);
+                transition: transform 0.3s ease;
+            }
+            .exchange-icon:hover {
+                transform: scale(1.2) rotate(180deg);
+            }
+
+        </style>
+    </head>
+    <body class="bg-black text-white">
+
+        <!-- Section de Navigation -->
+        <nav class="fixed w-full z-50 bg-black bg-opacity-60 backdrop-filter backdrop-blur-lg border-b border-gray-800">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-20 items-center">
+                    <!-- Logo GAUCHE -->
+                    <div class="flex-shrink-0 flex items-center">
+                        <a href="javascript:void(0)" class="home-link flex items-center">
+                            <span class="text-4xl font-bold tech-font">KGP</span><span id="kpg-subtitle" class="home-text">converter</span>
+                        </a>
+                    </div>
+
+                    <!-- Menu DROITE -->
+                    <div class="flex items-center">
+                        <div class="hidden md:block">
+                            <div class="ml-10 flex items-center space-x-8"></div>
+                        </div>
+
+                        <div class="md:hidden flex items-center">
+                            <button id="hamburger-button" class="text-white focus:outline-none">
+                                <i id="hamburger-icon" class="fas fa-bars text-2xl"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Menu Mobile -->
+            <div id="mobile-menu" class="md:hidden fixed top-0 left-0 w-full h-screen bg-black bg-opacity-95 backdrop-blur-lg flex flex-col items-center pt-24 pb-12 overflow-y-auto space-y-8 transform translate-x-full transition-transform duration-300 ease-in-out z-40">
+                
+                <!-- Catégories -->
+                <div class="flex flex-col items-center space-y-4 w-full">
+                    <h2 class="text-2xl font-semibold tech-font gradient-text1 border-b border-gray-700 pb-2 w-2/3 text-center">Catégories</h2>
+                    <a href="home.html" class="text-xl text-#b[5aca8] hover:text-purple-400 transition-colors duration-300 category-link" data-category="All"><i class="fa-regular fa-hand-point-right text-purple-800"></i> Home</a>
+                    <a href="home.html#it-news" class="text-xl text-[#b5aca8] hover:text-purple-400 transition-colors duration-300 category-link" data-category="I.T"><i class="fa-regular fa-hand-point-right text-purple-800"></i> I.T</a>
+                    <a href="home.html#Quizz" class="text-xl text-[#b5aca8] hover:text-purple-400 transition-colors duration-300 category-link" data-category="Tuto"><i class="fa-regular fa-hand-point-right text-purple-800"></i> Quiz</a>
+                    <a href="home.html#Movie" class="text-xl text-[#b5aca8] hover:text-purple-400 transition-colors duration-300 category-link" data-category="News"><i class="fa-regular fa-hand-point-right text-purple-800"></i> Movie</a>
+                    <a href="home.html#Music" class="text-xl text-[#b5aca8] hover:text-purple-400 transition-colors duration-300 category-link" data-category="Music"><i class="fa-regular fa-hand-point-right text-purple-800"></i> Music</a>
+                    <a href="home.html#Cooking" class="text-xl text-[#b5aca8] hover:text-purple-400 transition-colors duration-300 category-link" data-category="Cuisine"><i class="fa-regular fa-hand-point-right text-purple-800"></i> Cuisine</a>
+                </div>
+
+                <!-- Nos Apps -->
+                <div class="flex flex-col items-center space-y-4 w-full">
+                    <h2 class="text-2xl font-semibold tech-font gradient-text1 border-b border-gray-700 pb-2 w-2/3 text-center mt-4">Nos Apps</h2>
+                    <a href="clock.html" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">worldtime</span></a>
+                    <a href="converter.html" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">converter</span></a>
+                    <a href="meteo.html" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">meteo</span></a>
+                    <a href="caddy3.html" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">caddy</span></a>
+                    <a href="timer.html" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">timer</span></a>
+                    <a href="draw.html" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">draw</span></a>
+                    <a href="radio.html" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">radio</span></a>
+                    <a href="notes.html" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">notes</span></a>
+                    <a href="https://k-gou09.github.io/KGP_Compta/index.html" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">Compta</span></a>
+                    <a href="https://k-gou09.github.io/KGP_QRcode/" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">QRcode</span></a>
+                    <a href="https://k-gou09.github.io/KGP_SHA/" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">SHA</span></a>
+                </div>
+
+                <!-- Support -->
+                <div class="flex flex-col items-center space-y-5 w-full">
+                    <h2 class="text-2xl font-semibold tech-font gradient-text1 border-b border-gray-700 pb-2 w-2/3 text-center mt-4">Support</h2>
+                    <a href="https://www.facebook.com/nc.prod.794?locale=fr_FR" target="_blank" class="text-xl text-[#b5aca8] hover:text-purple-400 transition-colors duration-300 flex items-center w-36"><i class="fab fa-facebook text-blue-600 text-2xl w-10"></i> Facebook</a>
+                    <a href="https://www.youtube.com/@kgpsound" target="_blank" class="text-xl text-[#b5aca8] hover:text-purple-400 transition-colors duration-300 flex items-center w-36"><i class="fab fa-youtube text-red-600 text-2xl w-10"></i> YouTube</a>
+                    <a href="https://github.com/k-gou09" target="_blank" class="text-xl text-[#b5aca8] hover:text-purple-400 transition-colors duration-300 flex items-center w-36 mb-10"><i class="fab fa-github text-white text-2xl w-10"></i> GitHub</a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Section Principale du Fil d'Actualité -->
+        <main class="flex h-screen pt-20">
+            <!-- Colonne de Gauche -->
+            <aside class="w-1/5 h-full bg-gray-900 bg-opacity-30 p-6 border-r border-gray-700 hidden sm:block overflow-y-auto pb-10">
+                <h2 class="text-xl font-semibold tech-font gradient-text1 mb-6 ">Catégories</h2>
+
+                <ul class="space-y-3" style="color: #b5aca8;">
+                    <li><a href="home.html" class="hover:text-purple-400 transition-colors duration-300 category-link" data-category="All"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp;Home</a></li>
+                    <li><a href="home.html#it-news" class="hover:text-purple-400 transition-colors duration-300 category-link" data-category="I.T"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp;I.T</a></li>
+                    <li><a href="home.html#Quizz" class="hover:text-purple-400 transition-colors duration-300 category-link" data-category="Tuto"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp;Quiz</a></li>
+                    <li><a href="home.html#Movie" class="hover:text-purple-400 transition-colors duration-300 category-link" data-category="News"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp;Movie</a></li>
+                    <li><a href="home.html#Music" class="hover:text-purple-400 transition-colors duration-300 category-link" data-category="Music"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp;Music</a></li>
+                    <li><a href="home.html#Cooking" class="hover:text-purple-400 transition-colors duration-300 category-link" data-category="Cuisine"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp;Cuisine</a></li>
+                </ul>
+                <div class="mt-10">
+                    <h3 class="text-lg font-medium tech-font gradient-text1 mb-3">Nos Apps</h3>
+                    <ul class="space-y-3" style="color: #b5aca8;">
+                        <li><a href="clock.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">worldtime</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="converter.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">converter</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="qrcode.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">qrcode</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="meteo.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">meteo</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="caddy3.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">caddy</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="timer.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">timer</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="draw.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">draw</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="radio.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">radio</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="notes.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">notes</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="gps.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">gps</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="https://k-gou09.github.io/KGP_Compta/index.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">Compta</span></a></li>
+                        <li><a href="https://k-gou09.github.io/KGP_QRcode/" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">QRcode</span></a></li>
+                        <li><a href="https://k-gou09.github.io/KGP_SHA/" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">SHA</span></a></li>
+                    </ul>
+                </div>
+            </aside>
+
+            <!-- Colonne Centrale (APP CONVERTER) -->
+            <section id="news-feed" class="flex-1 h-full overflow-y-auto bg-opacity-50 p-6 md:p-8">
+                
+                <!-- EN-TETE -->
+                <div class="mb-8 flex flex-col items-center">
+                    <div class="flex items-center justify-center space-x-4 bg-black bg-opacity-40 border border-gray-700 rounded-xl p-4 shadow-xl w-fit mx-auto">
+                        <img src="../img/v.svg" alt="Chef" class="w-16 h-16">                
+                        <h1 id="kpg-header" class="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold tech-font gradient-text1 text-center">K-GOU PROD</h1>
+                        <img src="../img/v.svg" alt="Chef" class="w-16 h-16">
+                    </div>
+
+                    <!-- Animation Hacker CENTRE -->
+                    <div id="anim" class="hidden sm:flex flex-1 justify-center">
+                        <h2 id="hack-title">!#?%& $#@!?{}</h2>
+                    </div>
+                </div>
+
+                <!-- MODULE CONVERTER -->
+                <div class="w-full flex flex-col items-center justify-center pb-20">
+                    <div id="app-container" class="app-chassis w-full max-w-3xl flex flex-col mx-auto overflow-hidden">
+                        
+                        <!-- Barre d'onglets (Catégories) -->
+                        <div class="bg-black/50 border-b border-gray-800 p-3 flex justify-center flex-wrap gap-2 md:gap-4 px-4">
+                            <button class="btn-nano cat-btn active-tab" data-cat="data"><i class="fas fa-microchip"></i> DATA</button>
+                            <button class="btn-nano cat-btn" data-cat="distance"><i class="fas fa-ruler"></i> DISTANCE</button>
+                            <button class="btn-nano cat-btn" data-cat="weight"><i class="fas fa-weight-hanging"></i> POIDS</button>
+                            <button class="btn-nano cat-btn" data-cat="volume"><i class="fas fa-flask"></i> VOLUME</button>
+                            <button class="btn-nano cat-btn" data-cat="currency"><i class="fas fa-coins"></i> DEVISE</button>
+                        </div>
+
+                        <!-- Zone Principale de Conversion -->
+                        <div class="p-6 md:p-10 flex flex-col items-center w-full">
+                            
+                            <div class="flex flex-col md:flex-row items-center justify-center w-full gap-6">
+                                
+                                <!-- BLOC GAUCHE -->
+                                <div class="flex flex-col w-full md:w-5/12 gap-3">
+                                    <label class="text-xs font-mono text-gray-500 tracking-widest uppercase">Valeur A</label>
+                                    <input type="number" id="input-val1" class="cyber-input w-full text-center py-4 rounded text-3xl font-bold font-mono" placeholder="0">
+                                    <select id="select-unit1" class="cyber-input w-full py-2 px-3 rounded font-mono font-bold text-sm outline-none cursor-pointer text-center"></select>
+                                </div>
+
+                                <!-- ICONE CENTRALE -->
+                                <div class="text-4xl md:text-5xl exchange-icon flex-shrink-0 cursor-pointer" id="swap-btn" title="Inverser les valeurs">
+                                    <i class="fas fa-exchange-alt md:rotate-0 rotate-90"></i>
+                                </div>
+
+                                <!-- BLOC DROITE -->
+                                <div class="flex flex-col w-full md:w-5/12 gap-3">
+                                    <label class="text-xs font-mono text-gray-500 tracking-widest uppercase">Valeur B</label>
+                                    <input type="number" id="input-val2" class="cyber-input w-full text-center py-4 rounded text-3xl font-bold font-mono" placeholder="0">
+                                    <select id="select-unit2" class="cyber-input w-full py-2 px-3 rounded font-mono font-bold text-sm outline-none cursor-pointer text-center"></select>
+                                </div>
+
+                            </div>
+
+                            <!-- Message d'avertissement dynamique (surtout pour les devises) -->
+                            <div id="disclaimer" class="mt-8 text-xs font-mono text-yellow-500 bg-yellow-900 bg-opacity-20 border border-yellow-800 p-3 rounded hidden w-full text-center">
+                                <i class="fas fa-exclamation-triangle"></i> INFO : Les taux de change sont fixés à titre indicatif (hors parité fixe EUR/XPF).
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- Colonne de Droite -->
+            <aside class="w-1/5 h-full bg-gray-900 bg-opacity-30 p-6 border-l border-gray-700 hidden lg:block">
+                <h2 class="text-xl font-semibold tech-font gradient-text1 mb-6 mt-6">Liens Utiles</h2>
+                <ul class="space-y-3">
+                    <li><a href="https://github.com/k-gou09" class="hover:text-purple-400 transition-colors duration-300"><i class="fab fa-github" style="color: white;"></i>&nbsp;&nbsp;&nbsp;GITHUB</a></li>
+                    <li><a href="https://www.facebook.com/nc.prod.794?locale=fr_FR" class="hover:text-purple-400 transition-colors duration-300"><i class="fab fa-facebook" style="color: blue;"></i>&nbsp;&nbsp;&nbsp;FACEBOOK</a></li>
+                    <li><a href="https://www.youtube.com/@kgpsound" class="hover:text-purple-400 transition-colors duration-300"><i class="fab fa-youtube" style="color: rgb(245, 3, 3);"></i>&nbsp;&nbsp;&nbsp;YOUTUBE</a></li>
+                </ul>
+                <div class="mt-20 p-4 rounded-lg">
+                    <a href="maintenance.html"><img src="../img/log_kgp1.png" alt="Logo KGP" class="w-full h-auto" style="border-radius: 35%;"></a>                
+                </div>
+            </aside>
+        </main>
+
+        <!-- Footer -->
+        <p class="fixed left-2 bottom-2 z-10 bg-black bg-opacity-80 text-white text-xs px-2 py-1 rounded-md flex items-center gap-1 tech-font border border-gray-800">
+            K-gou_Prod
+            <img src="../img/v.svg" alt="Logo" class="w-4 h-4 inline-block filter brightness-0 invert">
+            <a href="https://www.facebook.com/nc.prod.794" class="text-purple-400 underline hover:text-purple-300" target="_blank">Studio</a>
+        </p>
+
+        <!-- Scripts -->
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+
+                // --- Menu Hamburger ---
+                const hamburgerButton = document.getElementById('hamburger-button');
+                const mobileMenu = document.getElementById('mobile-menu');
+                if(hamburgerButton && mobileMenu) {
+                    hamburgerButton.addEventListener('click', () => {
+                        mobileMenu.classList.toggle('translate-x-full');
+                    });
+                }
+                
+                // ===================================
+                // LOGIQUE KGP CONVERTER
+                // ===================================
+
+                // 1. Dictionnaire des données (Facteur par rapport à une unité de base)
+                const unitsData = {
+                    data: {
+                        base: 'Byte',
+                        units: {
+                            'b': { name: 'Bytes (Octets)', rate: 1 },
+                            'kb': { name: 'Kilobytes (Ko)', rate: 1024 },
+                            'mb': { name: 'Megabytes (Mo)', rate: Math.pow(1024, 2) },
+                            'gb': { name: 'Gigabytes (Go)', rate: Math.pow(1024, 3) },
+                            'tb': { name: 'Terabytes (To)', rate: Math.pow(1024, 4) }
+                        }
+                    },
+                    distance: {
+                        base: 'Meter',
+                        units: {
+                            'mm': { name: 'Millimètres', rate: 0.001 },
+                            'cm': { name: 'Centimètres', rate: 0.01 },
+                            'm': { name: 'Mètres', rate: 1 },
+                            'km': { name: 'Kilomètres', rate: 1000 },
+                            'in': { name: 'Pouces (Inches)', rate: 0.0254 },
+                            'ft': { name: 'Pieds (Feet)', rate: 0.3048 },
+                            'yd': { name: 'Yards', rate: 0.9144 },
+                            'mi': { name: 'Miles', rate: 1609.344 }
+                        }
+                    },
+                    weight: {
+                        base: 'Kilogram',
+                        units: {
+                            'mg': { name: 'Milligrammes', rate: 0.000001 },
+                            'g': { name: 'Grammes', rate: 0.001 },
+                            'kg': { name: 'Kilogrammes', rate: 1 },
+                            't': { name: 'Tonnes', rate: 1000 },
+                            'oz': { name: 'Onces (Ounces)', rate: 0.0283495 },
+                            'lb': { name: 'Livres (Pounds)', rate: 0.453592 }
+                        }
+                    },
+                    volume: {
+                        base: 'Liter',
+                        units: {
+                            'ml': { name: 'Millilitres', rate: 0.001 },
+                            'cl': { name: 'Centilitres', rate: 0.01 },
+                            'l': { name: 'Litres', rate: 1 },
+                            'm3': { name: 'Mètres cubes', rate: 1000 },
+                            'cup': { name: 'Tasses (US Cup)', rate: 0.236588 },
+                            'gal': { name: 'Gallons (US)', rate: 3.78541 }
+                        }
+                    },
+                    currency: {
+                        base: 'EUR',
+                        units: {
+                            'eur': { name: 'Euro (€)', rate: 1 },
+                            'xpf': { name: 'Franc Pacifique (XPF)', rate: 0.00838 }, // 1 EUR = 119.33 XPF -> 1 XPF = 1/119.33 EUR
+                            'usd': { name: 'US Dollar ($)', rate: 0.92 }, // Indicatif
+                            'gbp': { name: 'Livre Sterling (£)', rate: 1.17 }, // Indicatif
+                            'jpy': { name: 'Yen Japonais (¥)', rate: 0.0062 } // Indicatif
+                        }
+                    }
+                };
+
+                // DOM Elements
+                const catBtns = document.querySelectorAll('.cat-btn');
+                const val1 = document.getElementById('input-val1');
+                const val2 = document.getElementById('input-val2');
+                const unit1 = document.getElementById('select-unit1');
+                const unit2 = document.getElementById('select-unit2');
+                const swapBtn = document.getElementById('swap-btn');
+                const disclaimer = document.getElementById('disclaimer');
+
+                let currentCategory = 'data'; // Catégorie par défaut
+
+                // Initialiser les listes déroulantes
+                function loadCategory(catKey) {
+                    currentCategory = catKey;
+                    const catData = unitsData[catKey].units;
+                    
+                    unit1.innerHTML = '';
+                    unit2.innerHTML = '';
+
+                    Object.keys(catData).forEach((key, index) => {
+                        const opt1 = document.createElement('option');
+                        opt1.value = key;
+                        opt1.textContent = catData[key].name;
+                        unit1.appendChild(opt1);
+
+                        const opt2 = document.createElement('option');
+                        opt2.value = key;
+                        opt2.textContent = catData[key].name;
+                        unit2.appendChild(opt2);
+                    });
+
+                    // Sélectionner par défaut des unités différentes pour l'exemple
+                    if (unit1.options.length > 1) {
+                        unit1.selectedIndex = 0;
+                        unit2.selectedIndex = 1;
+                    }
+
+                    // Gérer l'affichage du disclaimer pour les devises
+                    if (catKey === 'currency') {
+                        disclaimer.classList.remove('hidden');
+                    } else {
+                        disclaimer.classList.add('hidden');
+                    }
+
+                    // Réinitialiser les champs
+                    val1.value = 1;
+                    calculate(1);
+                }
+
+                // Logique de conversion mathématique
+                // direction = 1 : Calcule Val2 à partir de Val1
+                // direction = 2 : Calcule Val1 à partir de Val2
+                function calculate(direction) {
+                    const rate1 = unitsData[currentCategory].units[unit1.value].rate;
+                    const rate2 = unitsData[currentCategory].units[unit2.value].rate;
+
+                    if (direction === 1) {
+                        const input = parseFloat(val1.value);
+                        if (isNaN(input)) { val2.value = ''; return; }
+                        
+                        // Conversion : Input -> Unité de Base -> Unité de Sortie
+                        const valueInBase = input * rate1;
+                        const output = valueInBase / rate2;
+                        
+                        // Arrondir pour éviter les bugs JS de virgule flottante (max 6 décimales)
+                        val2.value = parseFloat(output.toFixed(6));
+                    } else {
+                        const input = parseFloat(val2.value);
+                        if (isNaN(input)) { val1.value = ''; return; }
+                        
+                        const valueInBase = input * rate2;
+                        const output = valueInBase / rate1;
+                        
+                        val1.value = parseFloat(output.toFixed(6));
+                    }
+                }
+
+                // GESTIONNAIRES D'ÉVÉNEMENTS
+
+                // Changement de catégorie via les onglets
+                catBtns.forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        // Maj UI des boutons
+                        catBtns.forEach(b => b.classList.remove('active-tab'));
+                        e.target.classList.add('active-tab');
+                        
+                        // Charger la nouvelle catégorie
+                        loadCategory(e.target.getAttribute('data-cat'));
+                    });
+                });
+
+                // Saisie utilisateur : Taper à gauche
+                val1.addEventListener('input', () => calculate(1));
+                
+                // Saisie utilisateur : Taper à droite
+                val2.addEventListener('input', () => calculate(2));
+
+                // Changement d'unité à gauche -> on recalcule la droite
+                unit1.addEventListener('change', () => calculate(1));
+
+                // Changement d'unité à droite -> on recalcule la droite (en gardant la valeur de gauche comme base)
+                unit2.addEventListener('change', () => calculate(1));
+
+                // Bouton d'échange central
+                swapBtn.addEventListener('click', () => {
+                    // Inverser les select
+                    const tempIndex = unit1.selectedIndex;
+                    unit1.selectedIndex = unit2.selectedIndex;
+                    unit2.selectedIndex = tempIndex;
+
+                    // Recalculer
+                    calculate(1);
+                });
+
+                // Démarrage initial
+                loadCategory('data');
+
+            });
+        </script>
+    </body>
+</html>

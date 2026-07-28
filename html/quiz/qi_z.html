@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Quiz Moderne – 50 questions</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts for a modern look -->
+     <!-- Open Graph Meta Tags for social sharing (Facebook, etc.) -->
+    <meta property="og:title" content="Quiz | k-gou prod" />
+    <meta property="og:description" content="Un quiz Raisonnement et logique"/>
+    <meta property="og:url" content="https://www.k-gou.com/html/quiz/qi_z.html"/>
+    <meta property="og:image" content="https://www.k-gou.com/img/qi_z.png"/>
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="K-gou prod" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: #0d0211; }
+::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #bf00ff, #7a00cc); border-radius: 5px; border: 2px solid #0d0211; }
+::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #d400ff, #bf00ff); }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111827; /* gray-900 */
+            color: #d1d5db; /* gray-300 */
+        }
+        /* Custom scrollbar */
+        
+        
+        
+        
+
+        /* Custom styles for checked radio buttons */
+        .options label.selected {
+            background-color: #4f46e5; /* indigo-600 */
+            color: #fff;
+            border-color: #6366f1; /* indigo-500 */
+        }
+        
+        /* Styling for the alphabet helper table */
+        .alphabet-table {
+            width: 100%;
+            #border-collapse: collapse;
+            margin-bottom: 1.5rem; /* mb-6 */
+            background-color: #1f2937; /* gray-800 */
+            border-radius: 8px;
+            overflow: hidden;
+            font-size: 0.8rem;
+        }
+        .alphabet-table th, .alphabet-table td {
+            border: 1px solid #374151; /* gray-700 */
+            padding: 6px;
+            text-align: center;
+        }
+        .alphabet-table th {
+            background-color: #374151; /* gray-700 */
+            color: #9ca3af; /* gray-400 */
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+
+        <!-- =================================== -->
+        <!-- INTRO SCREEN                      -->
+        <!-- =================================== -->
+        <div id="intro-screen">
+            <header class="text-center mb-8">
+                <h1 class="text-4xl md:text-5xl font-black tracking-tighter">
+                    <span class="bg-gradient-to-r from-fuchsia-600 via-purple-500 to-pink-500 text-transparent bg-clip-text">
+                        Quiz de Raisonnement & Logique
+                    </span>
+                </h1>
+            </header>
+
+            <div class="bg-gray-800 p-6 sm:p-8 rounded-2xl shadow-2xl border border-gray-700">
+                <h2 class="text-2xl font-bold text-white mb-4">Consignes</h2>
+                <ul class="space-y-3 text-lg list-disc list-inside text-gray-300">
+                    <li>Vous disposez de <strong class="text-yellow-400">40 minutes</strong> pour répondre à 50 questions.</li>
+                    <li>Une seule réponse est correcte par question.</li>
+                    <li><strong class="text-green-400">+3 points</strong> par bonne réponse.</li>
+                    <li><strong class="text-red-400">-1 point</strong> par mauvaise réponse.</li>
+                    <li><strong class="text-gray-400">0 point</strong> si aucune réponse n'est cochée.</li>
+                    <li class="pt-2">Ne vous attardez pas sur les questions qui vous semblent trop difficiles.</li>
+                </ul>
+                <div class="mt-8 text-center">
+                    <button id="start-btn" class="w-full sm:w-auto bg-indigo-600 text-white text-xl font-bold py-4 px-10 rounded-lg hover:bg-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500 focus:ring-opacity-50 transition-all duration-300 transform hover:scale-105">
+                        Démarrer le quiz
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- =================================== -->
+        <!-- QUIZ SCREEN (Hidden by default)   -->
+        <!-- =================================== -->
+        <div id="quiz-screen" class="hidden">
+            <div id="timer" class="text-center text-2xl font-bold text-red-500 mb-6 sticky top-0 bg-gray-900/80 backdrop-blur-sm py-3 z-10">
+                Temps restant : 40:00
+            </div>
+
+            <!-- Alphabet Helper Table -->
+            <div class="bg-gray-800 p-4 rounded-xl shadow-lg border border-[#4f46e5] mb-8">
+                <h3 class="text-lg font-bold text-center mb-3 text-gray-400">Table de correspondance</h3>
+                <div class="overflow-x-auto">
+                    <table class="alphabet-table w-full">
+                        <tr>
+                            <th>Lettre</th>
+                            <td>A</td><td>B</td><td>C</td><td>D</td><td>E</td><td>F</td><td>G</td><td>H</td><td>I</td><td>J</td><td>K</td><td>L</td><td>M</td><td>N</td><td>O</td><td>P</td><td>Q</td><td>R</td><td>S</td><td>T</td><td>U</td><td>V</td><td>W</td><td>X</td><td>Y</td><td>Z</td>
+                        </tr>
+                        <tr>
+                            <th>Valeur</th>
+                            <td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td><td>11</td><td>12</td><td>13</td><td>14</td><td>15</td><td>16</td><td>17</td><td>18</td><td>19</td><td>20</td><td>21</td><td>22</td><td>23</td><td>24</td><td>25</td><td>26</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <form id="quizForm" class="space-y-8">
+                <!-- Q1 -->
+                <div class="question bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                    <h3 class="text-xl font-bold mb-4">1. Quelles lettres complètent la série suivante?<br> AZ – CX – FU – HS – KP –?</h3>
+                    <div class="options grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q1" value="A" class="hidden">JT</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q1" value="B" class="hidden">MN</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q1" value="C" class="hidden">OR</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q1" value="D" class="hidden">LO</label>
+                    </div>
+                </div>
+
+                <!-- Q2 -->
+                <div class="question bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                    <h3 class="text-xl font-bold mb-4">2. SI MALVEILLANTES = 1023004506708<br> ALORS PARTICULARITÉS = ?</h3>
+                    <div class="options grid grid-cols-1 gap-3">
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q2" value="A" class="hidden">01230578005607</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q2" value="B" class="hidden">10230405060708</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q2" value="C" class="hidden">12030040506079</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q2" value="D" class="hidden">10020030405607</label>
+                    </div>
+                </div>
+
+                <!-- Q3 -->
+                 <div class="question bg-gray-800 p-6 rounded-xl shadow-lg border border-[#4f46e5]">
+                    <!-- Contenu de l'image : explications et séquence -->
+                    <p class="mb-4 text-gray-300">
+                        <strong>Pour les questions 3 et 4 :</strong><br>
+                        On considère une suite de cinq lettres : A-B-C-D-E, qui se répète indéfiniment. On retrouve la lettre A après la lettre E, et la lettre E avant la lettre A. Dans ces questions, la suite de lettres est reproduite en suivant un ordre particulier :
+                    </p>
+                    
+                    <!-- Séquence de lettres et chiffres -->
+                    <div class="sequence bg-gray-700 p-3 rounded-lg mb-4 text-center text-white font-mono text-lg">
+                        <span>A</span>
+                        <span>1</span>
+                        <span>E</span>
+                        <span>B</span>
+                        <span>2</span>
+                        <span>3</span>
+                        <span>C</span>
+                        <span>E</span>
+                        <span>4</span>
+                        <span>D</span>
+                        <span>5</span>
+                        <span>C</span>
+                        <span>E</span>
+                        <span>B</span>
+                    </div>
+                </div>
+                <div class="question bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                    
+                    <h3 class="text-xl font-bold mb-4">3. Par quelle lettre doit-on remplacer le chiffre 5?</h3>
+                    <div class="options grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q3" value="A" class="hidden">D</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q3" value="B" class="hidden">C</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q3" value="C" class="hidden">B</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q3" value="D" class="hidden">A</label>
+                    </div>
+                </div>
+
+                <!-- Q4 -->
+                <div class="question bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                    <h3 class="text-xl font-bold mb-4">4. Par quelle lettre doit-on remplacer le chiffre 2?</h3>
+                    <div class="options grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q4" value="A" class="hidden">A</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q4" value="B" class="hidden">B</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q4" value="C" class="hidden">C</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q4" value="D" class="hidden">D</label>
+                    </div>
+                </div>
+
+                <!-- Q5 -->
+                <div class="question bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                    <h3 class="text-xl font-bold mb-4">5. Quel couple Nombre-Lettre complète la série suivante?<br> 6Y – 9V – 12S – 15P – 18M – 21J –?</h3>
+                    <div class="options grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q5" value="A" class="hidden">23H</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q5" value="B" class="hidden">21B</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q5" value="C" class="hidden">24G</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q5" value="D" class="hidden">12F</label>
+                    </div>
+                </div>
+
+                <!-- Q6 -->
+                <div class="question bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                    <h3 class="text-xl font-bold mb-4">6. Quelle lettre complète la série suivante?<br> Z – V – S – Q – M – J –?</h3>
+                    <div class="options grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q6" value="A" class="hidden">G</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q6" value="B" class="hidden">I</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q6" value="C" class="hidden">C</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q6" value="D" class="hidden">H</label>
+                    </div>
+                </div>
+
+                <!-- Q7 -->
+                <div class="question bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                    <h3 class="text-xl font-bold mb-4">7. Déterminez quelles lettres sont dans le bon ordre, en suivant les indications qui vous sont données ; seules les lettres A-B-C-D-E sont prises en compte.</h3>
+                    <div class="text-sm text-gray-400 mb-3 space-y-1">
+                        <p>D-B-A: Une lettre commune mal placée</p>
+                        <p>E-D-B: Une lettre commune mal placée</p>
+                        <p>D-E-B: Une lettre commune bien placée</p>
+                    </div>
+                    <div class="options grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q7" value="A" class="hidden">E-A-C</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q7" value="B" class="hidden">B-A-C</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q7" value="C" class="hidden">E-C-A</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q7" value="D" class="hidden">A-E-C</label>
+                    </div>
+                </div>
+
+                <!-- Q8 -->
+                <div class="question bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                    <h3 class="text-xl font-bold mb-4">8. Déterminez quelles lettres sont dans le bon ordre, en suivant les indications qui vous sont données ; seules les lettres A-B-C-D-E sont prises en compte.</h3>
+                    <div class="text-sm text-gray-400 mb-3 space-y-1">
+                        <p>A-D-C: Deux lettres communes mal placées</p>
+                        <p>B-E-C: Deux lettres communes mal placées</p>
+                        <p>C-A-E: Une lettre commune mal placée</p>
+                    </div>
+                    <div class="options grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q8" value="A" class="hidden">B-C-E</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q8" value="B" class="hidden">D-C-B</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q8" value="C" class="hidden">C-B-A</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q8" value="D" class="hidden">A-B-C</label>
+                    </div>
+                </div>
+
+                <!-- Q9 -->
+                <div class="question bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                    <h3 class="text-xl font-bold mb-4">9. Recherchez le nombre qui complète la série suivante :<br> 15 – 30 – 17 – 28 – 20 – 25 – 24 – 21 – ?</h3>
+                    <div class="options grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q9" value="A" class="hidden">18</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q9" value="B" class="hidden">35</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q9" value="C" class="hidden">29</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q9" value="D" class="hidden">7</label>
+                    </div>
+                </div>
+
+                <!-- Q10 -->
+                <div class="question bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                    <h3 class="text-xl font-bold mb-4">10. Quel nombre complète la série suivante?</h3>
+                    <img src="../../img/q10.png" alt="Image pour la question 10" class="mx-auto mb-4 rounded-lg">
+                    <div class="options grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q10" value="A" class="hidden">6</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q10" value="B" class="hidden">3</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q10" value="C" class="hidden">7</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q10" value="D" class="hidden">5</label>
+                    </div>
+                </div>
+
+                <!-- Q11 -->
+                <div class="question bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                    <h3 class="text-xl font-bold mb-4">11. Recherchez le nombre qui complète la série suivante :<br> 21 – 63 – 56 – 168 – 161 – ?</h3>
+                    <div class="options grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q11" value="A" class="hidden">259</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q11" value="B" class="hidden">356</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q11" value="C" class="hidden">483</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q11" value="D" class="hidden">532</label>
+                    </div>
+                </div>
+
+                <!-- Q12 -->
+                <div class="question bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                    <h3 class="text-xl font-bold mb-4">12. Recherchez le nombre qui complète la série suivante :<br> ? – 139 – 124 – 248 – 246 – 231 – 462</h3>
+                    <div class="options grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q12" value="A" class="hidden">261</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q12" value="B" class="hidden">11</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q12" value="C" class="hidden">141</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q12" value="D" class="hidden">91</label>
+                    </div>
+                </div>
+
+                <!-- Q13 -->
+                <div class="question bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                    <h3 class="text-xl font-bold mb-4">13. Recherchez le nombre qui complète la série suivante :<br> 17 – 13 – 19 – 30 – 26 – 32 – 43 – ?</h3>
+                    <div class="options grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q13" value="A" class="hidden">36</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q13" value="B" class="hidden">39</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q13" value="C" class="hidden">42</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q13" value="D" class="hidden">54</label>
+                    </div>
+                </div>
+
+                <!-- Q14 -->
+                <div class="question bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                    <h3 class="text-xl font-bold mb-4">14. Recherchez le nombre qui complète la série suivante :<br> 92 – ? – 111 – 19 – 130 – 17 – 149 – 15</h3>
+                    <div class="options grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q14" value="A" class="hidden">17</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q14" value="B" class="hidden">87</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q14" value="C" class="hidden">21</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q14" value="D" class="hidden">63</label>
+                    </div>
+                </div>
+
+                <!-- Q15 -->
+                <div class="question bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                    <h3 class="text-xl font-bold mb-4">15. Quel nombre complète logiquement le carré suivant?</h3>
+                    <img src="../../img/q15.png" alt="Image pour la question 15" class="mx-auto mb-4 rounded-lg">
+                    <div class="options grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q15" value="A" class="hidden">155</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q15" value="B" class="hidden">90</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q15" value="C" class="hidden">141</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q15" value="D" class="hidden">15</label>
+                    </div>
+                </div>
+
+                <!-- Q16 à Q20 : DOMINOS -->
+                <div class="question bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                    <h3 class="text-xl font-bold mb-4">16. Quel est le domino manquant?</h3>
+                    <img src="../../img/q16.png" alt="Image pour la question 16" class="mx-auto mb-4 rounded-lg">
+                    <div class="options grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q16" value="A" class="hidden">1</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q16" value="B" class="hidden">2</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q16" value="C" class="hidden">3</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q16" value="D" class="hidden">4</label>
+                    </div>
+                </div>
+
+                <div class="question bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                    <h3 class="text-xl font-bold mb-4">17. Quel est le domino manquant?</h3>
+                    <img src="../../img/q17.png" alt="Image pour la question 17" class="mx-auto mb-4 rounded-lg">
+                    <div class="options grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q17" value="A" class="hidden">1</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q17" value="B" class="hidden">2</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q17" value="C" class="hidden">3</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q17" value="D" class="hidden">4</label>
+                    </div>
+                </div>
+
+                <div class="question bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                    <h3 class="text-xl font-bold mb-4">18. Quel est le domino manquant?</h3>
+                    <img src="../../img/q18.png" alt="Image pour la question 18" class="mx-auto mb-4 rounded-lg">
+                    <div class="options grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q18" value="A" class="hidden">1</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q18" value="B" class="hidden">2</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q18" value="C" class="hidden">3</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q18" value="D" class="hidden">4</label>
+                    </div>
+                </div>
+
+                <div class="question bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                    <h3 class="text-xl font-bold mb-4">19. Quel est le domino manquant?</h3>
+                    <img src="../../img/q19.png" alt="Image pour la question 19" class="mx-auto mb-4 rounded-lg">
+                    <div class="options grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q19" value="A" class="hidden">1</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q19" value="B" class="hidden">2</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q19" value="C" class="hidden">3</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q19" value="D" class="hidden">4</label>
+                    </div>
+                </div>
+
+                <div class="question bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                    <h3 class="text-xl font-bold mb-4">20. Quel est le domino manquant?</h3>
+                    <img src="../../img/q20.png" alt="Image pour la question 20" class="mx-auto mb-4 rounded-lg">
+                    <div class="options grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q20" value="A" class="hidden">1</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q20" value="B" class="hidden">2</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q20" value="C" class="hidden">3</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q20" value="D" class="hidden">4</label>
+                    </div>
+                </div>
+
+                <!-- Q21 à Q25 : CARTES -->
+                <div class="question bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                    <h3 class="text-xl font-bold mb-4">21. Quelle est la carte manquante?</h3>
+                    <img src="../../img/q21.png" alt="Image pour la question 21" class="mx-auto mb-4 rounded-lg">
+                    <div class="options grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q21" value="A" class="hidden">1</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q21" value="B" class="hidden">2</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q21" value="C" class="hidden">3</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q21" value="D" class="hidden">4</label>
+                    </div>
+                </div>
+
+                <div class="question bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                    <h3 class="text-xl font-bold mb-4">22. Quelle est la carte manquante?</h3>
+                    <img src="../../img/q22.png" alt="Image pour la question 22" class="mx-auto mb-4 rounded-lg">
+                    <div class="options grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q22" value="A" class="hidden">1</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q22" value="B" class="hidden">2</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q22" value="C" class="hidden">3</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q22" value="D" class="hidden">4</label>
+                    </div>
+                </div>
+
+                <div class="question bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                    <h3 class="text-xl font-bold mb-4">23. Quelle est la carte manquante?</h3>
+                    <img src="../../img/q23.png" alt="Image pour la question 23" class="mx-auto mb-4 rounded-lg">
+                    <div class="options grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q23" value="A" class="hidden">1</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q23" value="B" class="hidden">2</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q23" value="C" class="hidden">3</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q23" value="D" class="hidden">4</label>
+                    </div>
+                </div>
+
+                <div class="question bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                    <h3 class="text-xl font-bold mb-4">24. Quelle est la carte manquante?</h3>
+                    <img src="../../img/q24.png" alt="Image pour la question 24" class="mx-auto mb-4 rounded-lg">
+                    <div class="options grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q24" value="A" class="hidden">1</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q24" value="B" class="hidden">2</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q24" value="C" class="hidden">3</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q24" value="D" class="hidden">4</label>
+                    </div>
+                </div>
+
+                <div class="question bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                    <h3 class="text-xl font-bold mb-4">25. Quelle est la carte manquante?</h3>
+                    <img src="../../img/q25.png" alt="Image pour la question 25" class="mx-auto mb-4 rounded-lg">
+                    <div class="options grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q25" value="A" class="hidden">1</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q25" value="B" class="hidden">2</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q25" value="C" class="hidden">3</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q25" value="D" class="hidden">4</label>
+                    </div>
+                </div>
+
+                <!-- Q26 à Q30 : GRAPHIQUES -->
+                <div class="question bg-gray-800 p-6 rounded-xl shadow-lg border border-[#4f46e5]">
+                    <!-- Contenu de l'image : explications et séquence -->
+                    <p class="mb-4 text-gray-300">
+                        <strong>Pour les questions N°26 et 27 :</strong><br>
+                        Voici une suite de six images :
+                    </p>
+                    
+                    <!-- Séquence de lettres et chiffres -->
+                    <div class="sequence bg-gray-700 p-3 rounded-lg mb-4 text-center text-white font-mono text-lg">
+                        <img src="../../img/26271.png" alt="Image pour la question 26 et 27" class="mx-auto mb-4 rounded-lg">
+                    </div>
+
+                    <p class="mb-4 text-gray-300">
+                        Déterminez les images qui doivent remplacer les chiffres 3 et 4 dans la suite d’images ci-dessous :
+                    </p>
+
+                    <div class="sequence bg-gray-700 p-3 rounded-lg mb-4 text-center text-white font-mono text-lg">
+                        <img src="../../img/26272.png" alt="Image pour la question 26 et 27" class="mx-auto mb-4 rounded-lg">
+                    </div>
+                </div>
+
+                <div class="question bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                    <h3 class="text-xl font-bold mb-4">26. À quelle image correspond le chiffre 3?</h3>
+                    
+                    <div class="options grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q26" value="A" class="hidden">A</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q26" value="B" class="hidden">B</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q26" value="C" class="hidden">C</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q26" value="D" class="hidden">D</label>
+                    </div>
+                </div>
+
+                <div class="question bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                    <h3 class="text-xl font-bold mb-4">27. À quelle image correspond le chiffre 4?</h3>
+                    
+                    <div class="options grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q27" value="A" class="hidden">A</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q27" value="B" class="hidden">B</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q27" value="C" class="hidden">C</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q27" value="D" class="hidden">D</label>
+                    </div>
+                </div>
+
+                <div class="question bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                    <h3 class="text-xl font-bold mb-4">28. Quelle est la figure qui complète la série suivante ?</h3>
+                    <img src="../../img/q28.png" alt="Image pour la question 28" class="mx-auto mb-4 rounded-lg">
+                    <div class="options grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q28" value="A" class="hidden">1</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q28" value="B" class="hidden">2</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q28" value="C" class="hidden">3</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q28" value="D" class="hidden">4</label>
+                    </div>
+                </div>
+
+                <div class="question bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                    <h3 class="text-xl font-bold mb-4">29. Quelle est la figure qui complète la série suivante ?</h3>
+                    <img src="../../img/q29.png" alt="Image pour la question 29" class="mx-auto mb-4 rounded-lg">
+                    <div class="options grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q29" value="A" class="hidden">1</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q29" value="B" class="hidden">2</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q29" value="C" class="hidden">3</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q29" value="D" class="hidden">4</label>
+                    </div>
+                </div>
+
+                <div class="question bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                    <h3 class="text-xl font-bold mb-4">30. Quelle est la figure qui complète la série suivante ?</h3>
+                    <img src="../../img/q30.png" alt="Image pour la question 30" class="mx-auto mb-4 rounded-lg">
+                    <div class="options grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q30" value="A" class="hidden">1</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q30" value="B" class="hidden">2</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q30" value="C" class="hidden">3</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q30" value="D" class="hidden">4</label>
+                    </div>
+                </div>
+
+                <!-- Q31 à Q50 : MATHS + LOGIQUE + ANALOGIES -->
+                <div class="question bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                    <h3 class="text-xl font-bold mb-4">31. Quel est le résultat de l’opération suivante :<br> A = 14,01 x 5⁴ x 2⁵</h3>
+                    <div class="options grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q31" value="A" class="hidden">280 200</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q31" value="B" class="hidden">28 020</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q31" value="C" class="hidden">2 800</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q31" value="D" class="hidden">280</label>
+                    </div>
+                </div>
+
+                <div class="question bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                    <h3 class="text-xl font-bold mb-4">32. 2h28min35s + 3h37min42s = ?</h3>
+                    <div class="options grid grid-cols-1 gap-3">
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q32" value="A" class="hidden">5h55min16s</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q32" value="B" class="hidden">7h25min17s</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q32" value="C" class="hidden">6h06min17s</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q32" value="D" class="hidden">6h46min18s</label>
+                    </div>
+                </div>
+
+                <div class="question bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                    <h3 class="text-xl font-bold mb-4">33. Dans une boulangerie, on paie :<br> - deux baguettes et un croissant : 4,80 €<br> - trois baguettes et trois croissants : 9,90 €<br> Quel est le prix d’un croissant ?</h3>
+                    <div class="options grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q33" value="A" class="hidden">1,20 €</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q33" value="B" class="hidden">1,50 €</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q33" value="C" class="hidden">1,80 €</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q33" value="D" class="hidden">2,00 €</label>
+                    </div>
+                </div>
+
+                <div class="question bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                    <h3 class="text-xl font-bold mb-4">34. Quel nombre remplace le point d'interrogation ?</h3>
+                    <img src="../../img/q34.png" alt="Image pour la question 34" class="mx-auto mb-4 rounded-lg">
+                    <div class="options grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q34" value="A" class="hidden">3</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q34" value="B" class="hidden">4</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q34" value="C" class="hidden">25</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q34" value="D" class="hidden">64</label>
+                    </div>
+                </div>
+
+                <div class="question bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                    <h3 class="text-xl font-bold mb-4">35. Quel est le nombre dont la multiplication par ¼ donne 0,00175 ?</h3>
+                    <div class="options grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q35" value="A" class="hidden">0,003</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q35" value="B" class="hidden">0,005</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q35" value="C" class="hidden">0,007</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q35" value="D" class="hidden">0,009</label>
+                    </div>
+                </div>
+
+                <div class="question bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                    <h3 class="text-xl font-bold mb-4">36. 275 cL = ?</h3>
+                    <div class="options grid grid-cols-1 gap-3">
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q36" value="A" class="hidden">275 dm³</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q36" value="B" class="hidden">2 750 cm³</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q36" value="C" class="hidden">0,275 m³</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q36" value="D" class="hidden">27,5 dm³</label>
+                    </div>
+                </div>
+
+                <div class="question bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                    <h3 class="text-xl font-bold mb-4">37. Les parents de David lui offrent une boîte remplie de petits soldats. Il en donne un tiers à son frère, lequel lui en rend 7. David est alors en possession des trois quarts des petits soldats que contenait la boîte.<br> Combien de petits soldats la boîte contenait-elle ?</h3>
+                    <div class="options grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q37" value="A" class="hidden">84</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q37" value="B" class="hidden">63</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q37" value="C" class="hidden">56</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q37" value="D" class="hidden">28</label>
+                    </div>
+                </div>
+
+                <div class="question bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                    <h3 class="text-xl font-bold mb-4">38. Dans 6 ans, Christelle, qui a actuellement 30 ans, sera moitié moins âgée que Julia, sa mère.<br> Quel est l’âge de Julia ?</h3>
+                    <div class="options grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q38" value="A" class="hidden">50 ans</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q38" value="B" class="hidden">56 ans</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q38" value="C" class="hidden">61 ans</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q38" value="D" class="hidden">66 ans</label>
+                    </div>
+                </div>
+
+                <div class="question bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                    <h3 class="text-xl font-bold mb-4">39. Francis s’est acheté un appartement, et a obtenu une remise de 8% ; il a alors payé son appartement 184 000 Euros.<br> Quel était le prix initial de son appartement ?</h3>
+                    <div class="options grid grid-cols-1 gap-3">
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q39" value="A" class="hidden">188 000 €</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q39" value="B" class="hidden">196 000 €</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q39" value="C" class="hidden">200 000 €</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q39" value="D" class="hidden">210 000 €</label>
+                    </div>
+                </div>
+
+                <div class="question bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                    <h3 class="text-xl font-bold mb-4">40. Une moto part de la ville A et se rend à la ville B à la vitesse de 90 km/h. Un cycliste fait le chemin inverse à une vitesse de 30 km/h. Les deux partent à 09h57. Les deux villes sont distantes de 120 km.<br> A quelle heure vont-ils se croiser ?</h3>
+                    <div class="options grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q40" value="A" class="hidden">10h57</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q40" value="B" class="hidden">11h21</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q40" value="C" class="hidden">12h10</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all text-center"><input type="radio" name="q40" value="D" class="hidden">12h29</label>
+                    </div>
+                </div>
+
+                <div class="question bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                    <h3 class="text-xl font-bold mb-4">41. Si j’achète des poires, alors j’achèterai des pommes. Si j’achète des oranges, j’achèterai un pamplemousse. Je décide d’acheter des oranges. Laquelle de ces propositions est exacte ?</h3>
+                    <div class="options grid grid-cols-1 gap-3">
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q41" value="A" class="hidden">Soit j’achète des pommes, soit j’achète des oranges.</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q41" value="B" class="hidden">On ne sait pas si j’achète ou non des pommes.</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q41" value="C" class="hidden">On ne peut pas conclure que j’achète un pamplemousse.</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q41" value="D" class="hidden">Aucune proposition n’est exacte.</label>
+                    </div>
+                </div>
+
+                <div class="question bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                    <h3 class="text-xl font-bold mb-4">42. Choisissez, parmi les quatre propositions, celle qui se rapproche le plus des affirmations suivantes :<br> Nul honnête homme n’est charlatan. Quelques commerciaux sont des charlatans. Par conséquent :</h3>
+                    <div class="options grid grid-cols-1 gap-3">
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q42" value="A" class="hidden">Aucun honnête homme ne voudrait être commercial.</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q42" value="B" class="hidden">Quelques commerciaux ne sont pas charlatans.</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q42" value="C" class="hidden">Tous les charlatans sont commerciaux.</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q42" value="D" class="hidden">Quelques charlatans sont honnêtes.</label>
+                    </div>
+                </div>
+
+                <div class="question bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                    <h3 class="text-xl font-bold mb-4">43. Associez le couple ci-après au couple qui a la même relation :<br> homme – marcher</h3>
+                    <div class="options grid grid-cols-1 gap-3">
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q43" value="A" class="hidden">Chien – aboyer</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q43" value="B" class="hidden">Homme – courir</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q43" value="C" class="hidden">Serpent – ramper</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q43" value="D" class="hidden">Navigateur – piloter</label>
+                    </div>
+                </div>
+
+                <div class="question bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                    <h3 class="text-xl font-bold mb-4">44. Associez le couple ci-après au couple qui a la même relation :<br> musicien – piano</h3>
+                    <div class="options grid grid-cols-1 gap-3">
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q44" value="A" class="hidden">Chirurgien – patient</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q44" value="B" class="hidden">Penseur – stylo</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q44" value="C" class="hidden">Enfant – ballon</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q44" value="D" class="hidden">Mécanicien – huile</label>
+                    </div>
+                </div>
+
+                <div class="question bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                    <h3 class="text-xl font-bold mb-4">45. Associez le couple ci-après au couple qui a la même relation :<br> kaki – soldat</h3>
+                    <div class="options grid grid-cols-1 gap-3">
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q45" value="A" class="hidden">Bleu – gendarme</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q45" value="B" class="hidden">Bistouri – chirurgien</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q45" value="C" class="hidden">Malade – vaccin</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q45" value="D" class="hidden">Mécanicien – tâché</label>
+                    </div>
+                </div>
+
+                <div class="question bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                    <h3 class="text-xl font-bold mb-4">46. Associez le couple ci-après au couple qui a la même relation :<br> chardon - Écosse</h3>
+                    <div class="options grid grid-cols-1 gap-3">
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q46" value="A" class="hidden">Unité – province</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q46" value="B" class="hidden">Coq – France</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q46" value="C" class="hidden">Kangourou – Allemagne</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q46" value="D" class="hidden">Région – fédéral</label>
+                    </div>
+                </div>
+
+                <div class="question bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                    <h3 class="text-xl font-bold mb-4">47. Complétez l’analogie suivante:<br> ............ est à maison ce que bois est à ............</h3>
+                    <div class="options grid grid-cols-1 gap-3">
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q47" value="A" class="hidden">Toit – arbre</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q47" value="B" class="hidden">Solide – tendre</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q47" value="C" class="hidden">Cheminée – combustible</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q47" value="D" class="hidden">Parpaing – chalet</label>
+                    </div>
+                </div>
+
+                <div class="question bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                    <h3 class="text-xl font-bold mb-4">48. Complétez l’analogie suivante:<br> ............ est à diriger ce que soumission est à ............</h3>
+                    <div class="options grid grid-cols-1 gap-3">
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q48" value="A" class="hidden">Volant – frein</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q48" value="B" class="hidden">Commandement – obéir</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q48" value="C" class="hidden">Manœuvre – autorité</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q48" value="D" class="hidden">Frein – gérer</label>
+                    </div>
+                </div>
+
+                <div class="question bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                    <h3 class="text-xl font-bold mb-4">49. Complétez l’analogie suivante:<br> ............ est à histoire ce que futur est à ............</h3>
+                    <div class="options grid grid-cols-1 gap-3">
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q49" value="A" class="hidden">Vieux – avenir</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q49" value="B" class="hidden">Âge – inconnu</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q49" value="C" class="hidden">Passé – science-fiction</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q49" value="D" class="hidden">Mensonge – preuve</label>
+                    </div>
+                </div>
+
+                <div class="question bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                    <h3 class="text-xl font-bold mb-4">50. Complétez l’analogie suivante:<br> ............ est à innocence ce que vieux est à ............</h3>
+                    <div class="options grid grid-cols-1 gap-3">
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q50" value="A" class="hidden">Jeunesse – vieillesse</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q50" value="B" class="hidden">Naïf – connaissance</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q50" value="C" class="hidden">Jeune – sagesse</label>
+                        <label class="block p-4 rounded-lg cursor-pointer border-2 border-gray-600 hover:border-indigo-500 transition-all"><input type="radio" name="q50" value="D" class="hidden">Enfant – expérience</label>
+                    </div>
+                </div>
+
+                <div class="mt-12 text-center">
+                    <button type="button" id="submit-btn" class="w-full sm:w-auto bg-green-600 text-white text-xl font-bold py-3 px-8 rounded-lg hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition-all duration-300 transform hover:scale-105">
+                        Terminer le quiz
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- =================================== -->
+        <!-- RESULTS SCREEN (Hidden by default)-->
+        <!-- =================================== -->
+        <div id="results-screen" class="hidden text-center bg-gray-800 p-8 rounded-2xl shadow-2xl">
+            <h2 class="text-3xl font-bold mb-4 text-white">Quiz Terminé !</h2>
+            <p class="text-xl text-gray-300 mb-2">Votre score final est de :</p>
+            <p class="text-6xl font-black mb-6" id="score-display"></p>
+            <p class="text-xl text-gray-300" id="score-message"></p>
+            <div class="mt-8 flex flex-col sm:flex-row justify-center items-center gap-4">
+                <button type="button" id="restart-btn" class="w-full sm:w-auto bg-indigo-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-indigo-500 transition-colors duration-300">
+                    Recommencer
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+        // --- DOM Elements ---
+        const introScreen = document.getElementById('intro-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const resultsScreen = document.getElementById('results-screen');
+        const startBtn = document.getElementById('start-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const timerElement = document.getElementById('timer');
+        const quizForm = document.getElementById('quizForm');
+        const scoreDisplay = document.getElementById('score-display');
+        const scoreMessage = document.getElementById('score-message');
+
+        let countdown; // To hold the interval
+
+        // --- Correct Answers ---
+        const correctAnswers = {
+            q1: "B", q2: "B", q3: "D", q4: "D", q5: "C", q6: "D",
+            q7: "D", q8: "B", q9: "C", q10: "A", q11: "C", q12: "C",
+            q13: "B", q14: "C", q15: "C", q16: "D", q17: "A", q18: "B",
+            q19: "D", q20: "A", q21: "B", q22: "B", q23: "C", q24: "B",
+            q25: "B", q26: "C", q27: "D", q28: "C", q29: "C", q30: "C",
+            q31: "A", q32: "C", q33: "C", q34: "C", q35: "C", q36: "B",
+            q37: "A", q38: "D", q39: "C", q40: "A", q41: "B", q42: "B",
+            q43: "C", q44: "C", q45: "A", q46: "B", q47: "D", q48: "B",
+            q49: "C", q50: "C"
+        };
+
+        // --- Functions ---
+
+        function startTimer(duration) {
+            let timeLeft = duration;
+            countdown = setInterval(() => {
+                const min = Math.floor(timeLeft / 60);
+                const sec = timeLeft % 60;
+                timerElement.textContent = `Temps restant : ${String(min).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(countdown);
+                    submitQuiz();
+                }
+                timeLeft--;
+            }, 1000);
+        }
+
+        function startQuiz() {
+            introScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            const quizDuration = 40 * 60; // 40 minutes in seconds
+            startTimer(quizDuration);
+        }
+
+        function submitQuiz() {
+            clearInterval(countdown);
+            let score = 0;
+            const totalQuestions = 50;
+
+            for (let i = 1; i <= totalQuestions; i++) {
+                const qName = `q${i}`;
+                const selected = document.querySelector(`input[name="${qName}"]:checked`);
+
+                if (!selected) {
+                    // 0 points for no answer
+                } else {
+                    if (selected.value === correctAnswers[qName]) {
+                        score += 3;
+                    } else {
+                        score -= 1;
+                    }
+                }
+            }
+
+            displayResults(score);
+        }
+
+        function displayResults(score) {
+            const maxScore = 50 * 3;
+            quizScreen.classList.add('hidden');
+            resultsScreen.classList.remove('hidden');
+
+            scoreDisplay.textContent = `${score} / ${maxScore}`;
+            
+            const percentage = (score / maxScore) * 100;
+            let message = '';
+            let colorClass = '';
+
+            if (percentage >= 80) {
+                message = "Excellent ! Vous avez une logique implacable.";
+                colorClass = 'text-green-400';
+            } else if (percentage >= 60) {
+                message = "Très bon score ! Votre esprit d'analyse est affûté.";
+                colorClass = 'text-purple-500';
+            } else if (percentage >= 40) {
+                message = "Bon résultat. Vous avez un bon potentiel.";
+                colorClass = 'text-yellow-400';
+            } else if (percentage >= 20) {
+                message = "C'est un début. Continuez à vous entraîner !";
+                colorClass = 'text-orange-400';
+            } else {
+                message = "Ne vous découragez pas, la logique ça se travaille !";
+                colorClass = 'text-red-500';
+            }
+
+            scoreMessage.textContent = message;
+            scoreDisplay.className = `text-6xl font-black mb-6 ${colorClass}`;
+            
+            // Scroll to top to see results
+            window.scrollTo(0, 0);
+        }
+
+        function restartQuiz() {
+            resultsScreen.classList.add('hidden');
+            introScreen.classList.remove('hidden');
+            quizForm.reset();
+            // Remove selection styles
+            document.querySelectorAll('.options label.selected').forEach(label => {
+                label.classList.remove('selected');
+            });
+        }
+
+        // --- Event Listeners ---
+
+        startBtn.addEventListener('click', startQuiz);
+        submitBtn.addEventListener('click', submitQuiz);
+        restartBtn.addEventListener('click', restartQuiz);
+
+        // Add styling for selected radio button labels
+        quizForm.addEventListener('change', (e) => {
+            if (e.target.type === 'radio') {
+                const name = e.target.name;
+                // Remove 'selected' class from all labels for this question
+                document.querySelectorAll(`input[name="${name}"]`).forEach(radio => {
+                    radio.parentElement.classList.remove('selected');
+                });
+                // Add 'selected' class to the parent label of the checked radio
+                e.target.parentElement.classList.add('selected');
+            }
+        });
+
+    });
+    </script>
+
+</body>
+</html>
+
+

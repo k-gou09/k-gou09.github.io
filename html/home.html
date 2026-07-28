@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>K-gou prod | Immersive Digital Experiences</title>
+        <!-- Tailwind CSS via CDN -->
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link rel="stylesheet" href="../css/news.css">
+        <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
+
+        <style>
+            .home-text {
+                color: #6b21a8; /* texte en violet */
+                font-family: 'Permanent Marker', cursive;
+                font-size: 2rem;
+                font-weight: bold;
+                margin-left: 10px;
+            }
+                
+            .home-mess {
+                text-align: center;
+                font-family: 'Permanent Marker', cursive;
+                font-size: 2rem;
+                font-weight: bold;
+                padding-bottom: 15px;
+            }
+
+            .home-mess1 {
+                text-align: center;
+                font-family: 'Permanent Marker', cursive;
+                font-size: 1.5rem;
+                font-weight: bold;
+                padding-bottom: 15px;
+            }    
+
+            .btn-nano {
+                background: linear-gradient(145deg, #1a1a2a, #0a0a1a);
+                color: #ffffff;
+                border: 1px solid #807f7f;
+                padding: 10px 24px;
+                font-size: 14px;
+                font-weight: bold;
+                border-radius: 8px;
+                cursor: pointer;
+                position: relative;
+                overflow: hidden;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+                text-decoration: none;
+                display: inline-block;
+            }
+
+            .btn-nano::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+                transition: left 0.6s ease;
+            }
+
+            .btn-nano:hover::before {
+                left: 100%;
+            }
+
+            .btn-nano:hover {
+                box-shadow: 0 0 25px rgba(255, 255, 255, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+                text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+            }
+
+            .btn-nano i {
+                margin-right: 8px;
+            }
+
+            /* --- Styles Animation Hacker --- */
+            #hack-title {
+            margin-top: 15px;
+            line-height: 1.2;
+            font-family: monospace;
+            font-size: 1.3rem;
+            color: #a855f7;
+            letter-spacing: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            border-right: 4px solid #a855f7;
+            width: 0;
+            opacity: 0;
+            transition: opacity 1s ease-out;
+            }
+
+            .start-typing {
+                opacity: 1 !important;
+                animation: typing 1.5s steps(13) forwards,
+                           blink .5s step-end infinite alternate;
+            }
+
+            @keyframes typing {
+                from { width: 0 }
+                to   { width: 14ch } /* HELLO WORLD ! = 13 caractères */
+            }
+
+            @keyframes blink {
+                50% { border-color: transparent }
+            }
+
+            /* --- Scrollbar Personnalisée --- */
+            ::-webkit-scrollbar {
+                width: 0;
+                height: 0;
+                
+            }
+            
+
+        </style>
+    </head>
+    <body class="bg-black text-white">
+
+        <!-- Section de Navigation -->
+        <nav class="fixed w-full z-50 bg-black bg-opacity-60 backdrop-filter backdrop-blur-lg border-b border-gray-800">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-20 items-center">
+                    <!-- Logo GAUCHE -->
+                    <div class="flex-shrink-0 flex items-center">
+                        <a href="javascript:void(0)" class="home-link flex items-center">
+                            <span class="text-4xl font-bold tech-font">KGP</span><span id="kpg-subtitle" class="home-text">home</span>
+                        </a>
+                    </div>
+
+                    
+
+                    <!-- Menu DROITE -->
+                    <div class="flex items-center">
+                        <div class="hidden md:block">
+                            <div class="ml-10 flex items-center space-x-8">
+                                <!-- Vos liens ici si nécessaire -->
+                            </div>
+                        </div>
+
+                        <div class="md:hidden flex items-center">
+                            <button id="hamburger-button" class="text-white focus:outline-none">
+                                <i id="hamburger-icon" class="fas fa-bars text-2xl"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Menu Mobile -->
+            <div id="mobile-menu" class="md:hidden fixed top-0 left-0 w-full h-screen bg-black bg-opacity-95 backdrop-blur-lg flex flex-col items-center pt-24 pb-12 overflow-y-auto space-y-8 transform translate-x-full transition-transform duration-300 ease-in-out z-40">
+                
+                <!-- Catégories -->
+                <div class="flex flex-col items-center space-y-4 w-full">
+                    <h2 class="text-2xl font-semibold tech-font gradient-text1 border-b border-gray-700 pb-2 w-2/3 text-center">Catégories</h2>
+                    <a href="home.html" class="text-xl text-#b[5aca8] hover:text-purple-400 transition-colors duration-300 category-link" data-category="All"><i class="fa-regular fa-hand-point-right text-purple-800"></i> Home</a>
+                    <a href="home.html#it-news" class="text-xl text-[#b5aca8] hover:text-purple-400 transition-colors duration-300 category-link" data-category="I.T"><i class="fa-regular fa-hand-point-right text-purple-800"></i> I.T</a>
+                    <a href="home.html#Quizz" class="text-xl text-[#b5aca8] hover:text-purple-400 transition-colors duration-300 category-link" data-category="Tuto"><i class="fa-regular fa-hand-point-right text-purple-800"></i> Quiz</a>
+                    <a href="home.html#Movie" class="text-xl text-[#b5aca8] hover:text-purple-400 transition-colors duration-300 category-link" data-category="News"><i class="fa-regular fa-hand-point-right text-purple-800"></i> Movie</a>
+                    <a href="home.html#Music" class="text-xl text-[#b5aca8] hover:text-purple-400 transition-colors duration-300 category-link" data-category="Music"><i class="fa-regular fa-hand-point-right text-purple-800"></i> Music</a>
+                    <a href="home.html#Cooking" class="text-xl text-[#b5aca8] hover:text-purple-400 transition-colors duration-300 category-link" data-category="Cuisine"><i class="fa-regular fa-hand-point-right text-purple-800"></i> Cuisine</a>
+                </div>
+
+                <!-- Nos Apps -->
+                <div class="flex flex-col items-center space-y-4 w-full">
+                    <h2 class="text-2xl font-semibold tech-font gradient-text1 border-b border-gray-700 pb-2 w-2/3 text-center mt-4">Nos Apps</h2>
+                    <a href="clock.html" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">worldtime</span></a>
+                    <a href="converter.html" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">converter</span></a>
+                    <a href="meteo.html" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">meteo</span></a>
+                    <a href="caddy3.html" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">caddy</span></a>
+                    <a href="timer.html" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">timer</span></a>
+                    <a href="draw.html" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">draw</span></a>
+                    <a href="radio.html" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">radio</span></a>
+                    <a href="notes.html" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">notes</span></a>
+                    <a href="https://k-gou09.github.io/KGP_Compta/index.html" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">Compta</span></a>
+                    <a href="https://k-gou09.github.io/KGP_QRcode/" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">QRcode</span></a>
+                    <a href="https://k-gou09.github.io/KGP_SHA/" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">SHA</span></a>
+                </div>
+
+                <!-- Support -->
+                <div class="flex flex-col items-center space-y-5 w-full">
+                    <h2 class="text-2xl font-semibold tech-font gradient-text1 border-b border-gray-700 pb-2 w-2/3 text-center mt-4">Support</h2>
+                    <a href="https://www.facebook.com/nc.prod.794?locale=fr_FR" target="_blank" class="text-xl text-[#b5aca8] hover:text-purple-400 transition-colors duration-300 flex items-center w-36"><i class="fab fa-facebook text-blue-600 text-2xl w-10"></i> Facebook</a>
+                    <a href="https://www.youtube.com/@kgpsound" target="_blank" class="text-xl text-[#b5aca8] hover:text-purple-400 transition-colors duration-300 flex items-center w-36"><i class="fab fa-youtube text-red-600 text-2xl w-10"></i> YouTube</a>
+                    <a href="https://github.com/k-gou09" target="_blank" class="text-xl text-[#b5aca8] hover:text-purple-400 transition-colors duration-300 flex items-center w-36 mb-10"><i class="fab fa-github text-white text-2xl w-10"></i> GitHub</a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Section Principale du Fil d'Actualité -->
+        <main class="flex h-screen pt-20">
+            <!-- Colonne de Gauche -->
+            <aside class="w-1/5 h-full bg-gray-900 bg-opacity-30 p-6 border-r border-gray-700 hidden sm:block overflow-y-auto pb-10">
+                <h2 class="text-xl font-semibold tech-font gradient-text1 mb-6 ">Catégories</h2>
+
+                <ul class="space-y-3" style="color: #b5aca8;">
+                    <li><a href="home.html" class="hover:text-purple-400 transition-colors duration-300 category-link" data-category="All"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp;Home</a></li>
+                    <li><a href="home.html#it-news" class="hover:text-purple-400 transition-colors duration-300 category-link" data-category="I.T"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp;I.T</a></li>
+                    <li><a href="home.html#Quizz" class="hover:text-purple-400 transition-colors duration-300 category-link" data-category="Tuto"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp;Quiz</a></li>
+                    <li><a href="home.html#Movie" class="hover:text-purple-400 transition-colors duration-300 category-link" data-category="News"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp;Movie</a></li>
+                    <li><a href="home.html#Music" class="hover:text-purple-400 transition-colors duration-300 category-link" data-category="Music"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp;Music</a></li>
+                    <li><a href="home.html#Cooking" class="hover:text-purple-400 transition-colors duration-300 category-link" data-category="Cuisine"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp;Cuisine</a></li>
+                </ul>
+                <div class="mt-10">
+                    <h3 class="text-lg font-medium tech-font gradient-text1 mb-3">Nos Apps</h3>
+                    <ul class="space-y-3" style="color: #b5aca8;">
+                        <li><a href="clock.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">worldtime</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="converter.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">converter</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="qrcode.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">qrcode</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="meteo.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">meteo</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="caddy3.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">caddy</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="timer.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">timer</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="draw.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">draw</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="radio.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">radio</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="notes.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">notes</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="gps.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">gps</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="https://k-gou09.github.io/KGP_Compta/index.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">Compta</span></a></li>
+                        <li><a href="https://k-gou09.github.io/KGP_QRcode/" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">QRcode</span></a></li>
+                        <li><a href="https://k-gou09.github.io/KGP_SHA/" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">SHA</span></a></li>
+                    </ul>
+                </div>
+            </aside>
+
+            <!-- Colonne Centrale -->
+            <section id="news-feed" class="flex-1 h-full overflow-y-auto bg-opacity-50 p-6 md:p-8">
+                <div class="mb-8">
+                    <div class="flex items-center justify-center space-x-4 bg-black bg-opacity-40 border border-gray-700 rounded-xl p-4 shadow-xl w-fit mx-auto">
+                        <img src="../img/v.svg" alt="Chef" class="w-16 h-16">                
+                        <h1 id="kpg-header" class="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold tech-font gradient-text1 text-center">K-GOU PROD</h1>
+                        <img src="../img/v.svg" alt="Chef" class="w-16 h-16">
+                    </div>
+
+                    <!-- Animation Hacker CENTRE -->
+                    <div id="anim" class="hidden sm:flex flex-1 justify-center">
+                        <h2 id="hack-title">!#?%& $#@!?{}</h2>
+                    </div>
+                </div>
+
+                <h2 id="it-news" class="text-2xl sm:text-4xl md:text-4xl font-bold tech-font text-purple-800 mb-8 pt-12">À la une</h2>
+
+                <!-- create website-->
+                <a href="lm_website.html" class="block group transition hover:border hover:border-purple-800 rounded-xl mb-6">
+                    <article id="lm_web" class="bg-gray-800 bg-opacity-70 p-6 rounded-xl shadow-xl group-hover:shadow-2xl flex flex-col sm:flex-row gap-6 items-start">
+    
+                        <!-- Image à gauche -->
+                        <img src="../img/lm_web.png" alt="Thot-9"
+                            class="w-32 h-32 object-cover rounded-lg flex-shrink-0 mx-auto sm:mx-0 transition-transform duration-300 group-hover:scale-105">
+
+                        <!-- Contenu à droite -->
+                        <div class="flex-1 text-center sm:text-left">
+                            <h2 class="text-2xl sm:text-3xl font-semibold mb-3 tech-font underline sm:ml-10 text-white transition-colors duration-300 group-hover:text-purple-400">
+                                Créer un site statique
+                            </h2>
+                            <p class="text-gray-300 mb-4 leading-relaxed sm:ml-10">
+                                 Créer un site statique avec LM studio.
+                                <span class="flex items-center text-purple-800 hover:text-[#ff007a] mt-3 ml-3 transition-colors duration-300">
+                                    Voir la video →
+                                </span>
+                            </p>
+                        </div>
+                    </article>
+                </a>
+
+
+                
+                <h2 id="it-news" class="text-2xl sm:text-3xl md:text-4xl font-bold tech-font text-purple-800 mb-8 pt-12">Section I.T</h2>
+
+                <!-- textinemoji-->
+                <a href="steno.html" class="block group transition hover:border hover:border-purple-800 rounded-xl mb-6">
+                    <article id="steno" class="bg-gray-800 bg-opacity-70 p-6 rounded-xl shadow-xl group-hover:shadow-2xl flex flex-col sm:flex-row gap-6 items-start">
+    
+                        <!-- Image à gauche -->
+                        <img src="../img/steno.png" alt="Thot-9"
+                            class="w-32 h-32 object-cover rounded-lg flex-shrink-0 mx-auto sm:mx-0 transition-transform duration-300 group-hover:scale-105">
+
+                        <!-- Contenu à droite -->
+                        <div class="flex-1 text-center sm:text-left">
+                            <h2 class="text-2xl sm:text-3xl font-semibold mb-3 tech-font underline sm:ml-10 text-white transition-colors duration-300 group-hover:text-purple-400">
+                                Hidden text
+                            </h2>
+                            <p class="text-gray-300 mb-4 leading-relaxed sm:ml-10">
+                                 Une application python pour dissimuler un message dans un texte ou des emojis.
+                                <span class="flex items-center text-purple-800 hover:text-[#ff007a] mt-3 ml-3 transition-colors duration-300">
+                                    Voir la video →
+                                </span>
+                            </p>
+                        </div>
+                    </article>
+                </a>
+
+                <!-- z-image-turbo-->
+                <a href="zimage.html" class="block group transition hover:border hover:border-purple-800 rounded-xl mb-6">
+                    <article id="zimage" class="bg-gray-800 bg-opacity-70 p-6 rounded-xl shadow-xl group-hover:shadow-2xl flex flex-col sm:flex-row gap-6 items-start">
+    
+                        <!-- Image à gauche -->
+                        <img src="../img/zimage.png" alt="Thot-9"
+                            class="w-32 h-32 object-cover rounded-lg flex-shrink-0 mx-auto sm:mx-0 transition-transform duration-300 group-hover:scale-105">
+
+                        <!-- Contenu à droite -->
+                        <div class="flex-1 text-center sm:text-left">
+                            <h2 class="text-2xl sm:text-3xl font-semibold mb-3 tech-font underline sm:ml-10 text-white transition-colors duration-300 group-hover:text-purple-400">
+                                z-image-turbo
+                            </h2>
+                            <p class="text-gray-300 mb-4 leading-relaxed sm:ml-10">
+                                 Un script Python exploitant le modèle Z-Image-Turbo pour générer des images de manière rapide et efficace.
+                                <span class="flex items-center text-purple-800 hover:text-[#ff007a] mt-3 ml-3 transition-colors duration-300">
+                                    Voir la video →
+                                </span>
+                            </p>
+                        </div>
+                    </article>
+                </a>
+
+                <!-- ip_localisation-->
+                <a href="ip_loca.html" class="block group transition hover:border hover:border-purple-800 rounded-xl mb-6">
+                    <article id="ip_loca" class="bg-gray-800 bg-opacity-70 p-6 rounded-xl shadow-xl group-hover:shadow-2xl flex flex-col sm:flex-row gap-6 items-start">
+    
+                        <!-- Image à gauche -->
+                        <img src="../img/ip_loca.png" alt="Thot-9"
+                            class="w-32 h-32 object-cover rounded-lg flex-shrink-0 mx-auto sm:mx-0 transition-transform duration-300 group-hover:scale-105">
+
+                        <!-- Contenu à droite -->
+                        <div class="flex-1 text-center sm:text-left">
+                            <h2 class="text-2xl sm:text-3xl font-semibold mb-3 tech-font underline sm:ml-10 text-white transition-colors duration-300 group-hover:text-purple-400">
+                                IP localisation
+                            </h2>
+                            <p class="text-gray-300 mb-4 leading-relaxed sm:ml-10">
+                                Un script python qui localise une IP et l'affiche sur une map dans un fichier html.
+                                <span class="flex items-center text-purple-800 hover:text-[#ff007a] mt-3 ml-3 transition-colors duration-300">
+                                    Voir la video →
+                                </span>
+                            </p>
+                        </div>
+                    </article>
+                </a>
+
+                <!-- Thot_p2-->
+                <a href="thot_p2.html" class="block group transition hover:border hover:border-purple-800 rounded-xl mb-6">
+                    <article id="thot-9_p2" class="bg-gray-800 bg-opacity-70 p-6 rounded-xl shadow-xl group-hover:shadow-2xl flex flex-col sm:flex-row gap-6 items-start">
+    
+                        <!-- Image à gauche -->
+                        <img src="../img/thot_p2.png" alt="Thot-9"
+                            class="w-32 h-32 object-cover rounded-lg flex-shrink-0 mx-auto sm:mx-0 transition-transform duration-300 group-hover:scale-105">
+
+                        <!-- Contenu à droite -->
+                        <div class="flex-1 text-center sm:text-left">
+                            <h2 class="text-2xl sm:text-3xl font-semibold mb-3 tech-font underline sm:ml-10 text-white transition-colors duration-300 group-hover:text-purple-400">
+                                Thot-9
+                            </h2>
+                            <p class="text-gray-300 mb-4 leading-relaxed sm:ml-10">
+                                Thot-9 version V2 avec des capacités d'administration et de pentest (partie 2).
+                                <span class="flex items-center text-purple-800 hover:text-[#ff007a] mt-3 ml-3 transition-colors duration-300">
+                                    Voir la video →
+                                </span>
+                            </p>
+                        </div>
+                    </article>
+                </a>
+
+                <!-- Thot_p1-->
+                <a href="thot_p1.html" class="block group transition hover:border hover:border-purple-800 rounded-xl mb-6">
+                    <article id="thot-9" class="bg-gray-800 bg-opacity-70 p-6 rounded-xl shadow-xl group-hover:shadow-2xl flex flex-col sm:flex-row gap-6 items-start">
+    
+                        <!-- Image à gauche -->
+                        <img src="../img/thot_p1.png" alt="Thot-9"
+                            class="w-32 h-32 object-cover rounded-lg flex-shrink-0 mx-auto sm:mx-0 transition-transform duration-300 group-hover:scale-105">
+
+                        <!-- Contenu à droite -->
+                        <div class="flex-1 text-center sm:text-left">
+                            <h2 class="text-2xl sm:text-3xl font-semibold mb-3 tech-font underline sm:ml-10 text-white transition-colors duration-300 group-hover:text-purple-400">
+                                Thot-9
+                            </h2>
+                            <p class="text-gray-300 mb-4 leading-relaxed sm:ml-10">
+                                Thot-9 version V2 avec des capacités d'administration et de pentest.
+                                <span class="flex items-center text-purple-800 hover:text-[#ff007a] mt-3 ml-3 transition-colors duration-300">
+                                    Voir la video →
+                                </span>
+                            </p>
+                        </div>
+                    </article>
+                </a>
+
+                <!-- AIwebcoder...  -->
+                <a href="webcoder.html" class="block group transition hover:border hover:border-purple-800 rounded-xl mb-6">
+                    <article id="webcoder" class="bg-gray-800 bg-opacity-70 p-6 rounded-xl shadow-xl group-hover:shadow-2xl flex flex-col sm:flex-row gap-6 items-start">
+    
+                        <!-- Image à gauche -->
+                        <img src="../img/webcoder.png" alt="Rihana Spliff Cover"
+                            class="w-32 h-32 object-cover rounded-lg flex-shrink-0 mx-auto sm:mx-0 transition-transform duration-300 group-hover:scale-105">
+
+                        <!-- Contenu à droite -->
+                        <div class="flex-1 text-center sm:text-left">
+                            <h2 class="text-2xl sm:text-3xl font-semibold mb-3 tech-font underline sm:ml-10 text-white transition-colors duration-300 group-hover:text-purple-400">
+                                AIwebcoder
+                            </h2>
+                            <p class="text-gray-300 mb-4 leading-relaxed sm:ml-10">
+                                Un outil pour créer et modifier des pages web avec l'ia<br>
+                                <span class="flex items-center text-purple-800 hover:text-[#ff007a] mt-3 ml-3 transition-colors duration-300">
+                                    Voir la video →
+                                </span>
+                            </p>
+                        </div>
+                    </article>
+                </a>
+
+
+                <!-- SHAverify...  -->
+                <a href="sha.html" class="block group transition hover:border hover:border-purple-800 rounded-xl mb-6">
+                    <article id="sha256" class="bg-gray-800 bg-opacity-70 p-6 rounded-xl shadow-xl group-hover:shadow-2xl flex flex-col sm:flex-row gap-6 items-start">
+    
+                        <!-- Image à gauche -->
+                        <img src="../img/sha256_fb.png" alt="Rihana Spliff Cover"
+                            class="w-32 h-32 object-cover rounded-lg flex-shrink-0 mx-auto sm:mx-0 transition-transform duration-300 group-hover:scale-105">
+
+                        <!-- Contenu à droite -->
+                        <div class="flex-1 text-center sm:text-left">
+                            <h2 class="text-2xl sm:text-3xl font-semibold mb-3 tech-font underline sm:ml-10 text-white transition-colors duration-300 group-hover:text-purple-400">
+                                SHAveriFy
+                            </h2>
+                            <p class="text-gray-300 mb-4 leading-relaxed sm:ml-10">
+                                Un outil léger et efficace de vérification de hash SHA256 et SHA512<br>
+                                <span class="flex items-center text-purple-800 hover:text-[#ff007a] mt-3 ml-3 transition-colors duration-300">
+                                    Voir la video →
+                                </span>
+                            </p>
+                        </div>
+                    </article>
+                </a>
+
+
+                <!-- google ai...  -->
+                <a href="preview.html" class="block group transition hover:border hover:border-purple-800 rounded-xl mb-6">
+                    <article id="preview" class="bg-gray-800 bg-opacity-70 p-6 rounded-xl shadow-xl group-hover:shadow-2xl flex flex-col sm:flex-row gap-6 items-start">
+    
+                        <!-- Image à gauche -->
+                        <img src="../img/preview1.png" alt="Rihana Spliff Cover"
+                            class="w-32 h-32 object-cover rounded-lg flex-shrink-0 mx-auto sm:mx-0 transition-transform duration-300 group-hover:scale-105">
+
+                        <!-- Contenu à droite -->
+                        <div class="flex-1 text-center sm:text-left">
+                            <h2 class="text-2xl sm:text-3xl font-semibold mb-3 tech-font underline sm:ml-10 text-white transition-colors duration-300 group-hover:text-purple-400">
+                                Google api
+                            </h2>
+                            <p class="text-gray-300 mb-4 leading-relaxed sm:ml-10">
+                                Des applications réalisées avec l'api google<br>
+                                <span class="flex items-center text-purple-800 hover:text-[#ff007a] mt-3 ml-3 transition-colors duration-300">
+                                    Voir la video →
+                                </span>
+                            </p>
+                        </div>
+                    </article>
+                </a>
+
+                <!-- ollama...  -->
+                <a href="ollama1.html" class="block group transition hover:border hover:border-purple-800 rounded-xl mb-6">
+                    <article id="ollama" class="bg-gray-800 bg-opacity-70 p-6 rounded-xl shadow-xl group-hover:shadow-2xl flex flex-col sm:flex-row gap-6 items-start">
+    
+                        <!-- Image à gauche -->
+                        <img src="../img/ollama1.png" alt="Rihana Spliff Cover"
+                            class="w-32 h-32 object-cover rounded-lg flex-shrink-0 mx-auto sm:mx-0 transition-transform duration-300 group-hover:scale-105">
+
+                        <!-- Contenu à droite -->
+                        <div class="flex-1 text-center sm:text-left">
+                            <h2 class="text-2xl sm:text-3xl font-semibold mb-3 tech-font underline sm:ml-10 text-white transition-colors duration-300 group-hover:text-purple-400">
+                                Ollama
+                            </h2>
+                            <p class="text-gray-300 mb-4 leading-relaxed sm:ml-10">
+                                Ollama est une plateforme open source qui permet d’exécuter et de gérer des modèles de langage volumineux (LLM)<br>
+                                <span class="flex items-center text-purple-800 hover:text-[#ff007a] mt-3 ml-3 transition-colors duration-300">
+                                    Lire l'article →
+                                </span>
+                            </p>
+                        </div>
+                    </article>
+                </a>
+                
+
+
+
+                <h2 id="Cooking" class="text-2xl sm:text-3xl md:text-4xl font-bold tech-font text-purple-800 mb-8 pt-12">Section Cooking</h2>
+
+                <!-- Le poulet au soyo...  -->
+                <a href="psoyo.html" class="block group transition hover:border hover:border-purple-800 rounded-xl mb-6">
+                    <article id="psoyo" class="bg-gray-800 bg-opacity-70 p-6 rounded-xl shadow-xl group-hover:shadow-2xl flex flex-col sm:flex-row gap-6 items-start">
+    
+                        <!-- Image à gauche -->
+                        <img src="../img/psoy.png" alt="Rihana Spliff Cover"
+                            class="w-32 h-32 object-cover rounded-lg flex-shrink-0 mx-auto sm:mx-0 transition-transform duration-300 group-hover:scale-105">
+
+                        <!-- Contenu à droite -->
+                        <div class="flex-1 text-center sm:text-left">
+                            <h2 class="text-2xl sm:text-3xl font-semibold mb-3 tech-font underline sm:ml-10 text-white transition-colors duration-300 group-hover:text-purple-400">
+                                Poulet au soyo
+                            </h2>
+                            <p class="text-gray-300 mb-4 leading-relaxed sm:ml-10">
+                                Le poulet au soyo est un plat savoureux et emblématique de la cuisine calédonienne<br>
+                                <span class="flex items-center text-purple-800 hover:text-[#ff007a] mt-3 ml-3 transition-colors duration-300">
+                                    Lire l'article →
+                                </span>
+                            </p>
+                        </div>
+                    </article>
+                </a>
+
+
+                <!-- Salade de poisson...  -->
+                <a href="stahi.html" class="block group transition hover:border hover:border-purple-800 rounded-xl mb-6">
+                    <article id="stahi" class="bg-gray-800 bg-opacity-70 p-6 rounded-xl shadow-xl group-hover:shadow-2xl flex flex-col sm:flex-row gap-6 items-start">
+    
+                        <!-- Image à gauche -->
+                        <img src="../img/spoiss.png" alt="Rihana Spliff Cover"
+                            class="w-32 h-32 object-cover rounded-lg flex-shrink-0 mx-auto sm:mx-0 transition-transform duration-300 group-hover:scale-105">
+
+                        <!-- Contenu à droite -->
+                        <div class="flex-1 text-center sm:text-left">
+                            <h2 class="text-2xl sm:text-3xl font-semibold mb-3 tech-font underline sm:ml-10 text-white transition-colors duration-300 group-hover:text-purple-400">
+                                Salade de poisson au coco
+                            </h2>
+                            <p class="text-gray-300 mb-4 leading-relaxed sm:ml-10">
+                                Du poisson mariné dans du jus de citron et du lait de coco, servi avec des légumes croquants.<br>
+                                <span class="flex items-center text-purple-800 hover:text-[#ff007a] mt-3 ml-3 transition-colors duration-300">
+                                    Lire l'article →
+                                </span>
+                            </p>
+                        </div>
+                    </article>
+                </a>
+
+
+                <!-- civet de cerf...  -->
+                <a href="civcerf.html" class="block group transition hover:border hover:border-purple-800 rounded-xl mb-6">
+                    <article id="civ" class="bg-gray-800 bg-opacity-70 p-6 rounded-xl shadow-xl group-hover:shadow-2xl flex flex-col sm:flex-row gap-6 items-start">
+    
+                        <!-- Image à gauche -->
+                        <img src="../img/civet.png" alt="Rihana Spliff Cover"
+                            class="w-32 h-32 object-cover rounded-lg flex-shrink-0 mx-auto sm:mx-0 transition-transform duration-300 group-hover:scale-105">
+
+                        <!-- Contenu à droite -->
+                        <div class="flex-1 text-center sm:text-left">
+                            <h2 class="text-2xl sm:text-3xl font-semibold mb-3 tech-font underline sm:ml-10 text-white transition-colors duration-300 group-hover:text-purple-400">
+                                Civet de cerf
+                            </h2>
+                            <p class="text-gray-300 mb-4 leading-relaxed sm:ml-10">
+                                Un ragoût de cerf mijoté avec du vin rouge, des herbes et des épices, souvent accompagné de riz ou de légumes.<br>
+                                <span class="flex items-center text-purple-800 hover:text-[#ff007a] mt-3 ml-3 transition-colors duration-300">
+                                    Lire l'article →
+                                </span>
+                            </p>
+                        </div>
+                    </article>
+                </a>
+                
+
+
+                <h2 id="Music" class="text-2xl sm:text-3xl md:text-4xl font-bold tech-font text-purple-800 mb-8 pt-12">Section music</h2>
+
+                <!-- Wu Stallion...  -->
+                <a href="wu.html" class="block group transition hover:border hover:border-purple-800 rounded-xl mb-6">
+                    <article id="sha256" class="bg-gray-800 bg-opacity-70 p-6 rounded-xl shadow-xl group-hover:shadow-2xl flex flex-col sm:flex-row gap-6 items-start">
+    
+                        <!-- Image à gauche -->
+                        <img src="../img/wustallion.png" alt="Rihana Spliff Cover"
+                            class="w-32 h-32 object-cover rounded-lg flex-shrink-0 mx-auto sm:mx-0 transition-transform duration-300 group-hover:scale-105">
+
+                        <!-- Contenu à droite -->
+                        <div class="flex-1 text-center sm:text-left">
+                            <h2 class="text-2xl sm:text-3xl font-semibold mb-3 tech-font underline sm:ml-10 text-white transition-colors duration-300 group-hover:text-purple-400">
+                                Wu Stallion
+                            </h2>
+                            <p class="text-gray-300 mb-4 leading-relaxed sm:ml-10">
+                                Wu Stallion est une collaboration musicale liée à l'univers du Wu-Tang Clan<br>
+                                <span class="flex items-center text-purple-800 hover:text-[#ff007a] mt-3 ml-3 transition-colors duration-300">
+                                    Lire l'article →
+                                </span>
+                            </p>
+                        </div>
+                    </article>
+                </a>
+
+
+                <!-- rihana...  -->
+                <a href="rihana.html" class="block group transition hover:border hover:border-purple-800 rounded-xl mb-6">
+                    <article id="sha256" class="bg-gray-800 bg-opacity-70 p-6 rounded-xl shadow-xl group-hover:shadow-2xl flex flex-col sm:flex-row gap-6 items-start">
+    
+                        <!-- Image à gauche -->
+                        <img src="../img/rspliff.png" alt="Rihana Spliff Cover"
+                            class="w-32 h-32 object-cover rounded-lg flex-shrink-0 mx-auto sm:mx-0 transition-transform duration-300 group-hover:scale-105">
+
+                        <!-- Contenu à droite -->
+                        <div class="flex-1 text-center sm:text-left">
+                            <h2 class="text-2xl sm:text-3xl font-semibold mb-3 tech-font underline sm:ml-10 text-white transition-colors duration-300 group-hover:text-purple-400">
+                                Rihana
+                            </h2>
+                            <p class="text-gray-300 mb-4 leading-relaxed sm:ml-10">
+                                Certains artistes suivent les tendances. D'autres les créent. Et puis il y a Rihanna.<br>
+                                <span class="flex items-center text-purple-800 hover:text-[#ff007a] mt-3 ml-3 transition-colors duration-300">
+                                    Lire l'article →
+                                </span>
+                            </p>
+                        </div>
+                    </article>
+                </a>
+
+
+                <!-- Stefflon Don...  -->
+                <a href="stefflon.html" class="block group transition hover:border hover:border-purple-800 rounded-xl mb-6">
+                    <article id="sha256" class="bg-gray-800 bg-opacity-70 p-6 rounded-xl shadow-xl group-hover:shadow-2xl flex flex-col sm:flex-row gap-6 items-start">
+    
+                        <!-- Image à gauche -->
+                        <img src="../img/stefflon.jpg" alt="Rihana Spliff Cover"
+                            class="w-32 h-32 object-cover rounded-lg flex-shrink-0 mx-auto sm:mx-0 transition-transform duration-300 group-hover:scale-105">
+
+                        <!-- Contenu à droite -->
+                        <div class="flex-1 text-center sm:text-left">
+                            <h2 class="text-2xl sm:text-3xl font-semibold mb-3 tech-font underline sm:ml-10 text-white transition-colors duration-300 group-hover:text-purple-400">
+                                Stefflon Don
+                            </h2>
+                            <p class="text-gray-300 mb-4 leading-relaxed sm:ml-10">
+                                Dans un paysage musical souvent gris, une flamme a jailli. Un mélange incandescent de chaleur dancehall jamaïcaine, 
+                                de swagger rap londonien et d'une sensibilité pop imparable.<br>
+                                <span class="flex items-center text-purple-800 hover:text-[#ff007a] mt-3 ml-3 transition-colors duration-300">
+                                    Lire l'article →
+                                </span>
+                            </p>
+                        </div>
+                    </article>
+                </a>
+
+
+
+
+                <h2 id="Movie" class="text-2xl sm:text-3xl md:text-4xl font-bold tech-font text-purple-800 mb-8 pt-12">Section movie</h2>
+
+                <!-- Top gun...  -->
+                <a href="topgun.html" class="block group transition hover:border hover:border-purple-800 rounded-xl mb-6">
+                    <article id="sha256" class="bg-gray-800 bg-opacity-70 p-6 rounded-xl shadow-xl group-hover:shadow-2xl flex flex-col sm:flex-row gap-6 items-start">
+    
+                        <!-- Image à gauche -->
+                        <img src="../img/topgun4.jpg" alt="Rihana Spliff Cover"
+                            class="w-32 h-32 object-cover rounded-lg flex-shrink-0 mx-auto sm:mx-0 transition-transform duration-300 group-hover:scale-105">
+
+                        <!-- Contenu à droite -->
+                        <div class="flex-1 text-center sm:text-left">
+                            <h2 class="text-2xl sm:text-3xl font-semibold mb-3 tech-font underline sm:ml-10 text-white transition-colors duration-300 group-hover:text-purple-400">
+                                Top gun
+                            </h2>
+                            <p class="text-gray-300 mb-4 leading-relaxed sm:ml-10">
+                                C'est l'histoire de Pete "Maverick" Mitchell, un pilote de chasse talentueux mais rebelle, qui intègre la prestigieuse école de l'aéronavale américaine. <br>
+                                <span class="flex items-center text-purple-800 hover:text-[#ff007a] mt-3 ml-3 transition-colors duration-300">
+                                    Lire l'article →
+                                </span>
+                            </p>
+                        </div>
+                    </article>
+                </a>
+
+
+                <!-- battleship...  -->
+                <a href="battleship.html" class="block group transition hover:border hover:border-purple-800 rounded-xl  mb-6">
+                    <article id="sha256" class="bg-gray-800 bg-opacity-70 p-6 rounded-xl shadow-xl group-hover:shadow-2xl flex flex-col sm:flex-row gap-6 items-start">
+    
+                        <!-- Image à gauche -->
+                        <img src="../img/battleship1.jpg" alt="Rihana Spliff Cover"
+                            class="w-32 h-32 object-cover rounded-lg flex-shrink-0 mx-auto sm:mx-0 transition-transform duration-300 group-hover:scale-105">
+
+                        <!-- Contenu à droite -->
+                        <div class="flex-1 text-center sm:text-left">
+                            <h2 class="text-2xl sm:text-3xl font-semibold mb-3 tech-font underline sm:ml-10 text-white transition-colors duration-300 group-hover:text-purple-400">
+                                Battleship
+                            </h2>
+                            <p class="text-gray-300 mb-4 leading-relaxed sm:ml-10">
+                                Et si une partie de bataille navale se transformait en véritable guerre pour la survie de l'humanité ?<br>
+                                <span class="flex items-center text-purple-800 hover:text-[#ff007a] mt-3 ml-3 transition-colors duration-300">
+                                    Lire l'article →
+                                </span>
+                            </p>
+                        </div>
+                    </article>
+                </a>
+
+
+                <!-- 8miles...  -->
+                <a href="8miles.html" class="block group transition hover:border hover:border-purple-800 rounded-xl mb-6">
+                    <article id="sha256" class="bg-gray-800 bg-opacity-70 p-6 rounded-xl shadow-xl group-hover:shadow-2xl flex flex-col sm:flex-row gap-6 items-start">
+    
+                        <!-- Image à gauche -->
+                        <img src="../img/8m.png" alt="Rihana Spliff Cover"
+                            class="w-32 h-32 object-cover rounded-lg flex-shrink-0 mx-auto sm:mx-0 transition-transform duration-300 group-hover:scale-105">
+
+                        <!-- Contenu à droite -->
+                        <div class="flex-1 text-center sm:text-left">
+                            <h2 class="text-2xl sm:text-3xl font-semibold mb-3 tech-font underline sm:ml-10 text-white transition-colors duration-300 group-hover:text-purple-400">
+                                8miles
+                            </h2>
+                            <p class="text-gray-300 mb-4 leading-relaxed sm:ml-10">
+                                “8 Mile” est un film dramatique percutant qui plonge dans les rues de Détroit à la fin des années 90.<br>
+                                <span class="flex items-center text-purple-800 hover:text-[#ff007a] mt-3 ml-3 transition-colors duration-300">
+                                    Lire l'article →
+                                </span>
+                            </p>
+                        </div>
+                    </article>
+                </a>
+
+
+                <h2 id="Quizz" class="text-2xl sm:text-3xl md:text-4xl font-bold tech-font text-purple-800 mb-8 pt-12">Section quiz</h2>
+
+                <!-- qi_z...  -->
+                <a href="quiz/qi_z.html" class="block group transition hover:border hover:border-purple-800 rounded-xl mb-6">
+                    <article id="quizz1" class="bg-gray-800 bg-opacity-70 p-6 rounded-xl shadow-xl group-hover:shadow-2xl flex flex-col sm:flex-row gap-6 items-start">
+    
+                        <!-- Image à gauche -->
+                        <img src="../img/qi_z.png" alt="quizz1 Cover"
+                            class="w-32 h-32 object-cover rounded-lg flex-shrink-0 mx-auto sm:mx-0 transition-transform duration-300 group-hover:scale-105">
+
+                        <!-- Contenu à droite -->
+                        <div class="flex-1 text-center sm:text-left">
+                            <h2 class="text-2xl sm:text-3xl font-semibold mb-3 tech-font underline sm:ml-10 text-white transition-colors duration-300 group-hover:text-purple-400">
+                                Quiz de Raisonnement et logique
+                            </h2>
+                            <p class="text-gray-300 mb-4 leading-relaxed sm:ml-10">
+                                Ce quiz vous invite à tester votre raisonnement et logique, lancez-vous et voyez jusqu’où vous pouvez aller !<br>
+                                <span class="flex items-center text-purple-800 hover:text-[#ff007a] mt-3 ml-3 transition-colors duration-300">
+                                    Testez votre raisonnement et logique →
+                                </span>
+                            </p>
+                        </div>
+                    </article>
+                </a>
+
+                <!-- quizz2...  -->
+                <a href="quiz/quizz_cal1.html" class="block group transition hover:border hover:border-purple-800 rounded-xl mb-6">
+                    <article id="quizz1" class="bg-gray-800 bg-opacity-70 p-6 rounded-xl shadow-xl group-hover:shadow-2xl flex flex-col sm:flex-row gap-6 items-start">
+    
+                        <!-- Image à gauche -->
+                        <img src="../img/quizz2.png" alt="quizz1 Cover"
+                            class="w-32 h-32 object-cover rounded-lg flex-shrink-0 mx-auto sm:mx-0 transition-transform duration-300 group-hover:scale-105">
+
+                        <!-- Contenu à droite -->
+                        <div class="flex-1 text-center sm:text-left">
+                            <h2 class="text-2xl sm:text-3xl font-semibold mb-3 tech-font underline sm:ml-10 text-white transition-colors duration-300 group-hover:text-purple-400">
+                                Quiz sur le caillou 2
+                            </h2>
+                            <p class="text-gray-300 mb-4 leading-relaxed sm:ml-10">
+                                “Ce quiz vous invite à tester vos connaissances, lancez-vous et voyez jusqu’où vous pouvez aller !<br>
+                                <span class="flex items-center text-purple-800 hover:text-[#ff007a] mt-3 ml-3 transition-colors duration-300">
+                                    Testez vos connaissances →
+                                </span>
+                            </p>
+                        </div>
+                    </article>
+                </a>
+
+                <!-- quizz1...  -->
+                <a href="quiz/quizz_cal.html" class="block group transition hover:border hover:border-purple-800 rounded-xl mb-6">
+                    <article id="quizz1" class="bg-gray-800 bg-opacity-70 p-6 rounded-xl shadow-xl group-hover:shadow-2xl flex flex-col sm:flex-row gap-6 items-start">
+    
+                        <!-- Image à gauche -->
+                        <img src="../img/quizz1.png" alt="quizz1 Cover"
+                            class="w-32 h-32 object-cover rounded-lg flex-shrink-0 mx-auto sm:mx-0 transition-transform duration-300 group-hover:scale-105">
+
+                        <!-- Contenu à droite -->
+                        <div class="flex-1 text-center sm:text-left">
+                            <h2 class="text-2xl sm:text-3xl font-semibold mb-3 tech-font underline sm:ml-10 text-white transition-colors duration-300 group-hover:text-purple-400">
+                                Quiz sur le caillou 1
+                            </h2>
+                            <p class="text-gray-300 mb-4 leading-relaxed sm:ml-10">
+                                “Ce quiz vous invite à tester vos connaissances, lancez-vous et voyez jusqu’où vous pouvez aller !<br>
+                                <span class="flex items-center text-purple-800 hover:text-[#ff007a] mt-3 ml-3 transition-colors duration-300">
+                                    Testez vos connaissances →
+                                </span>
+                            </p>
+                        </div>
+                    </article>
+                
+
+            </section>
+
+            <!-- Colonne de Droite -->
+            <aside class="w-1/5 h-full bg-gray-900 bg-opacity-30 p-6 border-l border-gray-700 hidden lg:block">
+                <h2 class="text-xl font-semibold tech-font gradient-text1 mb-6 mt-6">Liens Utiles</h2>
+                <ul class="space-y-3">
+                    <li><a href="https://github.com/k-gou09" class="hover:text-purple-400 transition-colors duration-300"><i class="fab fa-github" style="color: white;"></i>&nbsp;&nbsp;&nbsp;GITHUB</a></li>
+                    <li><a href="https://www.facebook.com/nc.prod.794?locale=fr_FR" class="hover:text-purple-400 transition-colors duration-300"><i class="fab fa-facebook" style="color: blue;"></i>&nbsp;&nbsp;&nbsp;FACEBOOK</a></li>
+                    <li><a href="https://www.youtube.com/@kgpsound" class="hover:text-purple-400 transition-colors duration-300"><i class="fab fa-youtube" style="color: rgb(245, 3, 3);"></i>&nbsp;&nbsp;&nbsp;YOUTUBE</a></li>
+                </ul>
+                <div class="mt-20 p-4 rounded-lg">
+                    <a href="maintenance.html"><img src="../img/log_kgp1.png" alt="Logo KGP" class="w-full h-auto" style="border-radius: 35%;"></a>                
+                </div>
+            </aside>
+        </main>
+
+        <!-- Footer -->
+        <p class="fixed left-2 bottom-2 z-10 bg-black bg-opacity-80 text-white text-xs px-2 py-1 rounded-md flex items-center gap-1 tech-font">
+            K-gou_Prod
+            <img src="../img/v.svg" alt="Logo" class="w-4 h-4 inline-block filter brightness-0 invert">
+            <a href="https://www.facebook.com/nc.prod.794" class="text-white underline hover:text-blue-300" target="_blank">Studio</a>
+        </p>
+
+        <!-- Scripts -->
+        <script src="../js/news.js"></script>
+        <script>
+            window.addEventListener('load', () => {
+                /* --- Logique Menu Hamburger --- */
+                const hamburgerButton = document.getElementById('hamburger-button');
+                const mobileMenu = document.getElementById('mobile-menu');
+                const hamburgerIcon = document.getElementById('hamburger-icon');
+                const menuLinks = document.querySelectorAll('#mobile-menu a');
+
+                const toggleMenu = () => {
+                    mobileMenu.classList.toggle('translate-x-full');
+                    if (hamburgerIcon.classList.contains('fa-bars')) {
+                        hamburgerIcon.classList.remove('fa-bars');
+                        hamburgerIcon.classList.add('fa-xmark');
+                    } else {
+                        hamburgerIcon.classList.remove('fa-xmark');
+                        hamburgerIcon.classList.add('fa-bars');
+                    }
+                    document.body.classList.toggle('overflow-hidden');
+                };
+
+                hamburgerButton.addEventListener('click', toggleMenu);
+                menuLinks.forEach(link => {
+                    link.addEventListener('click', () => {
+                        if (!mobileMenu.classList.contains('translate-x-full')) {
+                            toggleMenu();
+                        }
+                    });
+                });
+
+                const finalText = "HELLO WORLD !";
+                const chars = "!#?%&$@*+-/<>[]{}";
+                const title = document.getElementById("hack-title");
+
+                function scramble() {
+                    let iterations = 0;
+                    const interval = setInterval(() => {
+                        const displayed = title.innerText
+                            .split("")
+                            .map((char, i) => {
+                                if (i < iterations) return finalText[i];
+                                return chars[Math.floor(Math.random() * chars.length)];
+                            })
+                            .join("");
+
+                        title.innerText = displayed;
+
+                        if (iterations >= finalText.length) {
+                            clearInterval(interval);
+
+                            /* Attendre 3 secondes puis disparition */
+                            setTimeout(() => {
+                                title.style.setProperty('opacity', '0', 'important');
+                            }, 3000);
+                        }
+
+                        iterations += 0.25;
+                    }, 60);
+                }
+
+                // Séquence de lancement
+                // A. Attendre 2 secondes après chargement
+                setTimeout(() => {
+                    // B. Lancer l'animation CSS (typing)
+                    title.classList.add('start-typing');
+                    
+                    // C. Lancer le Scramble après la fin du typewriter (1.5s + marge = 1.6s)
+                    setTimeout(scramble, 1600);
+                }, 2000);
+
+            });
+        </script>
+    </body>
+</html>

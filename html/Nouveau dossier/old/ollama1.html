@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<style>
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: #0d0211; }
+::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #bf00ff, #7a00cc); border-radius: 5px; border: 2px solid #0d0211; }
+::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #d400ff, #bf00ff); }
+
+
+
+
+</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Article : Ollama - L'IA sur votre machine - K-gou prod</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome pour les icônes -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <!-- Polices modernes : Inter pour le texte, Playfair Display pour les titres -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+
+    <style>
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: #0d0211; }
+::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #bf00ff, #7a00cc); border-radius: 5px; border: 2px solid #0d0211; }
+::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #d400ff, #bf00ff); }
+        /* --- NOUVEAU : Variables et Styles de base pour un look moderne --- */
+        :root {
+            --color-bg: #0d0211;
+            --color-bg-alt: #10101A;
+            --color-card: #161728;
+            --color-text: #E0E0E0;
+            --color-text-muted: #8892b0;
+            --color-accent: #7C3AED; /* Violet */
+            --color-accent-light: #A78BFA;
+            --gradient-main: linear-gradient(90deg, #7C3AED, #DB2777);
+        }
+
+        body {
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        /* Police spéciale pour les titres */
+        .tech-font {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        /* Classe pour le texte en dégradé */
+        .gradient-text {
+            background-image: var(--gradient-main);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        /* Styles de l'article */
+        .article-content h2 {
+            @apply text-3xl md:text-4xl font-bold tech-font mt-12 mb-6;
+        }
+        .article-content p {
+            @apply text-lg text-gray-300 leading-relaxed mb-4;
+        }
+        /* Style amélioré pour les listes */
+        .article-content ul {
+            @apply space-y-3 mb-6;
+        }
+        .article-content ul li {
+            @apply flex items-start;
+        }
+        .article-content ul li::before {
+            content: '\f058'; /* Icône de cercle coché de Font Awesome */
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            color: var(--color-accent-light);
+            @apply mr-3 mt-1 text-lg;
+        }
+        .article-content code:not(.language-bash) {
+            @apply bg-purple-900/50 text-purple-300 px-2 py-1 rounded-md font-mono text-sm;
+        }
+
+        /* --- NOUVEAU : Styles pour les animations au défilement --- */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+        }
+        .animate-on-scroll.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="bg-[var(--color-bg)]">
+    
+    <!-- Section de Navigation -->
+    <nav class="fixed w-full z-50 bg-black/60 backdrop-blur-lg border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="#" class="text-2xl font-bold gradient-text tech-font">K-gou Prod</a>
+                <!-- Bouton de retour amélioré -->
+                <a href="news.html#ollama" class="hidden md:inline-block bg-purple-600/20 text-white px-5 py-2 rounded-full font-medium border border-purple-500 hover:bg-purple-600/40 transition-all duration-300 group">
+                    Retour <i class="fas fa-arrow-right ml-1 group-hover:translate-x-1 transition-transform"></i>
+                </a>
+                <div class="md:hidden flex items-center">
+                    <button id="hamburger-button" class="text-white focus:outline-none z-[60]">
+                        <i id="hamburger-icon" class="fas fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Menu Mobile (inchangé, déjà bien fait) -->
+        <div id="mobile-menu" class="md:hidden fixed top-0 left-0 w-full h-screen bg-black/95 flex flex-col items-center justify-center space-y-8 transform translate-x-full transition-transform duration-300 ease-in-out z-50">
+            <!-- Liens du menu... -->
+            <a href="news.html#ollama" class="text-3xl font-bold hover:text-purple-400 transition-colors duration-300 mt-8 border-t border-gray-700 pt-6">Retour</a>
+        </div>
+    </nav>
+
+    <!-- Contenu de l'Article -->
+    <main class="pt-24 pb-12 bg-[var(--color-bg-alt)] text-white" id="article-start">
+        <article class="max-w-4xl mx-auto px-6 py-8">
+            
+            <header class="mb-12 text-center">
+                 <!-- AMÉLIORATION : Logo avec effet de lueur en arrière-plan -->
+                <div class="relative w-40 h-40 mx-auto mb-8 flex items-center justify-center animate-on-scroll">
+                    <div class="absolute inset-0 bg-purple-500 rounded-full blur-2xl opacity-30"></div>
+                    <!-- Logo d'Ollama -->
+                    <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/ollama-dark.svg" alt="Ollama Logo" class="relative z-10 w-64 h-64 object-contain">
+                </div>
+
+                <h1 class="text-4xl md:text-6xl font-bold tech-font gradient-text mb-4 animate-on-scroll" data-delay="100">
+                    Ollama
+                </h1>
+                <p class="text-xl text-gray-300 mb-4 animate-on-scroll" data-delay="200">L'IA Locale, Libérée et Démocratisée</p>
+                <p class="text-gray-500 text-sm animate-on-scroll" data-delay="300">
+                    Par K-gou Prod | Publié le <time datetime="2024-05-21">21 Mai 2024</time>
+                </p>
+            </header>
+
+            <div class="article-content">
+                <section class="mb-8 animate-on-scroll">
+                    <p>Pendant des années, l'accès aux grands modèles de langage (LLM) ressemblait à une conversation avec un oracle lointain, confiné dans les forteresses numériques des géants du cloud. Puissant, certes, mais distant, coûteux et opaque. Et si l'on pouvait rapatrier cet oracle, le faire descendre de son nuage pour l'installer confortablement dans notre propre machine ? C'est le pari fou et la promesse tenue par Ollama.</p>
+                    <!-- NOUVEAU : Blockquote stylisé pour attirer l'attention -->
+                    <blockquote class="my-8 p-6 border-l-4 border-purple-500 bg-[var(--color-card)] rounded-r-lg italic text-gray-300">
+                        "Faire tourner des modèles comme Llama 3 ou Mistral sur votre ordinateur portable ne devrait pas être plus compliqué que de lancer une application."
+                        <cite class="block not-italic text-sm text-gray-500 mt-2">- La philosophie d'Ollama</cite>
+                    </blockquote>
+                    <p>Ollama n'est pas juste un outil, c'est un acte de libération. Il brise les chaînes de la dépendance au cloud et redonne le pouvoir aux créateurs, aux développeurs et aux curieux. Il transforme votre ordinateur en un puissant laboratoire d'IA personnel, privé et entièrement sous votre contrôle.</p>
+                </section>
+
+                <section class="mb-8 animate-on-scroll">
+                    <h2 class="gradient-text">La Magie en Quatre Piliers</h2>
+                    <p>Comment Ollama réussit-il ce tour de force ? En orchestrant avec une élégance déconcertante quatre éléments fondamentaux qui, ensemble, changent radicalement la donne pour l'IA locale.</p>
+                    <!-- AMÉLIORATION : Remplacement de la liste par des cartes stylisées -->
+                    <div class="grid md:grid-cols-2 gap-6 mt-6">
+                        <div class="bg-[var(--color-card)] p-6 rounded-xl border border-gray-800 hover:border-purple-500 transition-all duration-300 transform hover:-translate-y-1 animate-on-scroll">
+                            <i class="fas fa-terminal text-2xl text-purple-400 mb-3"></i>
+                            <h3 class="font-bold text-xl mb-2 text-white">Simplicité Radicale</h3>
+                            <p class="text-gray-400 text-base">Oubliez les configurations complexes. Une seule commande, <code>ollama run</code>, et l'IA est à vous. Il gère tout : téléchargement, configuration, exécution.</p>
+                        </div>
+                        <div class="bg-[var(--color-card)] p-6 rounded-xl border border-gray-800 hover:border-purple-500 transition-all duration-300 transform hover:-translate-y-1 animate-on-scroll" data-delay="100">
+                            <i class="fas fa-user-secret text-2xl text-purple-400 mb-3"></i>
+                            <h3 class="font-bold text-xl mb-2 text-white">Confidentialité Totale</h3>
+                            <p class="text-gray-400 text-base">Vos données, vos prompts, vos créations ne quittent jamais votre machine. Une souveraineté numérique absolue, sans compromis.</p>
+                        </div>
+                        <div class="bg-[var(--color-card)] p-6 rounded-xl border border-gray-800 hover:border-purple-500 transition-all duration-300 transform hover:-translate-y-1 animate-on-scroll" data-delay="200">
+                            <i class="fas fa-box-open text-2xl text-purple-400 mb-3"></i>
+                            <h3 class="font-bold text-xl mb-2 text-white">Vaste Bibliothèque de Modèles</h3>
+                            <p class="text-gray-400 text-base">Accédez instantanément aux meilleurs modèles open source du moment : Llama 3, Mistral, Phi-3, et bien d'autres, prêts à l'emploi.</p>
+                        </div>
+                        <div class="bg-[var(--color-card)] p-6 rounded-xl border border-gray-800 hover:border-purple-500 transition-all duration-300 transform hover:-translate-y-1 animate-on-scroll" data-delay="300">
+                            <i class="fas fa-plug text-2xl text-purple-400 mb-3"></i>
+                            <h3 class="font-bold text-xl mb-2 text-white">Intégration Transparente</h3>
+                            <p class="text-gray-400 text-base">Ollama expose une API locale compatible avec les standards OpenAI. Intégrez l'IA dans vos propres applications avec une facilité déconcertante.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="mb-8 animate-on-scroll">
+                    <h2 class="text-purple-400">Pourquoi Ollama Change la Donnée</h2>
+                    <p>Au-delà de la prouesse technique, l'ascension d'Ollama s'explique par une réponse parfaite aux frustrations et aux désirs de la communauté tech. Il ne se contente pas de résoudre un problème, il incarne un changement de paradigme.</p>
+                    <ul>
+                        <li><strong>La fin de la dépendance :</strong> Plus besoin de clés API, de surveiller sa facturation ou de subir les limitations d'un service tiers. L'IA fonctionne hors ligne, en toute autonomie.</li>
+                        <li><strong>Un bac à sable pour l'innovation :</strong> Expérimentez, testez, cassez, réparez. Ollama offre un terrain de jeu sans risque et sans coût pour prototyper les applications de demain.</li>
+                        <li><strong>La performance optimisée :</strong> Loin d'être lent, Ollama est optimisé pour tirer le meilleur parti de votre matériel, qu'il s'agisse du CPU ou des GPU de Mac, Windows et Linux.</li>
+                        <li><strong>Le pouvoir de la personnalisation :</strong> Avec Ollama, vous pouvez facilement créer vos propres variantes de modèles via un simple `Modelfile`, adaptant l'IA à vos besoins spécifiques.</li>
+                    </ul>
+                </section>
+
+                <section class="mb-8 animate-on-scroll">
+                    <h2>Votre IA Personnelle en 3 Minutes Chrono</h2>
+                    <p>Assez parlé. Il est temps d'agir. Lancer votre propre instance d'un des modèles les plus avancés au monde est ridiculement simple. Après avoir téléchargé et installé Ollama depuis son site officiel, ouvrez un terminal et tapez la commande magique :</p>
+                    <!-- AMÉLIORATION : Bloc de code avec bouton de copie -->
+                    <div class="bg-gray-900 rounded-lg my-4 relative group">
+                        <button class="copy-btn absolute top-2 right-2 bg-gray-700 text-gray-300 px-2 py-1 text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity">Copier</button>
+                        <pre class="p-4 rounded-lg overflow-x-auto"><code class="language-bash text-white">ollama run llama3</code></pre>
+                    </div>
+                    <p>Et voilà. Ollama va télécharger le modèle Llama 3 de Meta (si ce n'est pas déjà fait) et vous présenter une invite de commande. Vous pouvez commencer à discuter avec votre IA personnelle instantanément. Explorez ensuite d'autres intelligences en essayant <code>ollama run mistral</code> ou <code>ollama run phi3</code>. Le pouvoir est littéralement au bout de vos doigts.</p>
+                </section>
+
+                <section class="animate-on-scroll">
+                    <h2 class="gradient-text">Conclusion : L'Aube de l'IA Personnelle</h2>
+                    <p>Ollama est bien plus qu'un simple logiciel. C'est le manifeste d'une nouvelle ère : celle de l'IA personnelle, souveraine et créative. En plaçant les outils les plus puissants directement entre nos mains, il ne fait pas que démocratiser la technologie ; il démultiplie notre potentiel. Il nous invite à ne plus être de simples consommateurs d'IA, mais à en devenir les architectes. L'avenir de l'intelligence artificielle ne s'écrira pas seulement dans le cloud, mais aussi, et surtout, sur nos propres machines.</p>
+                </section>
+            </div>
+        </article>
+    </main>
+
+    <!-- NOUVEAU : Pied de page sémantique et stylisé -->
+    <footer class="bg-[var(--color-bg)] border-t border-gray-800 py-8">
+        <div class="max-w-7xl mx-auto px-6 text-center text-gray-500">
+            <p class="font-bold text-lg text-white mb-4 tech-font">K-gou Prod</p>
+            <div class="flex justify-center space-x-6 mb-6">
+                <a href="https://www.facebook.com/nc.prod.794" target="_blank" class="hover:text-white transition-colors"><i class="fab fa-facebook-f text-xl"></i></a>
+                <a href="#" target="_blank" class="hover:text-white transition-colors"><i class="fab fa-github text-xl"></i></a>
+            </div>
+            <p class="text-sm">© 2024 K-gou Prod. Tous droits réservés.</p>
+        </div>
+    </footer>
+    
+    <!-- NOUVEAU : Bouton pour remonter en haut -->
+    <button id="scroll-to-top" class="fixed bottom-5 right-5 w-12 h-12 bg-purple-600 text-white rounded-full flex items-center justify-center shadow-lg hover:bg-purple-700 transition-all duration-300 opacity-0 translate-y-4">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Script du menu mobile (votre code, qui est très bien) ---
+            const hamburgerButton = document.getElementById('hamburger-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const hamburgerIcon = document.getElementById('hamburger-icon');
+            
+            const toggleMenu = () => {
+                mobileMenu.classList.toggle('translate-x-full');
+                hamburgerIcon.classList.toggle('fa-bars');
+                hamburgerIcon.classList.toggle('fa-xmark');
+                document.body.classList.toggle('overflow-hidden', !mobileMenu.classList.contains('translate-x-full'));
+            };
+
+            hamburgerButton.addEventListener('click', toggleMenu);
+            mobileMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', toggleMenu));
+
+            // --- NOUVEAU : Script pour le bouton "Copier" ---
+            document.querySelectorAll('.copy-btn').forEach(button => {
+                button.addEventListener('click', () => {
+                    const pre = button.parentElement;
+                    const code = pre.querySelector('code');
+                    navigator.clipboard.writeText(code.innerText).then(() => {
+                        button.innerText = 'Copié !';
+                        setTimeout(() => { button.innerText = 'Copier'; }, 2000);
+                    });
+                });
+            });
+
+            // --- NOUVEAU : Script pour l'animation au défilement ---
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const delay = parseInt(entry.target.dataset.delay) || 0;
+                        setTimeout(() => {
+                            entry.target.classList.add('is-visible');
+                        }, delay);
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+
+            // --- NOUVEAU : Script pour le bouton de retour en haut ---
+            const scrollToTopButton = document.getElementById('scroll-to-top');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 400) {
+                    scrollToTopButton.classList.remove('opacity-0', 'translate-y-4');
+                } else {
+                    scrollToTopButton.classList.add('opacity-0', 'translate-y-4');
+                }
+            });
+            scrollToTopButton.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        });
+    </script>    
+</body>
+</html>
+
+

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<style>
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: #0d0211; }
+::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #bf00ff, #7a00cc); border-radius: 5px; border: 2px solid #0d0211; }
+::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #d400ff, #bf00ff); }
+
+
+
+
+</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Article : Rihanna, L'Icône - K-gou prod</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome pour les icônes -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <!-- Polices modernes : Inter pour le texte, Playfair Display pour les titres -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+
+    <style>
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: #0d0211; }
+::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #bf00ff, #7a00cc); border-radius: 5px; border: 2px solid #0d0211; }
+::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #d400ff, #bf00ff); }
+        /* --- Styles de base (inchangés) --- */
+        :root {
+            --color-bg: #0d0211;
+            --color-bg-alt: #10101A;
+            --color-card: #161728;
+            --color-text: #E0E0E0;
+            --color-text-muted: #8892b0;
+            --color-accent: #7C3AED; /* Violet */
+            --color-accent-light: #A78BFA;
+            --gradient-main: linear-gradient(90deg, #7C3AED, #DB2777);
+        }
+
+        body {
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        .tech-font {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .gradient-text {
+            background-image: var(--gradient-main);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        /* --- Styles de l'article adaptés pour un artiste --- */
+        /* CORRECTION : Remplacement des @apply par du CSS standard */
+        .article-content h2 {
+            font-size: 1.875rem; /* 3xl */
+            line-height: 2.25rem;
+            font-weight: 700;
+            font-family: 'Playfair Display', serif;
+            margin-top: 3rem; /* mt-12 */
+            margin-bottom: 1.5rem; /* mb-6 */
+        }
+        @media (min-width: 768px) {
+            .article-content h2 {
+                font-size: 2.25rem; /* md:text-4xl */
+                line-height: 2.5rem;
+            }
+        }
+
+        .article-content p {
+            font-size: 1.125rem; /* text-lg */
+            line-height: 1.75rem;
+            color: #D1D5DB; /* text-gray-300 */
+            margin-bottom: 1rem; /* mb-4 */
+        }
+        .article-content ul {
+            margin-bottom: 1.5rem; /* mb-6 */
+        }
+        .article-content ul li {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 0.75rem; /* space-y-3 */
+        }
+        /* Icône étoile pour les réussites */
+        .article-content ul li::before {
+            content: '\f005'; /* Icône étoile de Font Awesome */
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            color: var(--color-accent-light);
+            margin-right: 0.75rem; /* mr-3 */
+            margin-top: 0.25rem; /* mt-1 */
+            font-size: 1.125rem; /* text-lg */
+        }
+
+        /* Styles pour les animations (inchangés) */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+        }
+        .animate-on-scroll.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="bg-[var(--color-bg)]">
+    
+    <!-- Section de Navigation -->
+    <nav class="fixed w-full z-50 bg-black/60 backdrop-blur-lg border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="#" class="text-2xl font-bold gradient-text tech-font">K-gou Prod</a>
+                <!-- Bouton de retour amélioré -->
+                <a href="news.html#rihana" class="hidden md:inline-block bg-purple-600/20 text-white px-5 py-2 rounded-full font-medium border border-purple-500 hover:bg-purple-600/40 transition-all duration-300 group">
+                    Retour <i class="fas fa-arrow-right ml-1 group-hover:translate-x-1 transition-transform"></i>
+                </a>
+                <div class="md:hidden flex items-center">
+                    <button id="hamburger-button" class="text-white focus:outline-none z-[60]">
+                        <i id="hamburger-icon" class="fas fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Menu Mobile -->
+        <div id="mobile-menu" class="md:hidden fixed top-0 left-0 w-full h-screen bg-black/95 flex flex-col items-center justify-center space-y-8 transform translate-x-full transition-transform duration-300 ease-in-out z-50">
+            <a href="news.html#rihana" class="text-3xl font-bold hover:text-purple-400 transition-colors duration-300 mt-8 border-t border-gray-700 pt-6">Retour</a>
+        </div>
+    </nav> <!-- CORRECTION : Balise </nav> fermante ajoutée ici -->
+
+
+    <!-- Header Héroïque -->
+    <header class="relative h-[60vh] md:h-[80vh] flex items-center justify-center text-center text-white overflow-hidden">
+        <!-- EMPLACEMENT PHOTO : IMAGE DE FOND PRINCIPALE (PORTRAIT ICONIQUE DE RIHANNA) -->
+        <div class="absolute inset-0 bg-gray-900">
+             <img src="../img/rihana.jpg" alt="Rihanna en portrait" class="w-full h-full object-cover opacity-30 mt-20">
+        </div>
+        
+        <div class="relative z-10 p-4 mt-40">
+            <h1 class="text-5xl md:text-8xl font-bold tech-font gradient-text mb-4 animate-on-scroll">
+                RIHANNA
+            </h1>
+            <p class="text-xl md:text-3xl text-gray-200 animate-on-scroll" data-delay="200">
+                De la Musique à l'Empire, l'Architecte d'une Icône
+            </p>
+        </div>
+    </header>
+
+    <!-- Contenu de l'Article -->
+    <main class="bg-[var(--color-bg-alt)] text-white" id="article-start">
+        <article class="max-w-5xl mx-auto px-6 py-16">
+            
+            <div class="article-content">
+                <section class="mb-16 animate-on-scroll text-center">
+                    <p class="max-w-3xl mx-auto">Certains artistes suivent les tendances. D'autres les créent. Et puis il y a Rihanna. Une force de la nature qui a non seulement dominé les charts mondiaux pendant plus d'une décennie, mais qui a aussi redéfini les notions de beauté, de mode et d'entrepreneuriat. Plus qu'une chanteuse, elle est un phénomène culturel, une magnat des affaires et une icône indélébile de notre époque.</p>
+                </section>
+
+                <!-- Section Discographie -->
+                <section class="mb-16 animate-on-scroll">
+                    <h2 class="gradient-text text-center">Une Discographie Qui a Changé la Pop</h2>
+                    <p class="text-center mb-10">Huit albums studio, une avalanche de hits planétaires. Chaque album est une photographie de son évolution, une pierre angulaire de la pop moderne.</p>
+                    
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <!-- Carte Album 1 -->
+                        <div class="bg-[var(--color-card)] p-4 rounded-xl border border-gray-800 text-center transform hover:-translate-y-2 transition-transform duration-300">
+                            <!-- EMPLACEMENT PHOTO : POCHETTE D'ALBUM (ex: Good Girl Gone Bad) -->
+                            <img src="../img/rihana1.jpg" alt="Pochette Good Girl Gone Bad" class="w-full h-auto rounded-lg mb-4">
+                            <h3 class="font-bold text-xl text-white">Good Girl Gone Bad</h3>
+                            <p class="text-gray-400">2007 - Le tournant. La naissance de la superstar avec des hymnes comme "Umbrella" et "Don't Stop the Music".</p>
+                        </div>
+                        <!-- Carte Album 2 -->
+                        <div class="bg-[var(--color-card)] p-4 rounded-xl border border-gray-800 text-center transform hover:-translate-y-2 transition-transform duration-300">
+                            <!-- EMPLACEMENT PHOTO : POCHETTE D'ALBUM (ex: Loud) -->
+                            <img src="../img/rihana2.jpg" alt="Pochette Loud" class="w-full h-auto rounded-lg mb-4">
+                            <h3 class="font-bold text-xl text-white">Loud</h3>
+                            <p class="text-gray-400">2010 - Une explosion de couleurs et de hits pop audacieux qui a cimenté son statut de reine des charts.</p>
+                        </div>
+                        <!-- Carte Album 3 -->
+                        <div class="bg-[var(--color-card)] p-4 rounded-xl border border-gray-800 text-center transform hover:-translate-y-2 transition-transform duration-300">
+                             <!-- EMPLACEMENT PHOTO : POCHETTE D'ALBUM (ex: Anti) -->
+                            <img src="../img/rihana3.jpg" alt="Pochette Anti" class="w-full h-auto rounded-lg mb-4">
+                            <h3 class="font-bold text-xl text-white">Anti</h3>
+                            <p class="text-gray-400">2016 - Son chef-d'œuvre. Un album introspectif, audacieux et intemporel, acclamé par la critique.</p>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Section Empire Commercial -->
+                <section class="mb-16 animate-on-scroll">
+                    <h2 class="text-purple-400 text-center">L'Empire au-delà de la Musique</h2>
+                    <p class="text-center mb-10">Quand la musique ne suffisait plus, elle a bâti un empire. Avec une vision claire, Rihanna a bouleversé des industries entières.</p>
+
+                    <div class="flex flex-col md:flex-row gap-8 items-center">
+                        <div class="md:w-1/2">
+                            <!-- EMPLACEMENT PHOTO : PRODUITS FENTY BEAUTY OU VISUEL DE LA MARQUE -->
+                            <img src="../img/rihana4.png" alt="Produits Fenty Beauty" class="rounded-lg shadow-2xl">
+                        </div>
+                        <div class="md:w-1/2">
+                            <h3 class="text-2xl font-bold tech-font text-white mb-3">Fenty Beauty & Savage X Fenty</h3>
+                            <p>Avec Fenty Beauty, elle a imposé l'inclusivité comme une norme, offrant 40 teintes de fond de teint dès son lancement et changeant à jamais l'industrie cosmétique. Avec Savage X Fenty, elle a célébré tous les corps, transformant la lingerie en un symbole de confiance et de pouvoir pour tous.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section Jalons -->
+                <section class="mb-16 animate-on-scroll">
+                    <h2 class="gradient-text text-center">Les Jalons d'une Légende</h2>
+                    <ul>
+                        <li><strong>Plus de 250 millions de disques vendus</strong>, faisant d'elle l'une des artistes les plus vendues de tous les temps.</li>
+                        <li><strong>9 Grammy Awards</strong> et d'innombrables autres récompenses musicales.</li>
+                        <li><strong>Lancement de Fenty Beauty en 2017</strong>, une révolution dans le monde de la beauté.</li>
+                        <li><strong>Performance iconique au Super Bowl Halftime Show en 2023</strong>, regardée par plus de 121 millions de téléspectateurs.</li>
+                        <li><strong>Nommée Héroïne Nationale de la Barbade</strong>, sa terre natale.</li>
+                    </ul>
+                </section>
+
+                <!-- Section Galerie -->
+                <section class="animate-on-scroll">
+                    <h2 class="text-purple-400 text-center">Icône de Style</h2>
+                     <p class="text-center mb-10">Caméléon de la mode, chaque apparition de Rihanna est un événement. Voici un aperçu de ses looks les plus mémorables.</p>
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        <!-- EMPLACEMENT PHOTO : LOOKS ICONIQUES (Met Gala, Street Style, etc.) -->
+                        <img src="../img/rihana5.jpg" alt="Look iconique de Rihanna 1" class="rounded-lg w-full h-full object-cover">
+                        <img src="../img/rihana6.jpg" alt="Look iconique de Rihanna 2" class="rounded-lg w-full h-full object-cover">
+                        <img src="../img/rihana7.jpg" alt="Look iconique de Rihanna 3" class="rounded-lg w-full h-full object-cover">
+                        <img src="../img/rihana8.jpg" class="hidden md:block rounded-lg w-full h-full object-cover">
+                        <img src="../img/rihana9.jpg" class="hidden md:block rounded-lg w-full h-full object-cover">
+                        <img src="../img/rihana10.jpg" class="hidden md:block rounded-lg w-full h-full object-cover">
+                    </div>
+                </section>
+
+            </div>
+        </article>
+    </main>
+
+    <!-- Pied de page -->
+    <footer class="bg-[var(--color-bg)] border-t border-gray-800 py-8">
+        <div class="max-w-7xl mx-auto px-6 text-center text-gray-500">
+            <p class="font-bold text-lg text-white mb-4 tech-font">K-gou Prod</p>
+            <div class="flex justify-center space-x-6 mb-6">
+                <a href="https://www.facebook.com/nc.prod.794" target="_blank" class="hover:text-white transition-colors"><i class="fab fa-facebook-f text-xl"></i></a>
+                <a href="#" target="_blank" class="hover:text-white transition-colors"><i class="fab fa-github text-xl"></i></a>
+            </div>
+            <p class="text-sm">© 2024 K-gou Prod. Tous droits réservés.</p>
+        </div>
+    </footer>
+    
+    <!-- Bouton pour remonter en haut -->
+    <button id="scroll-to-top" class="fixed bottom-5 right-5 w-12 h-12 bg-purple-600 text-white rounded-full flex items-center justify-center shadow-lg hover:bg-purple-700 transition-all duration-300 opacity-0 translate-y-4">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Script du menu mobile ---
+            const hamburgerButton = document.getElementById('hamburger-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const hamburgerIcon = document.getElementById('hamburger-icon');
+            
+            const toggleMenu = () => {
+                mobileMenu.classList.toggle('translate-x-full');
+                hamburgerIcon.classList.toggle('fa-bars');
+                hamburgerIcon.classList.toggle('fa-xmark');
+                document.body.classList.toggle('overflow-hidden', !mobileMenu.classList.contains('translate-x-full'));
+            };
+
+            hamburgerButton.addEventListener('click', toggleMenu);
+            mobileMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', toggleMenu));
+
+            // --- Script pour l'animation au défilement ---
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const delay = parseInt(entry.target.dataset.delay) || 0;
+                        setTimeout(() => {
+                            entry.target.classList.add('is-visible');
+                        }, delay);
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+
+            // --- Script pour le bouton de retour en haut ---
+            const scrollToTopButton = document.getElementById('scroll-to-top');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 400) {
+                    scrollToTopButton.classList.remove('opacity-0', 'translate-y-4');
+                } else {
+                    scrollToTopButton.classList.add('opacity-0', 'translate-y-4');
+                }
+            });
+            scrollToTopButton.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        });
+    </script>    
+</body>
+</html>
+
+

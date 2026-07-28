@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>K-gou prod | KGP Navigator NC</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link rel="stylesheet" href="../css/news.css">
+        <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+        <style>
+            .home-text {
+                color: #6b21a8;
+                font-family: 'Permanent Marker', cursive;
+                font-size: 2rem;
+                font-weight: bold;
+                margin-left: 10px;
+            }
+            #hack-title {
+                margin-top: 15px;
+                line-height: 1.2;
+                font-family: monospace;
+                font-size: 1.3rem;
+                color: #a855f7;
+                letter-spacing: 2px;
+                white-space: nowrap;
+                overflow: hidden;
+                border-right: 4px solid #a855f7;
+                width: 0;
+                opacity: 0;
+                transition: opacity 1s ease-out;
+            }
+            .start-typing {
+                opacity: 1 !important;
+                animation: typing 1.5s steps(13) forwards, blink .5s step-end infinite alternate;
+            }
+            @keyframes typing { from { width: 0 } to { width: 14ch } }
+            @keyframes blink { 50% { border-color: transparent } }
+            ::-webkit-scrollbar { width: 0; height: 0; }
+
+            #nav-map {
+                width: 100%;
+                height: 100%;
+                min-height: 500px;
+                border-radius: 12px;
+                z-index: 1;
+                background: #0a0a12;
+            }
+            .nav-glass {
+                background: rgba(10, 10, 20, 0.9);
+                backdrop-filter: blur(12px);
+                border: 1px solid rgba(168, 85, 247, 0.25);
+                border-radius: 12px;
+            }
+            .nav-btn {
+                background: linear-gradient(145deg, #1a1a2a, #0a0a1a);
+                color: #e0e0e0;
+                border: 1px solid #4a4a6a;
+                padding: 8px 14px;
+                font-size: 12px;
+                font-weight: bold;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                white-space: nowrap;
+            }
+            .nav-btn:hover, .nav-btn.active {
+                border-color: #a855f7;
+                box-shadow: 0 0 15px rgba(168, 85, 247, 0.3);
+                color: #fff;
+            }
+            .nav-btn i { font-size: 14px; }
+            .nav-panel {
+                position: absolute;
+                top: 70px;
+                right: 12px;
+                width: 320px;
+                max-height: calc(100% - 90px);
+                overflow-y: auto;
+                z-index: 1000;
+                padding: 16px;
+                transition: transform 0.3s ease, opacity 0.3s ease;
+            }
+            .nav-panel.hidden-panel {
+                transform: translateX(20px);
+                opacity: 0;
+                pointer-events: none;
+            }
+            .layer-item {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                padding: 8px;
+                border-radius: 6px;
+                cursor: pointer;
+                transition: background 0.2s;
+                font-size: 0.85rem;
+                color: #b5aca8;
+            }
+            .layer-item:hover { background: rgba(168, 85, 247, 0.1); }
+            .layer-item input[type="checkbox"] {
+                accent-color: #a855f7;
+                width: 16px;
+                height: 16px;
+            }
+            .weather-card {
+                background: rgba(0,0,0,0.3);
+                border-radius: 8px;
+                padding: 10px;
+                margin-bottom: 8px;
+                border: 1px solid rgba(168, 85, 247, 0.15);
+            }
+            .weather-val {
+                font-size: 1.4rem;
+                font-weight: bold;
+                color: #a855f7;
+                font-family: monospace;
+            }
+            .weather-label {
+                font-size: 0.7rem;
+                color: #888;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+            }
+            .route-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 6px 8px;
+                background: rgba(168, 85, 247, 0.08);
+                border-radius: 6px;
+                margin-bottom: 6px;
+                font-size: 0.8rem;
+            }
+            .route-row button {
+                background: none;
+                border: none;
+                color: #ef4444;
+                cursor: pointer;
+                font-size: 12px;
+            }
+            .compass-ring {
+                width: 60px;
+                height: 60px;
+                border-radius: 50%;
+                border: 2px solid rgba(168, 85, 247, 0.4);
+                position: relative;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-family: monospace;
+                font-size: 10px;
+                color: #a855f7;
+            }
+            .compass-arrow {
+                position: absolute;
+                top: 4px;
+                width: 0; 
+                height: 0; 
+                border-left: 5px solid transparent;
+                border-right: 5px solid transparent;
+                border-bottom: 10px solid #ef4444;
+            }
+            .tide-port {
+                padding: 6px 10px;
+                background: rgba(168,85,247,0.08);
+                border-radius: 6px;
+                margin-bottom: 6px;
+                cursor: pointer;
+                font-size: 0.8rem;
+                transition: all 0.2s;
+            }
+            .tide-port:hover {
+                background: rgba(168,85,247,0.2);
+                color: #fff;
+            }
+            .leaflet-popup-content-wrapper {
+                background: rgba(15, 15, 30, 0.95);
+                color: #e0e0e0;
+                border: 1px solid #4a4a6a;
+                border-radius: 8px;
+            }
+            .leaflet-popup-tip { background: rgba(15, 15, 30, 0.95); }
+        </style>
+    </head>
+    <body class="bg-black text-white">
+
+        <!-- Navigation -->
+        <nav class="fixed w-full z-50 bg-black bg-opacity-60 backdrop-filter backdrop-blur-lg border-b border-gray-800">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-20 items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <a href="javascript:void(0)" class="home-link flex items-center">
+                            <span class="text-4xl font-bold tech-font">KGP</span><span id="kpg-subtitle" class="home-text">navigator</span>
+                        </a>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="md:hidden flex items-center">
+                            <button id="hamburger-button" class="text-white focus:outline-none">
+                                <i id="hamburger-icon" class="fas fa-bars text-2xl"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Menu Mobile -->
+            <div id="mobile-menu" class="md:hidden fixed top-0 left-0 w-full h-screen bg-black bg-opacity-95 backdrop-blur-lg flex flex-col items-center pt-24 pb-12 overflow-y-auto space-y-8 transform translate-x-full transition-transform duration-300 ease-in-out z-40">
+                <div class="flex flex-col items-center space-y-4 w-full">
+                    <h2 class="text-2xl font-semibold tech-font gradient-text1 border-b border-gray-700 pb-2 w-2/3 text-center">Categories</h2>
+                    <a href="home.html" class="text-xl text-[#b5aca8] hover:text-purple-400"><i class="fa-regular fa-hand-point-right text-purple-800"></i> Home</a>
+                    <a href="maintenance.html" class="text-xl text-[#b5aca8] hover:text-purple-400"><i class="fa-regular fa-hand-point-right text-purple-800"></i> I.T</a>
+                    <a href="maintenance.html" class="text-xl text-[#b5aca8] hover:text-purple-400"><i class="fa-regular fa-hand-point-right text-purple-800"></i> Tuto</a>
+                    <a href="maintenance.html" class="text-xl text-[#b5aca8] hover:text-purple-400"><i class="fa-regular fa-hand-point-right text-purple-800"></i> News</a>
+                    <a href="maintenance.html" class="text-xl text-[#b5aca8] hover:text-purple-400"><i class="fa-regular fa-hand-point-right text-purple-800"></i> Music</a>
+                    <a href="maintenance.html" class="text-xl text-[#b5aca8] hover:text-purple-400"><i class="fa-regular fa-hand-point-right text-purple-800"></i> Cuisine</a>
+                </div>
+                <div class="flex flex-col items-center space-y-4 w-full">
+                    <h2 class="text-2xl font-semibold tech-font gradient-text1 border-b border-gray-700 pb-2 w-2/3 text-center mt-4">Nos Apps</h2>
+                    <a href="clock.html" class="text-lg text-[#b5aca8] hover:text-purple-400"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">worldtime</span></a>
+                    <a href="converter.html" class="text-lg text-[#b5aca8] hover:text-purple-400"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">converter</span></a>
+                    <a href="meteo.html" class="text-lg text-[#b5aca8] hover:text-purple-400"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">meteo</span></a>
+                    <a href="caddy3.html" class="text-lg text-[#b5aca8] hover:text-purple-400"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">caddy</span></a>
+                    <a href="timer.html" class="text-lg text-[#b5aca8] hover:text-purple-400"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">timer</span></a>
+                    <a href="draw.html" class="text-lg text-[#b5aca8] hover:text-purple-400"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">draw</span></a>
+                    <a href="radio.html" class="text-lg text-[#b5aca8] hover:text-purple-400"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">radio</span></a>
+                    <a href="notes.html" class="text-lg text-[#b5aca8] hover:text-purple-400"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">notes</span></a>
+                    <a href="https://k-gou09.github.io/KGP_Compta/index.html" class="text-lg text-[#b5aca8] hover:text-purple-400"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">Compta</span></a>
+                    <a href="https://k-gou09.github.io/KGP_QRcode/" class="text-lg text-[#b5aca8] hover:text-purple-400"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">QRcode</span></a>
+                    <a href="https://k-gou09.github.io/KGP_SHA/" class="text-lg text-[#b5aca8] hover:text-purple-400"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">SHA</span></a>
+                </div>
+                <div class="flex flex-col items-center space-y-5 w-full">
+                    <h2 class="text-2xl font-semibold tech-font gradient-text1 border-b border-gray-700 pb-2 w-2/3 text-center mt-4">Support</h2>
+                    <a href="https://www.facebook.com/nc.prod.794?locale=fr_FR" target="_blank" class="text-xl text-[#b5aca8] hover:text-purple-400 flex items-center w-36"><i class="fab fa-facebook text-blue-600 text-2xl w-10"></i> Facebook</a>
+                    <a href="https://www.youtube.com/@kgpsound" target="_blank" class="text-xl text-[#b5aca8] hover:text-purple-400 flex items-center w-36"><i class="fab fa-youtube text-red-600 text-2xl w-10"></i> YouTube</a>
+                    <a href="https://github.com/k-gou09" target="_blank" class="text-xl text-[#b5aca8] hover:text-purple-400 flex items-center w-36 mb-10"><i class="fab fa-github text-white text-2xl w-10"></i> GitHub</a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main -->
+        <main class="flex h-screen pt-20">
+            <!-- Colonne Gauche -->
+            <aside class="w-1/5 h-full bg-gray-900 bg-opacity-30 p-6 border-r border-gray-700 hidden sm:block overflow-y-auto pb-10">
+                <h2 class="text-xl font-semibold tech-font gradient-text1 mb-6">Categories</h2>
+                <ul class="space-y-3" style="color: #b5aca8;">
+                    <li><a href="../index.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp;Home</a></li>
+                    <li><a href="maintenance.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp;I.T</a></li>
+                    <li><a href="maintenance.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp;Tuto</a></li>
+                    <li><a href="maintenance.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp;News</a></li>
+                    <li><a href="maintenance.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp;Music</a></li>
+                    <li><a href="maintenance.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp;Cuisine</a></li>
+                </ul>
+                <div class="mt-10">
+                    <h3 class="text-lg font-medium tech-font gradient-text1 mb-3">Nos Apps</h3>
+                    <ul class="space-y-3" style="color: #b5aca8;">
+                        <li><a href="clock.html" class="hover:text-purple-400"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">worldtime</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="converter.html" class="hover:text-purple-400"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">converter</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="meteo.html" class="hover:text-purple-400"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">meteo</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="caddy3.html" class="hover:text-purple-400"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">caddy</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="timer.html" class="hover:text-purple-400"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">timer</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="draw.html" class="hover:text-purple-400"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">draw</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="radio.html" class="hover:text-purple-400"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">radio</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="notes.html" class="hover:text-purple-400"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">notes</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="https://k-gou09.github.io/KGP_Compta/index.html" class="hover:text-purple-400"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">Compta</span></a></li>
+                        <li><a href="https://k-gou09.github.io/KGP_QRcode/" class="hover:text-purple-400"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">QRcode</span></a></li>
+                        <li><a href="https://k-gou09.github.io/KGP_SHA/" class="hover:text-purple-400"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">SHA</span></a></li>
+                    </ul>
+                </div>
+            </aside>
+
+            <!-- ==================== VOLET CENTRAL - APP NAVIGATOR NC ==================== -->
+            <section id="news-feed" class="flex-1 h-full overflow-hidden bg-opacity-50 relative">
+                
+                <!-- Barre d'outils -->
+                <div class="absolute top-4 left-4 z-[500] flex flex-wrap gap-2 max-w-[calc(100%-360px)]">
+                    <button id="btn-gps" class="nav-btn" title="Centrer sur ma position"><i class="fas fa-crosshairs"></i>GPS</button>
+                    <button id="btn-track" class="nav-btn" title="Demarrer/Arreter le trace"><i class="fas fa-route"></i><span id="track-label">TRACE</span></button>
+                    <button id="btn-layers" class="nav-btn active" title="Couches cartographiques"><i class="fas fa-layer-group"></i>COUCHES</button>
+                    <button id="btn-weather" class="nav-btn" title="Meteo marine"><i class="fas fa-cloud-sun-rain"></i>METEO</button>
+                    <button id="btn-tides" class="nav-btn" title="Marees"><i class="fas fa-water"></i>MAREES</button>
+                    <button id="btn-routes" class="nav-btn" title="Mes routes"><i class="fas fa-map-marked-alt"></i>ROUTES</button>
+                    <button id="btn-clear-track" class="nav-btn" title="Effacer le trace actuel"><i class="fas fa-trash"></i></button>
+                </div>
+
+                <!-- Indicateur GPS -->
+                <div class="absolute bottom-6 left-4 z-[500] nav-glass px-3 py-2 flex items-center gap-3">
+                    <div class="compass-ring">
+                        <div class="compass-arrow" id="compass-arrow"></div>
+                        <span id="compass-deg">0</span>
+                    </div>
+                    <div>
+                        <div class="text-xs text-gray-400">LAT <span id="gps-lat" class="text-purple-400 font-mono">--</span></div>
+                        <div class="text-xs text-gray-400">LON <span id="gps-lon" class="text-purple-400 font-mono">--</span></div>
+                        <div class="text-xs text-gray-400">CAP <span id="gps-cog" class="text-purple-400 font-mono">--</span> | V <span id="gps-sog" class="text-purple-400 font-mono">--</span> kt</div>
+                    </div>
+                </div>
+
+                <!-- Panneau Couches -->
+                <div id="panel-layers" class="nav-panel nav-glass">
+                    <h3 class="text-sm font-bold text-purple-400 mb-3 tech-font"><i class="fas fa-layer-group mr-2"></i>COUCHES CARTO</h3>
+                    <div class="space-y-1 mb-4">
+                        <label class="layer-item"><input type="checkbox" id="layer-osm" checked disabled><span>OpenStreetMap (fond)</span></label>
+                        <label class="layer-item"><input type="checkbox" id="layer-seamark" checked><span><i class="fas fa-anchor text-blue-400 mr-1"></i>OpenSeaMap (marques)</span></label>
+                        <label class="layer-item"><input type="checkbox" id="layer-georep-bathy"><span><i class="fas fa-water text-cyan-400 mr-1"></i>Bathymetrie (georep.nc)</span></label>
+                        <label class="layer-item"><input type="checkbox" id="layer-georep-recifs"><span><i class="fas fa-exclamation-triangle text-orange-400 mr-1"></i>Recifs / Zones dangereuses</span></label>
+                        <label class="layer-item"><input type="checkbox" id="layer-georep-zones"><span><i class="fas fa-shield-alt text-green-400 mr-1"></i>Zones protegees</span></label>
+                    </div>
+                    <h3 class="text-sm font-bold text-purple-400 mb-2 tech-font"><i class="fas fa-map-pin mr-2"></i>POINTS D'INTERET</h3>
+                    <div class="space-y-1 mb-4">
+                        <label class="layer-item"><input type="checkbox" id="layer-ports" checked><span><i class="fas fa-ship text-gray-400 mr-1"></i>Ports & Mole</span></label>
+                        <label class="layer-item"><input type="checkbox" id="layer-mouillages"><span><i class="fas fa-anchor text-yellow-400 mr-1"></i>Mouillages</span></label>
+                        <label class="layer-item"><input type="checkbox" id="layer-passes"><span><i class="fas fa-road text-red-400 mr-1"></i>Passes & Entrees</span></label>
+                    </div>
+                    <div class="text-xs text-gray-500 italic">
+                        <i class="fas fa-info-circle mr-1"></i>Les couches georep.nc necessitent une connexion active. OpenSeaMap affiche les balises, bouees et feux.
+                    </div>
+                </div>
+
+                <!-- Panneau Meteo -->
+                <div id="panel-weather" class="nav-panel nav-glass hidden-panel">
+                    <h3 class="text-sm font-bold text-purple-400 mb-3 tech-font"><i class="fas fa-cloud-sun-rain mr-2"></i>METEO MARINE</h3>
+                    <div class="text-xs text-gray-500 mb-3">Donnees Open-Meteo - Position carte</div>
+                    <div id="weather-loading" class="text-center py-4 text-gray-500 text-sm"><i class="fas fa-spinner fa-spin mr-2"></i>Chargement...</div>
+                    <div id="weather-content" style="display:none;">
+                        <div class="grid grid-cols-2 gap-2 mb-3">
+                            <div class="weather-card text-center">
+                                <div class="weather-label">Vagues</div>
+                                <div class="weather-val" id="w-wave">--</div>
+                                <div class="text-xs text-gray-400">m</div>
+                            </div>
+                            <div class="weather-card text-center">
+                                <div class="weather-label">Periode</div>
+                                <div class="weather-val" id="w-period">--</div>
+                                <div class="text-xs text-gray-400">s</div>
+                            </div>
+                            <div class="weather-card text-center">
+                                <div class="weather-label">Vent</div>
+                                <div class="weather-val" id="w-wind">--</div>
+                                <div class="text-xs text-gray-400">kt</div>
+                            </div>
+                            <div class="weather-card text-center">
+                                <div class="weather-label">Dir. Vent</div>
+                                <div class="weather-val" id="w-wind-dir">--</div>
+                                <div class="text-xs text-gray-400">deg</div>
+                            </div>
+                            <div class="weather-card text-center">
+                                <div class="weather-label">Temp. Mer</div>
+                                <div class="weather-val" id="w-sst">--</div>
+                                <div class="text-xs text-gray-400">degC</div>
+                            </div>
+                            <div class="weather-card text-center">
+                                <div class="weather-label">Swell</div>
+                                <div class="weather-val" id="w-swell">--</div>
+                                <div class="text-xs text-gray-400">m</div>
+                            </div>
+                        </div>
+                        <button id="btn-refresh-weather" class="nav-btn w-full justify-center"><i class="fas fa-sync-alt"></i>Actualiser</button>
+                    </div>
+                    <div id="weather-error" class="text-center py-4 text-red-400 text-sm" style="display:none;">Erreur de chargement</div>
+                </div>
+
+                <!-- Panneau Marees -->
+                <div id="panel-tides" class="nav-panel nav-glass hidden-panel">
+                    <h3 class="text-sm font-bold text-purple-400 mb-3 tech-font"><i class="fas fa-water mr-2"></i>MAREES NC</h3>
+                    <div class="text-xs text-gray-500 mb-3">Sources : SHOM / Meteo NC</div>
+                    <div class="space-y-2 mb-4" id="tide-list">
+                        <div class="tide-port" onclick="centerMap(-22.2758,166.458)"><i class="fas fa-location-dot mr-2 text-purple-500"></i>Noumea (Chaleix)</div>
+                        <div class="tide-port" onclick="centerMap(-22.3333,166.4667)"><i class="fas fa-location-dot mr-2 text-purple-500"></i>Noumea (Numbo)</div>
+                        <div class="tide-port" onclick="centerMap(-21.5667,165.3667)"><i class="fas fa-location-dot mr-2 text-purple-500"></i>Koumac</div>
+                        <div class="tide-port" onclick="centerMap(-20.6833,164.9333)"><i class="fas fa-location-dot mr-2 text-purple-500"></i>Hienghène</div>
+                        <div class="tide-port" onclick="centerMap(-20.9167,167.2667)"><i class="fas fa-location-dot mr-2 text-purple-500"></i>Lifou</div>
+                        <div class="tide-port" onclick="centerMap(-21.5167,167.9833)"><i class="fas fa-location-dot mr-2 text-purple-500"></i>Mare</div>
+                        <div class="tide-port" onclick="centerMap(-20.65,164.4167)"><i class="fas fa-location-dot mr-2 text-purple-500"></i>Bourail</div>
+                        <div class="tide-port" onclick="centerMap(-22.6167,167.4833)"><i class="fas fa-location-dot mr-2 text-purple-500"></i>Ile des Pins</div>
+                    </div>
+                    <a href="https://mrcc.nc/marees/" target="_blank" class="nav-btn w-full justify-center text-xs mb-2"><i class="fas fa-external-link-alt"></i>MRCC Marees (officiel)</a>
+                    <a href="https://meteo.nc/fr/marine/maree" target="_blank" class="nav-btn w-full justify-center text-xs"><i class="fas fa-external-link-alt"></i>Meteo NC Marees</a>
+                </div>
+
+                <!-- Panneau Routes -->
+                <div id="panel-routes" class="nav-panel nav-glass hidden-panel">
+                    <h3 class="text-sm font-bold text-purple-400 mb-3 tech-font"><i class="fas fa-map-marked-alt mr-2"></i>MES ROUTES</h3>
+                    <div id="routes-list" class="mb-3">
+                        <div class="text-xs text-gray-500 italic">Aucune route enregistree.</div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button id="btn-save-route" class="nav-btn flex-1 justify-center"><i class="fas fa-save"></i>Sauver</button>
+                        <button id="btn-export-gpx" class="nav-btn flex-1 justify-center"><i class="fas fa-file-export"></i>GPX</button>
+                    </div>
+                </div>
+
+                <!-- La carte -->
+                <div id="nav-map"></div>
+
+            </section>
+
+            <!-- Colonne Droite -->
+            <aside class="w-1/5 h-full bg-gray-900 bg-opacity-30 p-6 border-l border-gray-700 hidden lg:block">
+                <h2 class="text-xl font-semibold tech-font gradient-text1 mb-6 mt-6">Liens Utiles</h2>
+                <ul class="space-y-3">
+                    <li><a href="https://github.com/k-gou09" class="hover:text-purple-400 transition-colors duration-300"><i class="fab fa-github" style="color: white;"></i>&nbsp;&nbsp;&nbsp;GITHUB</a></li>
+                    <li><a href="https://www.facebook.com/nc.prod.794?locale=fr_FR" class="hover:text-purple-400 transition-colors duration-300"><i class="fab fa-facebook" style="color: blue;"></i>&nbsp;&nbsp;&nbsp;FACEBOOK</a></li>
+                    <li><a href="https://www.youtube.com/@kgpsound" class="hover:text-purple-400 transition-colors duration-300"><i class="fab fa-youtube" style="color: rgb(245, 3, 3);"></i>&nbsp;&nbsp;&nbsp;YOUTUBE</a></li>
+                </ul>
+                <div class="mt-10 p-4 rounded-lg bg-black bg-opacity-40 border border-gray-800">
+                    <div class="text-xs text-gray-500 mb-2">Ressources NC</div>
+                    <a href="https://georep.nc" target="_blank" class="block text-sm text-purple-400 hover:text-purple-300 mb-1"><i class="fas fa-globe mr-1"></i>GeoREP</a>
+                    <a href="https://mrcc.nc" target="_blank" class="block text-sm text-purple-400 hover:text-purple-300 mb-1"><i class="fas fa-broadcast-tower mr-1"></i>MRCC</a>
+                    <a href="https://meteo.nc" target="_blank" class="block text-sm text-purple-400 hover:text-purple-300"><i class="fas fa-cloud mr-1"></i>Meteo NC</a>
+                </div>
+                <div class="mt-6 p-4 rounded-lg">
+                    <a href="maintenance.html"><img src="../img/log_kgp1.png" alt="Logo KGP" class="w-full h-auto" style="border-radius: 35%;"></a>                
+                </div>
+            </aside>
+        </main>
+
+        <!-- Footer -->
+        <p class="fixed left-2 bottom-2 z-10 bg-black bg-opacity-80 text-white text-xs px-2 py-1 rounded-md flex items-center gap-1 tech-font">
+            K-gou_Prod
+            <img src="../img/v.svg" alt="Logo" class="w-4 h-4 inline-block filter brightness-0 invert">
+            <a href="https://www.facebook.com/nc.prod.794" class="text-white underline hover:text-blue-300" target="_blank">Studio</a>
+        </p>
+
+        <script>
+            window.addEventListener('load', function() {
+                
+                /* --- Hamburger --- */
+                var hamburgerButton = document.getElementById('hamburger-button');
+                var mobileMenu = document.getElementById('mobile-menu');
+                var hamburgerIcon = document.getElementById('hamburger-icon');
+                var menuLinks = document.querySelectorAll('#mobile-menu a');
+                
+                function toggleMenu() {
+                    mobileMenu.classList.toggle('translate-x-full');
+                    if (hamburgerIcon.classList.contains('fa-bars')) {
+                        hamburgerIcon.classList.remove('fa-bars');
+                        hamburgerIcon.classList.add('fa-xmark');
+                    } else {
+                        hamburgerIcon.classList.remove('fa-xmark');
+                        hamburgerIcon.classList.add('fa-bars');
+                    }
+                    document.body.classList.toggle('overflow-hidden');
+                }
+                
+                hamburgerButton.addEventListener('click', toggleMenu);
+                menuLinks.forEach(function(link) {
+                    link.addEventListener('click', function() {
+                        if (!mobileMenu.classList.contains('translate-x-full')) toggleMenu();
+                    });
+                });
+
+                /* --- Animation Hacker --- */
+                var finalText = "HELLO WORLD !";
+                var chars = "!#?%&$@*+-/<>[]{}";
+                var title = document.getElementById("hack-title");
+                
+                function scramble() {
+                    var iterations = 0;
+                    var interval = setInterval(function() {
+                        var displayed = title.innerText.split("").map(function(char, i) {
+                            if (i < iterations) return finalText[i];
+                            return chars[Math.floor(Math.random() * chars.length)];
+                        }).join("");
+                        title.innerText = displayed;
+                        if (iterations >= finalText.length) {
+                            clearInterval(interval);
+                            setTimeout(function() { title.style.setProperty('opacity', '0', 'important'); }, 3000);
+                        }
+                        iterations += 0.25;
+                    }, 60);
+                }
+                
+                setTimeout(function() {
+                    title.classList.add('start-typing');
+                    setTimeout(scramble, 1600);
+                }, 2000);
+
+                /* ==================== APP NAVIGATOR NC ==================== */
+                
+                // --- Carte Leaflet ---
+                var map = L.map('nav-map', {
+                    zoomControl: false,
+                    attributionControl: false
+                }).setView([-22.27, 166.44], 9);
+
+                // Fond OSM
+                var osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                    attribution: 'OSM'
+                }).addTo(map);
+
+                // OpenSeaMap
+                var seamarkLayer = L.tileLayer('https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png', {
+                    maxZoom: 18,
+                    attribution: 'OpenSeaMap'
+                });
+
+                // WMS georep.nc
+                var georepBathy = L.tileLayer.wms('https://georep.nc/geoserver/ows', {
+                    layers: 'georep:bathymetrie_nc',
+                    format: 'image/png',
+                    transparent: true,
+                    version: '1.1.0',
+                    opacity: 0.7,
+                    attribution: 'georep.nc'
+                });
+                var georepRecifs = L.tileLayer.wms('https://georep.nc/geoserver/ows', {
+                    layers: 'georep:recifs_dangereux',
+                    format: 'image/png',
+                    transparent: true,
+                    version: '1.1.0',
+                    opacity: 0.8,
+                    attribution: 'georep.nc'
+                });
+                var georepZones = L.tileLayer.wms('https://georep.nc/geoserver/ows', {
+                    layers: 'georep:zones_protegees',
+                    format: 'image/png',
+                    transparent: true,
+                    version: '1.1.0',
+                    opacity: 0.6,
+                    attribution: 'georep.nc'
+                });
+
+                // POI Layers
+                var portsLayer = L.layerGroup();
+                var mouillagesLayer = L.layerGroup();
+                var passesLayer = L.layerGroup();
+
+                // POI Data
+                var ports = [
+                    {name:"Port de Noumea", lat:-22.2758, lon:166.458},
+                    {name:"Port de Koumac", lat:-21.5667, lon:165.3667},
+                    {name:"Port de Hienghène", lat:-20.6833, lon:164.9333},
+                    {name:"Port de Lifou", lat:-20.9167, lon:167.2667},
+                    {name:"Port de Mare", lat:-21.5167, lon:167.9833},
+                    {name:"Port de l Ile des Pins", lat:-22.6167, lon:167.4833},
+                    {name:"Baie de Bourail", lat:-20.65, lon:164.4167}
+                ];
+                var mouillages = [
+                    {name:"Baie du Prony", lat:-22.3167, lon:166.8333},
+                    {name:"Baie de Kuto", lat:-22.6667, lon:167.4833},
+                    {name:"Baie de Gadji", lat:-22.65, lon:167.4667},
+                    {name:"Baie d Oro", lat:-22.5333, lon:167.35},
+                    {name:"Baie de Kanumera", lat:-22.6833, lon:167.4833},
+                    {name:"Mouillage Recif Mbere", lat:-22.2, lon:166.15},
+                    {name:"Baie de Saint-Maurice", lat:-22.25, lon:166.3},
+                    {name:"Ilot Maitre", lat:-22.3167, lon:166.4333},
+                    {name:"Ilot Amedee", lat:-22.4833, lon:166.4667}
+                ];
+                var passes = [
+                    {name:"Passe de Dumbeea", lat:-22.15, lon:166.2167},
+                    {name:"Passe de Boulari", lat:-22.2167, lon:166.2167},
+                    {name:"Passe de Uitoe", lat:-22.3333, lon:166.2167},
+                    {name:"Passe de Thio", lat:-21.6167, lon:166.2167},
+                    {name:"Passe de Hienghène", lat:-20.6167, lon:164.85}
+                ];
+
+                var portIcon = L.divIcon({
+                    className:'', 
+                    html:'<i class="fas fa-ship" style="color:#a855f7;font-size:16px;filter:drop-shadow(0 0 4px #000);"></i>', 
+                    iconSize:[20,20], 
+                    iconAnchor:[10,10]
+                });
+                var mouillageIcon = L.divIcon({
+                    className:'', 
+                    html:'<i class="fas fa-anchor" style="color:#fbbf24;font-size:14px;filter:drop-shadow(0 0 4px #000);"></i>', 
+                    iconSize:[16,16], 
+                    iconAnchor:[8,8]
+                });
+                var passeIcon = L.divIcon({
+                    className:'', 
+                    html:'<i class="fas fa-road" style="color:#ef4444;font-size:14px;filter:drop-shadow(0 0 4px #000);"></i>', 
+                    iconSize:[16,16], 
+                    iconAnchor:[8,8]
+                });
+
+                ports.forEach(function(p) {
+                    L.marker([p.lat, p.lon], {icon: portIcon})
+                        .bindPopup('<b>' + p.name + '</b><br>Port principal')
+                        .addTo(portsLayer);
+                });
+                mouillages.forEach(function(p) {
+                    L.marker([p.lat, p.lon], {icon: mouillageIcon})
+                        .bindPopup('<b>' + p.name + '</b><br>Mouillage')
+                        .addTo(mouillagesLayer);
+                });
+                passes.forEach(function(p) {
+                    L.marker([p.lat, p.lon], {icon: passeIcon})
+                        .bindPopup('<b>' + p.name + '</b><br>Passage recifal')
+                        .addTo(passesLayer);
+                });
+
+                portsLayer.addTo(map);
+
+                // --- GPS & Tracking ---
+                var gpsMarker = null;
+                var gpsAccuracy = null;
+                var trackLine = null;
+                var trackPoints = [];
+                var isTracking = false;
+                var watchId = null;
+                var currentPos = null;
+
+                function updateGPSDisplay(pos, speed, heading) {
+                    document.getElementById('gps-lat').textContent = pos.lat.toFixed(4);
+                    document.getElementById('gps-lon').textContent = pos.lng.toFixed(4);
+                    document.getElementById('gps-sog').textContent = speed ? speed.toFixed(1) : '0.0';
+                    document.getElementById('gps-cog').textContent = heading ? Math.round(heading) + 'deg' : '--';
+                    if (heading) {
+                        document.getElementById('compass-arrow').style.transform = 'rotate(' + heading + 'deg)';
+                        document.getElementById('compass-deg').textContent = Math.round(heading);
+                    }
+                }
+
+                function onPosition(position) {
+                    var lat = position.coords.latitude;
+                    var lon = position.coords.longitude;
+                    var acc = position.coords.accuracy;
+                    var speed = position.coords.speed ? position.coords.speed * 1.94384 : 0;
+                    var heading = position.coords.heading;
+                    var latlng = L.latLng(lat, lon);
+                    currentPos = latlng;
+                    updateGPSDisplay(latlng, speed, heading);
+
+                    if (!gpsMarker) {
+                        gpsMarker = L.circleMarker(latlng, {
+                            radius: 8,
+                            fillColor: '#a855f7',
+                            color: '#fff',
+                            weight: 2,
+                            opacity: 1,
+                            fillOpacity: 0.9
+                        }).addTo(map);
+                        gpsAccuracy = L.circle(latlng, {
+                            radius: acc, 
+                            color: '#a855f7', 
+                            weight: 1, 
+                            fillOpacity: 0.1
+                        }).addTo(map);
+                    } else {
+                        gpsMarker.setLatLng(latlng);
+                        gpsAccuracy.setLatLng(latlng);
+                        gpsAccuracy.setRadius(acc);
+                    }
+
+                    if (isTracking) {
+                        trackPoints.push([lat, lon]);
+                        if (!trackLine) {
+                            trackLine = L.polyline(trackPoints, {
+                                color: '#a855f7', 
+                                weight: 3, 
+                                opacity: 0.8
+                            }).addTo(map);
+                        } else {
+                            trackLine.setLatLngs(trackPoints);
+                        }
+                    }
+                }
+
+                function onPositionError(e) {
+                    console.warn('GPS error', e);
+                    alert("Impossible d'obtenir la position GPS. Verifiez les permissions.");
+                }
+
+                document.getElementById('btn-gps').addEventListener('click', function() {
+                    if (!navigator.geolocation) {
+                        alert('Geolocalisation non supportee.');
+                        return;
+                    }
+                    map.locate({setView: true, maxZoom: 14, enableHighAccuracy: true});
+                    if (!watchId) {
+                        watchId = navigator.geolocation.watchPosition(
+                            onPosition, 
+                            onPositionError, 
+                            {enableHighAccuracy: true, maximumAge: 10000}
+                        );
+                    }
+                });
+
+                document.getElementById('btn-track').addEventListener('click', function() {
+                    isTracking = !isTracking;
+                    var btn = document.getElementById('btn-track');
+                    var lbl = document.getElementById('track-label');
+                    if (isTracking) {
+                        btn.classList.add('active');
+                        lbl.textContent = 'ARRETER';
+                        if (!watchId) {
+                            watchId = navigator.geolocation.watchPosition(
+                                onPosition, 
+                                onPositionError, 
+                                {enableHighAccuracy: true}
+                            );
+                        }
+                    } else {
+                        btn.classList.remove('active');
+                        lbl.textContent = 'TRACE';
+                    }
+                });
+
+                document.getElementById('btn-clear-track').addEventListener('click', function() {
+                    trackPoints = [];
+                    if (trackLine) { 
+                        map.removeLayer(trackLine); 
+                        trackLine = null; 
+                    }
+                });
+
+                // --- Panneaux ---
+                var panels = {
+                    layers: document.getElementById('panel-layers'),
+                    weather: document.getElementById('panel-weather'),
+                    tides: document.getElementById('panel-tides'),
+                    routes: document.getElementById('panel-routes')
+                };
+                var buttons = {
+                    layers: document.getElementById('btn-layers'),
+                    weather: document.getElementById('btn-weather'),
+                    tides: document.getElementById('btn-tides'),
+                    routes: document.getElementById('btn-routes')
+                };
+
+                function showPanel(name) {
+                    Object.keys(panels).forEach(function(k) {
+                        if (k === name) {
+                            panels[k].classList.toggle('hidden-panel');
+                            buttons[k].classList.toggle('active');
+                        } else {
+                            panels[k].classList.add('hidden-panel');
+                            buttons[k].classList.remove('active');
+                        }
+                    });
+                }
+
+                Object.keys(buttons).forEach(function(key) {
+                    buttons[key].addEventListener('click', function() { showPanel(key); });
+                });
+
+                // --- Couches ---
+                document.getElementById('layer-seamark').addEventListener('change', function(e) {
+                    e.target.checked ? map.addLayer(seamarkLayer) : map.removeLayer(seamarkLayer);
+                });
+                document.getElementById('layer-georep-bathy').addEventListener('change', function(e) {
+                    e.target.checked ? map.addLayer(georepBathy) : map.removeLayer(georepBathy);
+                });
+                document.getElementById('layer-georep-recifs').addEventListener('change', function(e) {
+                    e.target.checked ? map.addLayer(georepRecifs) : map.removeLayer(georepRecifs);
+                });
+                document.getElementById('layer-georep-zones').addEventListener('change', function(e) {
+                    e.target.checked ? map.addLayer(georepZones) : map.removeLayer(georepZones);
+                });
+                document.getElementById('layer-ports').addEventListener('change', function(e) {
+                    e.target.checked ? map.addLayer(portsLayer) : map.removeLayer(portsLayer);
+                });
+                document.getElementById('layer-mouillages').addEventListener('change', function(e) {
+                    e.target.checked ? map.addLayer(mouillagesLayer) : map.removeLayer(mouillagesLayer);
+                });
+                document.getElementById('layer-passes').addEventListener('change', function(e) {
+                    e.target.checked ? map.addLayer(passesLayer) : map.removeLayer(passesLayer);
+                });
+
+                // --- Meteo Marine ---
+                function loadWeather() {
+                    var center = map.getCenter();
+                    var lat = center.lat;
+                    var lon = center.lng;
+                    document.getElementById('weather-loading').style.display = 'block';
+                    document.getElementById('weather-content').style.display = 'none';
+                    document.getElementById('weather-error').style.display = 'none';
+
+                    fetch('https://marine-api.open-meteo.com/v1/marine?latitude=' + lat + '&longitude=' + lon + '&hourly=wave_height,wind_wave_height,swell_wave_height,wave_direction,wind_wave_direction,swell_wave_direction,wave_period,wind_wave_period,swell_wave_period,sea_surface_temperature&forecast_days=1')
+                        .then(function(res) { return res.json(); })
+                        .then(function(marineData) {
+                            return fetch('https://api.open-meteo.com/v1/forecast?latitude=' + lat + '&longitude=' + lon + '&hourly=windspeed_10m,winddirection_10m&forecast_days=1')
+                                .then(function(res) { return res.json(); })
+                                .then(function(weatherData) {
+                                    var idx = 0;
+                                    var wh = marineData.hourly.wave_height[idx];
+                                    var wp = marineData.hourly.wave_period[idx];
+                                    var sw = marineData.hourly.swell_wave_height[idx];
+                                    var sst = marineData.hourly.sea_surface_temperature[idx];
+                                    var ws = weatherData.hourly.windspeed_10m[idx] * 0.539957;
+                                    var wd = weatherData.hourly.winddirection_10m[idx];
+
+                                    document.getElementById('w-wave').textContent = wh !== undefined ? wh.toFixed(1) : '--';
+                                    document.getElementById('w-period').textContent = wp !== undefined ? Math.round(wp) : '--';
+                                    document.getElementById('w-wind').textContent = ws !== undefined ? ws.toFixed(1) : '--';
+                                    document.getElementById('w-wind-dir').textContent = wd !== undefined ? Math.round(wd) + 'deg' : '--';
+                                    document.getElementById('w-sst').textContent = sst !== undefined ? sst.toFixed(1) : '--';
+                                    document.getElementById('w-swell').textContent = sw !== undefined ? sw.toFixed(1) : '--';
+
+                                    document.getElementById('weather-loading').style.display = 'none';
+                                    document.getElementById('weather-content').style.display = 'block';
+                                });
+                        })
+                        .catch(function(err) {
+                            console.error(err);
+                            document.getElementById('weather-loading').style.display = 'none';
+                            document.getElementById('weather-error').style.display = 'block';
+                        });
+                }
+
+                document.getElementById('btn-refresh-weather').addEventListener('click', loadWeather);
+                
+                var weatherLoaded = false;
+                buttons.weather.addEventListener('click', function() {
+                    if (!weatherLoaded && !panels.weather.classList.contains('hidden-panel')) {
+                        loadWeather();
+                        weatherLoaded = true;
+                    } else if (!panels.weather.classList.contains('hidden-panel')) {
+                        loadWeather();
+                    }
+                });
+
+                // --- Routes ---
+                function loadRoutesList() {
+                    var routes = JSON.parse(localStorage.getItem('kgp_routes') || '[]');
+                    var container = document.getElementById('routes-list');
+                    if (routes.length === 0) {
+                        container.innerHTML = '<div class="text-xs text-gray-500 italic">Aucune route enregistree.</div>';
+                        return
+
+                    }
+                    container.innerHTML = routes.map(function(r, i) {
+                        return '<div class="route-row">' +
+                            '<span>' + r.name + ' <span class="text-gray-600">(' + r.points.length + ' pts)</span></span>' +
+                            '<div class="flex gap-2">' +
+                            '<button onclick="loadRoute(' + i + ')" title="Afficher"><i class="fas fa-eye text-purple-400"></i></button>' +
+                            '<button onclick="deleteRoute(' + i + ')" title="Supprimer"><i class="fas fa-trash"></i></button>' +
+                            '</div></div>';
+                    }).join('');
+                }
+
+                window.loadRoute = function(idx) {
+                    var routes = JSON.parse(localStorage.getItem('kgp_routes') || '[]');
+                    var r = routes[idx];
+                    if (!r) return;
+                    if (trackLine) map.removeLayer(trackLine);
+                    trackPoints = r.points;
+                    trackLine = L.polyline(trackPoints, {
+                        color: '#a855f7',
+                        weight: 3,
+                        opacity: 0.8
+                    }).addTo(map);
+                    map.fitBounds(trackLine.getBounds());
+                };
+
+                window.deleteRoute = function(idx) {
+                    if (!confirm('Supprimer cette route ?')) return;
+                    var routes = JSON.parse(localStorage.getItem('kgp_routes') || '[]');
+                    routes.splice(idx, 1);
+                    localStorage.setItem('kgp_routes', JSON.stringify(routes));
+                    loadRoutesList();
+                };
+
+                document.getElementById('btn-save-route').addEventListener('click', function() {
+                    if (trackPoints.length < 2) {
+                        alert('Trace vide ou trop court.');
+                        return;
+                    }
+                    var name = prompt('Nom de la route :', 'Route ' + new Date().toLocaleDateString());
+                    if (!name) return;
+                    var routes = JSON.parse(localStorage.getItem('kgp_routes') || '[]');
+                    routes.push({
+                        name: name,
+                        date: new Date().toISOString(),
+                        points: trackPoints
+                    });
+                    localStorage.setItem('kgp_routes', JSON.stringify(routes));
+                    loadRoutesList();
+                });
+
+                document.getElementById('btn-export-gpx').addEventListener('click', function() {
+                    if (trackPoints.length < 2) {
+                        alert('Aucun trace a exporter.');
+                        return;
+                    }
+                    var gpx = '<?xml version="1.0" encoding="UTF-8"?>\n' +
+                        '<gpx version="1.1" creator="KGP Navigator">\n' +
+                        '<trk><name>Route KGP</name><trkseg>\n' +
+                        trackPoints.map(function(p) {
+                            return '<trkpt lat="' + p[0] + '" lon="' + p[1] + '"></trkpt>';
+                        }).join('\n') +
+                        '\n</trkseg></trk></gpx>';
+                    var blob = new Blob([gpx], {type: 'application/gpx+xml'});
+                    var url = URL.createObjectURL(blob);
+                    var a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'kgp-route-' + Date.now() + '.gpx';
+                    a.click();
+                    URL.revokeObjectURL(url);
+                });
+
+                window.centerMap = function(lat, lon) {
+                    map.setView([lat, lon], 12);
+                    Object.values(panels).forEach(function(p) { p.classList.add('hidden-panel'); });
+                    Object.values(buttons).forEach(function(b) { b.classList.remove('active'); });
+                };
+
+                // --- Controles Leaflet ---
+                L.control.attribution({position: 'bottomright', prefix: 'KGP Navigator | Leaflet'}).addTo(map);
+                L.control.scale({position: 'bottomleft', metric: true, imperial: false}).addTo(map);
+                L.control.zoom({position: 'bottomright'}).addTo(map);
+
+                loadRoutesList();
+
+            });
+        </script>
+    </body>
+</html>

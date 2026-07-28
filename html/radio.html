@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>K-gou prod | Radio Cyberpunk</title>
+        <!-- Tailwind CSS via CDN -->
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link rel="stylesheet" href="../css/news.css">
+        <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
+
+        <style>
+            /* --- Styles d'origine du template --- */
+            .home-text {
+                color: #6b21a8; 
+                font-family: 'Permanent Marker', cursive;
+                font-size: 2rem;
+                font-weight: bold;
+                margin-left: 10px;
+            }
+                
+            .home-mess, .home-mess1 {
+                text-align: center;
+                font-family: 'Permanent Marker', cursive;
+                font-weight: bold;
+                padding-bottom: 15px;
+            }
+            .home-mess { font-size: 2rem; }
+            .home-mess1 { font-size: 1.5rem; }    
+
+            .btn-nano {
+                background: linear-gradient(145deg, #1a1a2a, #0a0a1a);
+                color: #ffffff;
+                border: 1px solid #807f7f;
+                padding: 10px 24px;
+                font-size: 14px;
+                font-weight: bold;
+                border-radius: 8px;
+                cursor: pointer;
+                position: relative;
+                overflow: hidden;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .btn-nano::before {
+                content: '';
+                position: absolute;
+                top: 0; left: -100%; width: 100%; height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+                transition: left 0.6s ease;
+            }
+
+            .btn-nano:hover::before { left: 100%; }
+            .btn-nano:hover {
+                box-shadow: 0 0 25px rgba(255, 255, 255, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+                text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+            }
+
+            /* --- Styles Animation Hacker --- */
+            #hack-title {
+                margin-top: 15px;
+                line-height: 1.2;
+                font-family: monospace;
+                font-size: 1.3rem;
+                color: #a855f7;
+                letter-spacing: 2px;
+                white-space: nowrap;
+                overflow: hidden;
+                border-right: 4px solid #a855f7;
+                width: 0;
+                opacity: 0;
+                transition: opacity 1s ease-out;
+            }
+
+            .start-typing {
+                opacity: 1 !important;
+                animation: typing 1.5s steps(13) forwards, blink .5s step-end infinite alternate;
+            }
+
+            @keyframes typing {
+                from { width: 0 }
+                to   { width: 14ch } 
+            }
+
+            @keyframes blink { 50% { border-color: transparent } }
+
+            /* --- Scrollbar Personnalisée 
+            ::-webkit-scrollbar { width: 6px; height: 0; }
+            ::-webkit-scrollbar-track { background: transparent; }
+            ::-webkit-scrollbar-thumb { background: #6b21a8; border-radius: 10px; }
+            ::-webkit-scrollbar-thumb:hover { background: #a855f7; }--- */
+            /* --- Masquer toutes les Scrollbars (tout en gardant le scroll) --- */
+            * {
+                scrollbar-width: none; /* Pour Firefox */
+                -ms-overflow-style: none; /* Pour Internet Explorer et Edge */
+            }
+            *::-webkit-scrollbar {
+                display: none; /* Pour Chrome, Safari et Opera */
+            }
+
+            /* ========================================= */
+            /*        STYLES RADIO RÉTRO-CYBERPUNK       */
+            /* ========================================= */
+            
+            .radio-chassis {
+                background: linear-gradient(to bottom, #2a2a2e, #141416);
+                border: 4px solid #3d3d45;
+                border-radius: 16px;
+                box-shadow: 0 20px 40px rgba(0,0,0,0.9), inset 0 4px 2px rgba(255,255,255,0.1), inset 0 -4px 10px rgba(0,0,0,0.8);
+            }
+
+            .speaker-grill {
+                background: radial-gradient(circle, #050505 30%, transparent 31%), radial-gradient(circle, #050505 30%, transparent 31%);
+                background-size: 8px 8px; background-position: 0 0, 4px 4px;
+                background-color: #1a1a1c;
+                border: 3px solid #111; border-radius: 50%;
+                box-shadow: inset 0 0 20px rgba(0,0,0,1), 0 2px 2px rgba(255,255,255,0.1);
+            }
+
+            .radio-screen {
+                background: #020005;
+                border: 2px solid #111; border-top: 4px solid #000; border-radius: 8px;
+                box-shadow: inset 0 0 20px rgba(168, 85, 247, 0.1);
+                color: #a855f7;
+                font-family: 'Courier New', Courier, monospace;
+                text-shadow: 0 0 8px #a855f7, 0 0 1px #a855f7;
+                position: relative;
+            }
+            .radio-screen::after {
+                content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+                background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.2) 2px, rgba(0,0,0,0.2) 4px);
+                pointer-events: none;
+            }
+
+            .mech-btn {
+                background: linear-gradient(to bottom, #4a4a52, #242429);
+                border: 1px solid #111;
+                box-shadow: 0 6px 0 #111, 0 8px 10px rgba(0,0,0,0.6), inset 0 2px 2px rgba(255,255,255,0.2);
+                border-radius: 6px; color: #ccc;
+                transition: transform 0.1s, box-shadow 0.1s, color 0.3s;
+            }
+            .mech-btn:active {
+                transform: translateY(6px);
+                box-shadow: 0 0px 0 #111, 0 2px 5px rgba(0,0,0,0.6), inset 0 2px 2px rgba(255,255,255,0.2);
+            }
+            .mech-btn:hover { color: #a855f7; }
+
+            .knob {
+                background: radial-gradient(circle at 30% 30%, #555, #1a1a1a);
+                border-radius: 50%; border: 1px solid #000;
+                box-shadow: 0 6px 10px rgba(0,0,0,0.7), inset 0 2px 3px rgba(255,255,255,0.3);
+            }
+
+            .eq-bar {
+                width: 6px; background-color: #6b21a8; border-radius: 2px;
+                box-shadow: 0 0 5px #a855f7; height: 4px; transition: height 0.2s ease;
+            }
+            .is-playing .eq-bar { background-color: #a855f7; animation: eqAnim alternate infinite ease-in-out; }
+            .is-playing .eq-bar:nth-child(1) { animation-duration: 0.4s; animation-delay: 0.1s; }
+            .is-playing .eq-bar:nth-child(2) { animation-duration: 0.6s; animation-delay: 0.3s; }
+            .is-playing .eq-bar:nth-child(3) { animation-duration: 0.5s; animation-delay: 0.0s; }
+            .is-playing .eq-bar:nth-child(4) { animation-duration: 0.7s; animation-delay: 0.4s; }
+            .is-playing .eq-bar:nth-child(5) { animation-duration: 0.3s; animation-delay: 0.2s; }
+
+            @keyframes eqAnim { 0% { height: 4px; } 50% { height: 28px; } 100% { height: 12px; } }
+
+            .station-item { border-bottom: 1px solid #333; }
+            .station-item:hover { background: rgba(168, 85, 247, 0.2); color: #fff; cursor: pointer; border-left: 3px solid #a855f7; }
+            
+            .cyber-input {
+                background: #050505; border: 1px solid #333; color: #a855f7;
+                box-shadow: inset 0 2px 5px rgba(0,0,0,1);
+            }
+            .cyber-input:focus { border-color: #a855f7; outline: none; box-shadow: inset 0 0 5px rgba(168,85,247,0.3); }
+
+        </style>
+    </head>
+    <body class="bg-black text-white">
+
+        <!-- Section de Navigation -->
+        <nav class="fixed w-full z-50 bg-black bg-opacity-60 backdrop-filter backdrop-blur-lg border-b border-gray-800">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-20 items-center">
+                    <!-- Logo GAUCHE -->
+                    <div class="flex-shrink-0 flex items-center">
+                        <a href="javascript:void(0)" class="home-link flex items-center">
+                            <span class="text-4xl font-bold tech-font">KGP</span><span id="kpg-subtitle" class="home-text">radio</span>
+                        </a>
+                    </div>
+
+                    <!-- Menu DROITE -->
+                    <div class="flex items-center">
+                        <div class="hidden md:block">
+                            <div class="ml-10 flex items-center space-x-8">
+                                <!-- Vos liens ici si nécessaire -->
+                            </div>
+                        </div>
+
+                        <div class="md:hidden flex items-center">
+                            <button id="hamburger-button" class="text-white focus:outline-none">
+                                <i id="hamburger-icon" class="fas fa-bars text-2xl"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Menu Mobile -->
+            <div id="mobile-menu" class="md:hidden fixed top-0 left-0 w-full h-screen bg-black bg-opacity-95 backdrop-blur-lg flex flex-col items-center pt-24 pb-12 overflow-y-auto space-y-8 transform translate-x-full transition-transform duration-300 ease-in-out z-40">
+                
+                <!-- Catégories -->
+                <div class="flex flex-col items-center space-y-4 w-full">
+                    <h2 class="text-2xl font-semibold tech-font gradient-text1 border-b border-gray-700 pb-2 w-2/3 text-center">Catégories</h2>
+                    <a href="home.html" class="text-xl text-#b[5aca8] hover:text-purple-400 transition-colors duration-300 category-link" data-category="All"><i class="fa-regular fa-hand-point-right text-purple-800"></i> Home</a>
+                    <a href="home.html#it-news" class="text-xl text-[#b5aca8] hover:text-purple-400 transition-colors duration-300 category-link" data-category="I.T"><i class="fa-regular fa-hand-point-right text-purple-800"></i> I.T</a>
+                    <a href="home.html#Quizz" class="text-xl text-[#b5aca8] hover:text-purple-400 transition-colors duration-300 category-link" data-category="Tuto"><i class="fa-regular fa-hand-point-right text-purple-800"></i> Quiz</a>
+                    <a href="home.html#Movie" class="text-xl text-[#b5aca8] hover:text-purple-400 transition-colors duration-300 category-link" data-category="News"><i class="fa-regular fa-hand-point-right text-purple-800"></i> Movie</a>
+                    <a href="home.html#Music" class="text-xl text-[#b5aca8] hover:text-purple-400 transition-colors duration-300 category-link" data-category="Music"><i class="fa-regular fa-hand-point-right text-purple-800"></i> Music</a>
+                    <a href="home.html#Cooking" class="text-xl text-[#b5aca8] hover:text-purple-400 transition-colors duration-300 category-link" data-category="Cuisine"><i class="fa-regular fa-hand-point-right text-purple-800"></i> Cuisine</a>
+                </div>
+
+                <!-- Nos Apps -->
+                <div class="flex flex-col items-center space-y-4 w-full">
+                    <h2 class="text-2xl font-semibold tech-font gradient-text1 border-b border-gray-700 pb-2 w-2/3 text-center mt-4">Nos Apps</h2>
+                    <a href="clock.html" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">worldtime</span></a>
+                    <a href="converter.html" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">converter</span></a>
+                    <a href="meteo.html" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">meteo</span></a>
+                    <a href="caddy3.html" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">caddy</span></a>
+                    <a href="timer.html" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">timer</span></a>
+                    <a href="draw.html" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">draw</span></a>
+                    <a href="radio.html" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">radio</span></a>
+                    <a href="notes.html" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">notes</span></a>
+                    <a href="https://k-gou09.github.io/KGP_Compta/index.html" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">Compta</span></a>
+                    <a href="https://k-gou09.github.io/KGP_QRcode/" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">QRcode</span></a>
+                    <a href="https://k-gou09.github.io/KGP_SHA/" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">SHA</span></a>
+                </div>
+
+                <!-- Support -->
+                <div class="flex flex-col items-center space-y-5 w-full">
+                    <h2 class="text-2xl font-semibold tech-font gradient-text1 border-b border-gray-700 pb-2 w-2/3 text-center mt-4">Support</h2>
+                    <a href="https://www.facebook.com/nc.prod.794?locale=fr_FR" target="_blank" class="text-xl text-[#b5aca8] hover:text-purple-400 transition-colors duration-300 flex items-center w-36"><i class="fab fa-facebook text-blue-600 text-2xl w-10"></i> Facebook</a>
+                    <a href="https://www.youtube.com/@kgpsound" target="_blank" class="text-xl text-[#b5aca8] hover:text-purple-400 transition-colors duration-300 flex items-center w-36"><i class="fab fa-youtube text-red-600 text-2xl w-10"></i> YouTube</a>
+                    <a href="https://github.com/k-gou09" target="_blank" class="text-xl text-[#b5aca8] hover:text-purple-400 transition-colors duration-300 flex items-center w-36 mb-10"><i class="fab fa-github text-white text-2xl w-10"></i> GitHub</a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Section Principale du Fil d'Actualité -->
+        <main class="flex h-screen pt-20">
+            <!-- Colonne de Gauche -->
+            <aside class="w-1/5 h-full bg-gray-900 bg-opacity-30 p-6 border-r border-gray-700 hidden sm:block overflow-y-auto pb-10">
+                <h2 class="text-xl font-semibold tech-font gradient-text1 mb-6 ">Catégories</h2>
+
+                <ul class="space-y-3" style="color: #b5aca8;">
+                    <li><a href="home.html" class="hover:text-purple-400 transition-colors duration-300 category-link" data-category="All"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp;Home</a></li>
+                    <li><a href="home.html#it-news" class="hover:text-purple-400 transition-colors duration-300 category-link" data-category="I.T"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp;I.T</a></li>
+                    <li><a href="home.html#Quizz" class="hover:text-purple-400 transition-colors duration-300 category-link" data-category="Tuto"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp;Quiz</a></li>
+                    <li><a href="home.html#Movie" class="hover:text-purple-400 transition-colors duration-300 category-link" data-category="News"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp;Movie</a></li>
+                    <li><a href="home.html#Music" class="hover:text-purple-400 transition-colors duration-300 category-link" data-category="Music"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp;Music</a></li>
+                    <li><a href="home.html#Cooking" class="hover:text-purple-400 transition-colors duration-300 category-link" data-category="Cuisine"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp;Cuisine</a></li>
+                </ul>
+                <div class="mt-10">
+                    <h3 class="text-lg font-medium tech-font gradient-text1 mb-3">Nos Apps</h3>
+                    <ul class="space-y-3" style="color: #b5aca8;">
+                        <li><a href="clock.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">worldtime</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="converter.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">converter</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="qrcode.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">qrcode</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="meteo.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">meteo</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="caddy3.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">caddy</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="timer.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">timer</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="draw.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">draw</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="radio.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">radio</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="notes.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">notes</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="gps.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">gps</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="https://k-gou09.github.io/KGP_Compta/index.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">Compta</span></a></li>
+                        <li><a href="https://k-gou09.github.io/KGP_QRcode/" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">QRcode</span></a></li>
+                        <li><a href="https://k-gou09.github.io/KGP_SHA/" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">SHA</span></a></li>
+                    </ul>
+                </div>
+            </aside>
+
+            <!-- Colonne Centrale (AVEC LA RADIO INTÉGRÉE) -->
+            <section id="news-feed" class="flex-1 h-full overflow-y-auto bg-opacity-50 p-6 md:p-8">
+                
+                <!-- EN-TÊTE D'ORIGINE -->
+                <div class="mb-8">
+                    <div class="flex items-center justify-center space-x-4 bg-black bg-opacity-40 border border-gray-700 rounded-xl p-4 shadow-xl w-fit mx-auto">
+                        <img src="../img/v.svg" alt="Chef" class="w-16 h-16">                
+                        <h1 id="kpg-header" class="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold tech-font gradient-text1 text-center">K-GOU PROD</h1>
+                        <img src="../img/v.svg" alt="Chef" class="w-16 h-16">
+                    </div>
+
+                    <!-- Animation Hacker CENTRE -->
+                    <div id="anim" class="hidden sm:flex flex-1 justify-center">
+                        <h2 id="hack-title">!#?%& $#@!?{}</h2>
+                    </div>
+                </div>
+
+                <!-- MODULE RADIO VERTICAL -->
+                <div class="w-full flex flex-col items-center justify-center pb-20">
+                    <div class="radio-chassis w-full max-w-3xl p-6 flex flex-col gap-8 mx-auto">
+                        
+                        <!-- MODULE 1 : L'APPAREIL RADIO -->
+                        <div class="w-full flex flex-col gap-6">
+                            <!-- Écran et Enceintes -->
+                            <div class="flex items-center justify-between gap-4">
+                                <!-- AJOUT DE flex-shrink-0 -->
+                                <div class="speaker-grill w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 hidden sm:block"></div>
+                                
+                                <!-- AJOUT DE min-w-0 pour forcer la limite du texte -->
+                                <div class="radio-screen flex-1 min-w-0 h-32 flex flex-col justify-center items-center p-3">
+                                    <div class="absolute top-2 left-2 text-[10px] text-gray-600 opacity-70">FREQ_MOD</div>
+                                    <img id="stationLogo" src="" alt="" class="absolute right-2 top-2 w-8 h-8 rounded bg-gray-900 border border-purple-800 hidden">
+                                    
+                                    <!-- AJOUT DE truncate (coupe le texte trop long avec ...) et px-8 (évite de taper le logo) -->
+                                    <div class="w-full text-center px-8 min-w-0">
+                                        <h2 id="stationName" class="text-xl sm:text-2xl font-bold truncate block">---. EN ATTENTE .---</h2>
+                                    </div>
+                                    <!-- AJOUT DE truncate ici aussi -->
+                                    <p id="stationMeta" class="text-xs text-purple-800 mt-1 h-4 truncate w-full text-center px-4">Recherche de signal...</p>
+                                    
+                                    <!-- Visualiseur Audio -->
+                                    <div id="visualizer" class="flex items-end gap-1 mt-4 h-8">
+                                        <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
+                                    </div>
+                                </div>
+
+                                <!-- AJOUT DE flex-shrink-0 -->
+                                <div class="speaker-grill w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 hidden sm:block"></div>
+                            </div>
+
+                            <!-- Panneau de Contrôle Mécanique -->
+                            <div class="p-4 rounded-lg flex flex-col sm:flex-row items-center justify-center shadow-inner gap-4 relative">
+                                <!-- Molette Gauche (Volume) 
+                                <div id="volumeKnob" class="knob w-12 h-12 flex items-center justify-center absolute left-4 hidden sm:flex cursor-pointer touch-none" style="transform: rotate(135deg);" title="Volume">
+                                    <div class="absolute top-1.5 w-1 h-3 bg-red-600 rounded"></div>
+                                </div>-->
+
+                                <div class="flex gap-4 z-10">
+                                    <button id="btnPrev" class="mech-btn px-4 py-3 text-xl"><i class="fas fa-backward-step"></i></button>
+                                    <button id="btnPlayPause" class="mech-btn px-8 py-3 text-2xl text-gray-400"><i id="playIcon" class="fas fa-play"></i></button>
+                                    <button id="btnNext" class="mech-btn px-4 py-3 text-xl"><i class="fas fa-forward-step"></i></button>
+                                </div>
+
+                                <!-- Molette Droite (Tuning) -->
+                                
+                            </div>
+                            <p class="text-right text-xs font-mono">
+                                <span class="text-2xl text-gray-500 font-bold tech-font">KGP</span><span class="home-text">audio</span><br><span class="text-xs text-red-800 font-bold tech-font pr-2">system</span>
+                            </p>
+
+                        <hr class="border-gray-800 shadow-[0_1px_0_rgba(255,255,255,0.05)] my-2">
+
+                        <!-- MODULE 2 : TERMINAL DE RECHERCHE -->
+                        <div class="w-full bg-gray-900 border-2 border-gray-800 rounded-lg p-5 flex flex-col md:flex-row gap-6 shadow-xl relative overflow-hidden">
+                            <div class="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-white to-transparent opacity-5 pointer-events-none"></div>
+
+                            <div class="w-full md:w-1/2 flex flex-col gap-4">
+                                <div class="flex justify-between items-center mb-1">
+                                    <h3 class="text-purple-400 font-mono text-sm tracking-widest"><i class="fas fa-terminal"></i> SCANNER</h3>
+                                    
+                                    <!-- NOUVEL EMPLACEMENT : Bouton Save et Favs groupés -->
+                                    <div class="flex gap-2">
+                                        <button id="btnFavorite" class="text-xs pl-4 pr-4 btn-nano" title="Enregistrer la station"><i class="fas fa-star text-yellow-400"></i> Save</button>
+                                        <button id="btnFavoritesView" class="text-xs pl-4 pr-4 btn-nano"><i class="fas fa-folder-open text-purple-400"></i> Favs</button>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col gap-3">
+                                    <input id="searchName" class="cyber-input w-full rounded px-4 py-2 text-sm font-mono" placeholder="> Nom_Station (ex: RTL)">
+                                    <div class="flex gap-3">
+                                        <input id="searchCountry" class="cyber-input w-1/2 rounded px-4 py-2 text-sm font-mono" placeholder="> Pays (ex: FR)">
+                                        <input id="searchTag" class="cyber-input w-1/2 rounded px-4 py-2 text-sm font-mono" placeholder="> Genre (Rock)">
+                                    </div>
+                                    <button id="btnSearch" class="btn-nano w-full mt-2" style="justify-content: center;">LANCER LE SCAN</button>
+                                </div>
+                            </div>
+
+                            <div class="w-full md:w-1/2 flex flex-col">
+                                <div class="flex justify-between items-center mb-2">
+                                    <h3 class="text-gray-500 font-mono text-xs tracking-widest uppercase">Résultats</h3>
+                                    <div id="loading" class="text-purple-500 text-xs font-mono hidden"><i class="fas fa-circle-notch fa-spin"></i> Scan...</div>
+                                </div>
+                                <div id="error" class="text-red-500 text-xs font-mono text-center hidden mb-2"></div>
+                                <ul id="stationsList" class="flex-1 bg-[#050505] border border-gray-800 rounded p-2 overflow-y-auto text-sm font-mono text-gray-400 space-y-1 h-48 md:h-full custom-scrollbar shadow-inner">
+                                    <li class="text-center mt-12 text-gray-600 opacity-50"><i class="fas fa-satellite-dish mb-2 text-2xl block"></i>Aucun signal.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- Colonne de Droite (D'ORIGINE) -->
+            <aside class="w-1/5 h-full bg-gray-900 bg-opacity-30 p-6 border-l border-gray-700 hidden lg:block">
+                <h2 class="text-xl font-semibold tech-font gradient-text1 mb-6 mt-6">Liens Utiles</h2>
+                <ul class="space-y-3">
+                    <li><a href="https://github.com/k-gou09" class="hover:text-purple-400 transition-colors duration-300"><i class="fab fa-github" style="color: white;"></i>&nbsp;&nbsp;&nbsp;GITHUB</a></li>
+                    <li><a href="https://www.facebook.com/nc.prod.794?locale=fr_FR" class="hover:text-purple-400 transition-colors duration-300"><i class="fab fa-facebook" style="color: blue;"></i>&nbsp;&nbsp;&nbsp;FACEBOOK</a></li>
+                    <li><a href="https://www.youtube.com/@kgpsound" class="hover:text-purple-400 transition-colors duration-300"><i class="fab fa-youtube" style="color: rgb(245, 3, 3);"></i>&nbsp;&nbsp;&nbsp;YOUTUBE</a></li>
+                </ul>
+                <div class="mt-20 p-4 rounded-lg">
+                    <a href="maintenance.html"><img src="../img/log_kgp1.png" alt="Logo KGP" class="w-full h-auto" style="border-radius: 35%;"></a>                
+                </div>
+            </aside>
+        </main>
+
+        <!-- Footer (D'ORIGINE) -->
+        <p class="fixed left-2 bottom-2 z-10 bg-black bg-opacity-80 text-white text-xs px-2 py-1 rounded-md flex items-center gap-1 tech-font">
+            K-gou_Prod
+            <img src="../img/v.svg" alt="Logo" class="w-4 h-4 inline-block filter brightness-0 invert">
+            <a href="https://www.facebook.com/nc.prod.794" class="text-white underline hover:text-blue-300" target="_blank">Studio</a>
+        </p>
+
+        <!-- Lecteur Audio Invisible -->
+        <audio id="audioPlayer" class="hidden"></audio>
+
+        <!-- Scripts -->
+        <script src="../js/news.js"></script>
+        <script>
+            // --- Logique d'origine (Menu Hamburger + Hacker) ---
+            window.addEventListener('load', () => {
+                const hamburgerButton = document.getElementById('hamburger-button');
+                const mobileMenu = document.getElementById('mobile-menu');
+                const hamburgerIcon = document.getElementById('hamburger-icon');
+                const menuLinks = document.querySelectorAll('#mobile-menu a');
+
+                const toggleMenu = () => {
+                    mobileMenu.classList.toggle('translate-x-full');
+                    if (hamburgerIcon.classList.contains('fa-bars')) {
+                        hamburgerIcon.classList.replace('fa-bars', 'fa-xmark');
+                    } else {
+                        hamburgerIcon.classList.replace('fa-xmark', 'fa-bars');
+                    }
+                    document.body.classList.toggle('overflow-hidden');
+                };
+
+                hamburgerButton.addEventListener('click', toggleMenu);
+                menuLinks.forEach(link => {
+                    link.addEventListener('click', () => {
+                        if (!mobileMenu.classList.contains('translate-x-full')) toggleMenu();
+                    });
+                });
+
+                
+            });
+            
+            // --- Logique de la Web Radio ---
+            const API_BASE = "https://de1.api.radio-browser.info/json";
+
+            const searchName = document.getElementById("searchName");
+            const searchCountry = document.getElementById("searchCountry");
+            const searchTag = document.getElementById("searchTag");
+            const btnSearch = document.getElementById("btnSearch");
+            const btnRandom = document.getElementById("btnRandom");
+            const btnFavoritesView = document.getElementById("btnFavoritesView");
+
+            const stationsListEl = document.getElementById("stationsList");
+            const audioPlayer = document.getElementById("audioPlayer");
+            
+            const stationNameEl = document.getElementById("stationName");
+            const stationMetaEl = document.getElementById("stationMeta");
+            const stationLogoEl = document.getElementById("stationLogo");
+            const visualizer = document.getElementById("visualizer");
+            const playIcon = document.getElementById("playIcon");
+            const btnPlayPause = document.getElementById("btnPlayPause");
+            
+            const loadingEl = document.getElementById("loading");
+            const errorEl = document.getElementById("error");
+
+            let stations = [];
+            let currentIndex = -1;
+            let zapInterval = null;
+            let favorites = loadFavorites();
+
+            function loadFavorites() {
+                try { return JSON.parse(localStorage.getItem("kgp_radio_favs") || "[]"); } 
+                catch { return []; }
+            }
+
+            function saveFavorites() { localStorage.setItem("kgp_radio_favs", JSON.stringify(favorites)); }
+            function showLoading(show) { loadingEl.classList.toggle("hidden", !show); }
+            function showError(msg) {
+                if (!msg) { errorEl.classList.add("hidden"); errorEl.textContent = ""; } 
+                else { errorEl.classList.remove("hidden"); errorEl.textContent = msg; }
+            }
+
+            function updatePlayState(isPlaying) {
+                if (isPlaying) {
+                    playIcon.className = "fas fa-pause";
+                    visualizer.classList.add("is-playing");
+                    btnPlayPause.classList.replace("text-gray-400", "text-purple-400");
+                } else {
+                    playIcon.className = "fas fa-play";
+                    visualizer.classList.remove("is-playing");
+                    btnPlayPause.classList.replace("text-purple-400", "text-gray-400");
+                }
+            }
+
+            async function searchStations() {
+                showError(""); showLoading(true);
+                const params = new URLSearchParams();
+                params.set("limit", "50"); params.set("hidebroken", "true");
+                if (searchName.value) params.set("name", searchName.value);
+                if (searchCountry.value) params.set("country", searchCountry.value);
+                if (searchTag.value) params.set("tag", searchTag.value);
+
+                try {
+                    const res = await fetch(`${API_BASE}/stations/search?${params.toString()}`);
+                    stations = await res.json();
+                    renderStations();
+                    if (stations.length === 0) showError("Signal Perdu : Aucune station.");
+                } catch (e) {
+                    showError("Erreur Réseau : Connexion à l'API échouée.");
+                } finally { showLoading(false); }
+            }
+
+            function renderStations(isFavView = false) {
+                stationsListEl.innerHTML = "";
+                if(stations.length === 0) {
+                    stationsListEl.innerHTML = `<li class="text-center mt-4 text-gray-600">Aucun résultat.</li>`;
+                    return;
+                }
+
+                stations.forEach((st, idx) => {
+                    const li = document.createElement("li");
+                    li.className = "station-item p-2 transition-colors duration-200 flex justify-between items-center";
+                    let metaText = st.country || 'Unknown';
+                    let bitrate = st.bitrate ? `[${st.bitrate}kbps]` : '';
+                    
+                    li.innerHTML = `
+                        <div class="truncate w-3/4">
+                            <span class="text-purple-300 font-bold">${st.name}</span><br>
+                            <span class="text-xs text-gray-500">${metaText} ${bitrate}</span>
+                        </div>
+                        ${isFavView ? `<i class="fas fa-trash text-red-800 hover:text-red-500 delete-fav" data-idx="${idx}"></i>` : `<i class="fas fa-satellite-dish opacity-20"></i>`}
+                    `;
+                    
+                    li.addEventListener("click", (e) => {
+                        if(e.target.classList.contains("delete-fav")) {
+                            e.stopPropagation();
+                            favorites.splice(idx, 1);
+                            saveFavorites();
+                            stations = favorites;
+                            renderStations(true);
+                        } else { playStation(idx); }
+                    });
+                    stationsListEl.appendChild(li);
+                });
+            }
+
+            function playStation(index) {
+                const st = stations[index];
+                if (!st) return;
+                currentIndex = index;
+                stationNameEl.textContent = "CONNEXION...";
+                stationMetaEl.textContent = "Buffering data...";
+                updatePlayState(false);
+
+                audioPlayer.src = st.url_resolved || st.url;
+                audioPlayer.play().then(() => {
+                    stationNameEl.textContent = st.name.toUpperCase();
+                    stationMetaEl.textContent = `${st.country || 'Inter'} | ${st.codec || 'MP3'} ${st.bitrate ? st.bitrate+'k' : ''}`;
+                    if(st.favicon) {
+                        stationLogoEl.src = st.favicon;
+                        stationLogoEl.classList.remove("hidden");
+                    } else { stationLogoEl.classList.add("hidden"); }
+                }).catch(() => {
+                    stationNameEl.textContent = "ERREUR FLUX";
+                    stationMetaEl.textContent = "Signal crypté ou hors ligne";
+                    updatePlayState(false);
+                });
+            }
+
+            audioPlayer.addEventListener("play", () => updatePlayState(true));
+            audioPlayer.addEventListener("pause", () => updatePlayState(false));
+            audioPlayer.addEventListener("error", () => { stationNameEl.textContent = "FLUX CORROMPU"; updatePlayState(false); });
+
+            btnSearch.addEventListener("click", searchStations);
+            [searchName, searchCountry, searchTag].forEach(input => {
+                input.addEventListener('keypress', (e) => { if (e.key === 'Enter') searchStations(); });
+            });
+
+
+            document.getElementById("btnPrev").addEventListener("click", () => {
+                if (stations.length === 0) return;
+                currentIndex = (currentIndex - 1 + stations.length) % stations.length; playStation(currentIndex);
+            });
+
+            document.getElementById("btnNext").addEventListener("click", () => {
+                if (stations.length === 0) return;
+                currentIndex = (currentIndex + 1) % stations.length; playStation(currentIndex);
+            });
+
+            btnPlayPause.addEventListener("click", () => {
+                if (audioPlayer.src) { if (audioPlayer.paused) audioPlayer.play(); else audioPlayer.pause(); } 
+                else if (stations.length > 0 && currentIndex >= 0) { playStation(currentIndex); }
+            });
+
+
+            document.getElementById("btnFavorite").addEventListener("click", (e) => {
+                if(currentIndex === -1 || stations.length === 0) return;
+                const st = stations[currentIndex];
+                if (!favorites.find(f => f.stationuuid === st.stationuuid)) {
+                    favorites.push(st); saveFavorites();
+                    const btn = e.currentTarget;
+                    const originalHTML = btn.innerHTML;
+                    btn.innerHTML = `<i class="fas fa-check text-green-500"></i> SAUVEGARDÉ`;
+                    setTimeout(() => { btn.innerHTML = originalHTML; }, 2000);
+                }
+            });
+
+            btnFavoritesView.addEventListener("click", () => { stations = favorites; renderStations(true); });
+        </script>
+    </body>
+</html>

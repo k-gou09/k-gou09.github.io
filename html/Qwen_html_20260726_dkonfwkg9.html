@@ -1,0 +1,1762 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>K-gou prod | Immersive Digital Experiences</title>
+    
+    <!-- Polices : Orbitron (display) + Space Grotesk (body) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Face-API.js (détection de visage) -->
+    <script defer src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+    
+    <style>
+        /* ============ RESET & VARIABLES ============ */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --bg-deep: #0a0a14;
+            --bg-base: #0f0f1e;
+            --bg-panel: #16162a;
+            --bg-card: #1c1c33;
+            --bg-hover: #24243f;
+            --border: #2a2a45;
+            --border-light: #3a3a5c;
+            --purple: #a855f7;
+            --purple-dim: #7c3aed;
+            --blue: #3b82f6;
+            --cyan: #22d3ee;
+            --text: #e8e8f2;
+            --text-dim: #9ca3c0;
+            --text-faint: #6b7290;
+            --green: #10b981;
+            --red: #ef4444;
+            --yellow: #fbbf24;
+            --font-display: 'Orbitron', sans-serif;
+            --font-body: 'Space Grotesk', sans-serif;
+        }
+        
+        html { scroll-behavior: smooth; }
+        
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-deep);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* ============ FOND AMBIANT (grille + halos) ============ */
+        .bg-ambient {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background:
+                radial-gradient(ellipse 60% 50% at 10% 0%, rgba(124, 58, 237, 0.14), transparent 60%),
+                radial-gradient(ellipse 50% 40% at 95% 15%, rgba(59, 130, 246, 0.12), transparent 60%),
+                radial-gradient(ellipse 50% 40% at 50% 100%, rgba(34, 211, 238, 0.07), transparent 60%),
+                var(--bg-deep);
+        }
+        .bg-ambient::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(168, 85, 247, 0.035) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(168, 85, 247, 0.035) 1px, transparent 1px);
+            background-size: 44px 44px;
+            mask-image: radial-gradient(ellipse 80% 70% at 50% 30%, #000 30%, transparent 80%);
+        }
+        
+        /* ============ HEADER ============ */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(15, 15, 30, 0.85);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid var(--border);
+        }
+        .header-inner {
+            max-width: 1500px;
+            margin: 0 auto;
+            padding: 0 20px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            flex-shrink: 0;
+        }
+        .logo-mark {
+            font-family: var(--font-display);
+            font-weight: 900;
+            font-size: 1.15rem;
+            letter-spacing: 2px;
+            color: #fff;
+            background: linear-gradient(135deg, var(--purple-dim), var(--blue));
+            padding: 8px 12px;
+            border-radius: 8px;
+            box-shadow: 0 0 18px rgba(124, 58, 237, 0.45);
+        }
+        .logo-text { line-height: 1.1; }
+        .logo-text .brand {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            color: var(--text);
+        }
+        .logo-text .tagline {
+            font-size: 0.62rem;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: var(--text-faint);
+        }
+        
+        /* Nav + dropdowns */
+        nav { margin-left: auto; display: flex; align-items: center; gap: 4px; }
+        .nav-item { position: relative; }
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 9px 14px;
+            border-radius: 8px;
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.88rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-family: inherit;
+        }
+        .nav-link:hover { color: var(--text); background: var(--bg-hover); }
+        .nav-link .caret { font-size: 0.6rem; transition: transform 0.2s; }
+        .nav-item:hover .caret { transform: rotate(180deg); }
+        
+        .dropdown {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            min-width: 220px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            padding: 8px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-8px);
+            transition: all 0.22s;
+            box-shadow: 0 16px 40px rgba(0,0,0,0.5);
+        }
+        .nav-item:hover .dropdown,
+        .nav-item:focus-within .dropdown {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        .dropdown a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 12px;
+            border-radius: 8px;
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: all 0.15s;
+        }
+        .dropdown a:hover { background: var(--bg-hover); color: var(--text); transform: translateX(3px); }
+        .dropdown a .d-icon { width: 20px; text-align: center; }
+        
+        .burger {
+            display: none;
+            background: none;
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 1.2rem;
+            padding: 6px 10px;
+            cursor: pointer;
+        }
+        
+        /* ============ LAYOUT 3 COLONNES ============ */
+        .layout {
+            max-width: 1500px;
+            margin: 0 auto;
+            padding: 24px 20px;
+            display: grid;
+            grid-template-columns: 210px 1fr 250px;
+            gap: 22px;
+            align-items: start;
+        }
+        
+        /* ============ SIDEBARS ============ */
+        .sidebar {
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 18px 14px;
+            position: sticky;
+            top: 84px;
+        }
+        .sidebar h3 {
+            font-family: var(--font-display);
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: var(--purple);
+            padding: 0 8px 12px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 12px;
+        }
+        .side-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 10px;
+            border-radius: 8px;
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.87rem;
+            font-weight: 500;
+            transition: all 0.18s;
+            border-left: 2px solid transparent;
+        }
+        .side-link:hover {
+            background: var(--bg-hover);
+            color: var(--text);
+            border-left-color: var(--purple);
+            transform: translateX(3px);
+        }
+        .side-link .s-icon { width: 20px; text-align: center; }
+        
+        /* Cartes apps (sidebar droite) */
+        .app-card {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 10px;
+            border-radius: 10px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            text-decoration: none;
+            margin-bottom: 8px;
+            transition: all 0.2s;
+        }
+        .app-card:hover {
+            border-color: var(--purple-dim);
+            background: var(--bg-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(124, 58, 237, 0.2);
+        }
+        .app-badge {
+            font-family: var(--font-display);
+            font-size: 0.55rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: #fff;
+            background: linear-gradient(135deg, var(--purple-dim), var(--blue));
+            padding: 5px 7px;
+            border-radius: 6px;
+            flex-shrink: 0;
+        }
+        .app-info { flex: 1; min-width: 0; }
+        .app-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .app-status {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.62rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--text-faint);
+        }
+        .dot-online {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: var(--green);
+            box-shadow: 0 0 6px var(--green);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+        
+        .sidebar .support-block { margin-top: 20px; }
+        
+        /* ============ MAIN / PAGE HEADER ============ */
+        main { min-width: 0; }
+        .page-head {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        .page-title {
+            font-family: var(--font-display);
+            font-size: clamp(1.5rem, 3vw, 2.1rem);
+            font-weight: 900;
+            letter-spacing: 2px;
+            color: #fff;
+        }
+        .page-title .accent { color: var(--purple); }
+        .page-sub {
+            color: var(--text-dim);
+            font-size: 0.88rem;
+            margin-top: 6px;
+        }
+        .new-badge {
+            font-family: var(--font-display);
+            font-size: 0.6rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: #0a0a14;
+            background: linear-gradient(90deg, var(--yellow), #f59e0b);
+            padding: 6px 12px;
+            border-radius: 20px;
+            box-shadow: 0 0 14px rgba(251, 191, 36, 0.4);
+            animation: pulse 2.4s infinite;
+        }
+        
+        /* ============ PHOTOBOOTH ============ */
+        .pb-shell {
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        
+        /* Zone vidéo */
+        .pb-stage {
+            position: relative;
+            aspect-ratio: 4/3;
+            background: #000;
+            overflow: hidden;
+        }
+        #pb-video, #pb-canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        #pb-canvas { pointer-events: none; }
+        #pb-video { visibility: hidden; } /* le canvas affiche tout */
+        
+        .pb-placeholder {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            color: var(--text-faint);
+            background:
+                radial-gradient(ellipse 50% 40% at 50% 45%, rgba(124,58,237,0.12), transparent 70%);
+        }
+        .pb-placeholder .big { font-size: 3.2rem; filter: grayscale(0.3); }
+        .pb-placeholder p { font-size: 0.9rem; letter-spacing: 1px; }
+        
+        .pb-status {
+            position: absolute;
+            top: 12px; left: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0,0,0,0.65);
+            backdrop-filter: blur(6px);
+            padding: 6px 13px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            border: 1px solid var(--border);
+            z-index: 5;
+        }
+        .pb-status .rec-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: var(--red);
+        }
+        .pb-status.live .rec-dot { background: var(--green); box-shadow: 0 0 8px var(--green); animation: pulse 1.5s infinite; }
+        
+        .pb-rec-indicator {
+            position: absolute;
+            top: 12px; right: 12px;
+            display: none;
+            align-items: center;
+            gap: 8px;
+            background: rgba(239, 68, 68, 0.9);
+            color: #fff;
+            padding: 6px 13px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            z-index: 5;
+        }
+        .pb-rec-indicator.on { display: flex; }
+        .pb-rec-indicator .rec-dot { width: 8px; height: 8px; border-radius: 50%; background: #fff; animation: pulse 0.9s infinite; }
+        
+        .pb-flash {
+            position: absolute;
+            inset: 0;
+            background: #fff;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 8;
+        }
+        .pb-flash.go { animation: flashAnim 0.35s; }
+        @keyframes flashAnim { 0%{opacity:0} 40%{opacity:1} 100%{opacity:0} }
+        
+        .pb-countdown {
+            position: absolute;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9;
+            background: rgba(0,0,0,0.25);
+        }
+        .pb-countdown.on { display: flex; }
+        .pb-countdown span {
+            font-family: var(--font-display);
+            font-size: 7rem;
+            font-weight: 900;
+            color: #fff;
+            text-shadow: 0 0 40px var(--purple);
+            animation: countPop 1s;
+        }
+        @keyframes countPop {
+            0% { transform: scale(1.6); opacity: 0; }
+            30% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(0.9); opacity: 0.6; }
+        }
+        
+        .pb-grid-overlay {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 4;
+            display: none;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.18) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.18) 1px, transparent 1px);
+            background-size: 33.34% 33.34%;
+        }
+        .pb-grid-overlay.on { display: block; }
+        
+        /* Barre d'actions */
+        .pb-actions {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-card);
+        }
+        .pb-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            background: var(--bg-hover);
+            color: var(--text);
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .pb-btn:hover:not(:disabled) { transform: translateY(-2px); border-color: var(--purple); box-shadow: 0 6px 16px rgba(124,58,237,0.25); }
+        .pb-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .pb-btn.primary { background: linear-gradient(135deg, var(--purple-dim), var(--blue)); border-color: transparent; color: #fff; }
+        .pb-btn.danger { background: linear-gradient(135deg, #dc2626, var(--red)); border-color: transparent; color: #fff; }
+        .pb-btn.record.on { background: linear-gradient(135deg, #dc2626, var(--red)); border-color: transparent; color: #fff; animation: pulse 1.2s infinite; }
+        .pb-btn.toggle.on { border-color: var(--cyan); color: var(--cyan); box-shadow: 0 0 10px rgba(34,211,238,0.25); }
+        .pb-shutter {
+            width: 62px; height: 62px;
+            border-radius: 50%;
+            border: 4px solid #fff;
+            background: linear-gradient(135deg, var(--purple-dim), var(--blue));
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 0 20px rgba(124,58,237,0.5);
+            flex-shrink: 0;
+        }
+        .pb-shutter:hover:not(:disabled) { transform: scale(1.1); }
+        .pb-shutter:active:not(:disabled) { transform: scale(0.92); }
+        .pb-shutter:disabled { opacity: 0.35; cursor: not-allowed; }
+        
+        /* Onglets de contrôles */
+        .pb-tabs {
+            display: flex;
+            gap: 4px;
+            padding: 12px 16px 0;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-panel);
+            overflow-x: auto;
+        }
+        .pb-tab {
+            padding: 10px 18px;
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            color: var(--text-faint);
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+        .pb-tab:hover { color: var(--text); }
+        .pb-tab.active { color: var(--purple); border-bottom-color: var(--purple); }
+        
+        .pb-panel { display: none; padding: 18px 16px; }
+        .pb-panel.active { display: block; animation: fadeUp 0.3s; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(8px);} to { opacity: 1; transform: none;} }
+        
+        .pb-panel h4 {
+            font-family: var(--font-display);
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin: 4px 0 12px;
+        }
+        .pb-panel h4:not(:first-child) { margin-top: 20px; }
+        
+        /* Chips filtres / accessoires */
+        .chip-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(105px, 1fr));
+            gap: 9px;
+        }
+        .chip {
+            padding: 11px 8px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            color: var(--text-dim);
+            font-family: inherit;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.18s;
+            user-select: none;
+        }
+        .chip:hover { background: var(--bg-hover); color: var(--text); transform: translateY(-2px); }
+        .chip.active {
+            background: linear-gradient(135deg, var(--purple-dim), var(--blue));
+            border-color: transparent;
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(124,58,237,0.35);
+        }
+        .chip .c-ico { display: block; font-size: 1.25rem; margin-bottom: 5px; }
+        
+        /* Sliders */
+        .slider-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        .slider-row label {
+            min-width: 95px;
+            font-size: 0.82rem;
+            color: var(--text-dim);
+            font-weight: 500;
+        }
+        .slider-row input[type="range"] {
+            flex: 1;
+            accent-color: var(--purple);
+            height: 4px;
+        }
+        .slider-row .val {
+            min-width: 48px;
+            text-align: right;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--purple);
+            font-family: var(--font-display);
+        }
+        
+        /* Options (toggles) */
+        .opt-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+            gap: 10px;
+        }
+        .opt {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            cursor: pointer;
+            transition: all 0.18s;
+        }
+        .opt:hover { border-color: var(--border-light); background: var(--bg-hover); }
+        .opt .o-label { font-size: 0.84rem; font-weight: 600; color: var(--text); }
+        .opt .o-sub { font-size: 0.68rem; color: var(--text-faint); margin-top: 2px; }
+        .switch {
+            position: relative;
+            width: 42px; height: 23px;
+            flex-shrink: 0;
+        }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .switch .track {
+            position: absolute; inset: 0;
+            background: var(--border);
+            border-radius: 20px;
+            transition: 0.2s;
+        }
+        .switch .track::before {
+            content: '';
+            position: absolute;
+            width: 17px; height: 17px;
+            left: 3px; top: 3px;
+            background: #fff;
+            border-radius: 50%;
+            transition: 0.2s;
+        }
+        .switch input:checked + .track { background: var(--purple); }
+        .switch input:checked + .track::before { transform: translateX(19px); }
+        
+        select.pb-select {
+            background: var(--bg-card);
+            color: var(--text);
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            padding: 7px 10px;
+            font-family: inherit;
+            font-size: 0.82rem;
+            cursor: pointer;
+        }
+        
+        .kbd-hints {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 18px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+        .kbd-hints span {
+            font-size: 0.72rem;
+            color: var(--text-faint);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        kbd {
+            font-family: var(--font-display);
+            font-size: 0.62rem;
+            background: var(--bg-hover);
+            border: 1px solid var(--border-light);
+            border-bottom-width: 2px;
+            border-radius: 5px;
+            padding: 3px 7px;
+            color: var(--text);
+        }
+        
+        /* Galerie */
+        .pb-gallery {
+            padding: 18px 16px;
+            border-top: 1px solid var(--border);
+            background: var(--bg-card);
+        }
+        .pb-gallery-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+        .pb-gallery-head h4 {
+            font-family: var(--font-display);
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--purple);
+            margin: 0;
+        }
+        .pb-gallery-head .count { font-size: 0.72rem; color: var(--text-faint); }
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 10px;
+        }
+        .g-item {
+            position: relative;
+            aspect-ratio: 4/3;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .g-item:hover { transform: scale(1.04); border-color: var(--purple); box-shadow: 0 6px 18px rgba(124,58,237,0.3); }
+        .g-item img, .g-item video { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .g-item .g-del {
+            position: absolute;
+            top: 6px; right: 6px;
+            width: 24px; height: 24px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(239,68,68,0.92);
+            color: #fff;
+            font-size: 0.75rem;
+            cursor: pointer;
+            opacity: 0;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .g-item:hover .g-del { opacity: 1; }
+        .g-item .g-type {
+            position: absolute;
+            bottom: 6px; left: 6px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            background: rgba(0,0,0,0.7);
+            color: var(--cyan);
+            padding: 3px 8px;
+            border-radius: 10px;
+        }
+        .g-empty {
+            grid-column: 1 / -1;
+            text-align: center;
+            color: var(--text-faint);
+            font-style: italic;
+            padding: 26px 0;
+            font-size: 0.85rem;
+        }
+        
+        /* ============ FOOTER ============ */
+        footer {
+            margin-top: 30px;
+            border-top: 1px solid var(--border);
+            background: var(--bg-base);
+        }
+        .footer-inner {
+            max-width: 1500px;
+            margin: 0 auto;
+            padding: 34px 20px 26px;
+            display: grid;
+            grid-template-columns: 1.4fr 1fr 1fr;
+            gap: 30px;
+        }
+        .f-brand .f-logo {
+            font-family: var(--font-display);
+            font-weight: 900;
+            font-size: 1.3rem;
+            letter-spacing: 3px;
+            color: #fff;
+        }
+        .f-brand .f-logo span { color: var(--purple); }
+        .f-brand .f-glitch {
+            font-family: var(--font-display);
+            color: var(--text-faint);
+            font-size: 0.8rem;
+            letter-spacing: 3px;
+            margin-top: 8px;
+        }
+        .f-brand p { color: var(--text-dim); font-size: 0.82rem; margin-top: 12px; line-height: 1.6; }
+        footer h4 {
+            font-family: var(--font-display);
+            font-size: 0.7rem;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: var(--purple);
+            margin-bottom: 14px;
+        }
+        .f-links a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.85rem;
+            padding: 6px 0;
+            transition: all 0.18s;
+        }
+        .f-links a:hover { color: var(--text); transform: translateX(4px); }
+        .footer-bottom {
+            border-top: 1px solid var(--border);
+            padding: 16px 20px;
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--text-faint);
+            letter-spacing: 1px;
+        }
+        .footer-bottom a { color: var(--purple); text-decoration: none; font-weight: 600; }
+        
+        /* Scroll reveal */
+        .reveal { opacity: 0; transform: translateY(16px); transition: all 0.6s cubic-bezier(.2,.7,.3,1); }
+        .reveal.in { opacity: 1; transform: none; }
+        
+        /* ============ RESPONSIVE ============ */
+        @media (max-width: 1180px) {
+            .layout { grid-template-columns: 1fr 250px; }
+            .sidebar-left { display: none; }
+        }
+        @media (max-width: 860px) {
+            .layout { grid-template-columns: 1fr; }
+            .sidebar { position: static; }
+            .sidebar-right { order: 3; }
+            nav .nav-item { display: none; }
+            nav.open .nav-item { display: block; }
+            nav.open {
+                position: absolute;
+                top: 64px; left: 0; right: 0;
+                background: var(--bg-panel);
+                border-bottom: 1px solid var(--border);
+                padding: 12px;
+                flex-direction: column;
+                align-items: stretch;
+            }
+            nav.open .dropdown { position: static; opacity: 1; visibility: visible; transform: none; box-shadow: none; }
+            .burger { display: block; margin-left: auto; }
+            .footer-inner { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-ambient"></div>
+    
+    <!-- ================= HEADER ================= -->
+    <header>
+        <div class="header-inner">
+            <a class="logo" href="home.html">
+                <span class="logo-mark">KGP</span>
+                <span class="logo-text">
+                    <span class="brand">K-gou prod</span><br>
+                    <span class="tagline">Immersive Digital Experiences</span>
+                </span>
+            </a>
+            
+            <button class="burger" id="burger" aria-label="Menu">☰</button>
+            
+            <nav id="mainNav">
+                <div class="nav-item">
+                    <a class="nav-link" href="home.html">🏠 Home</a>
+                </div>
+                <div class="nav-item">
+                    <button class="nav-link">Catégories <span class="caret">▼</span></button>
+                    <div class="dropdown">
+                        <a href="home.html"><span class="d-icon">🏠</span> Home</a>
+                        <a href="maintenance.html"><span class="d-icon">💻</span> I.T</a>
+                        <a href="maintenance.html"><span class="d-icon">🎓</span> Tuto</a>
+                        <a href="maintenance.html"><span class="d-icon">📰</span> News</a>
+                        <a href="maintenance.html"><span class="d-icon">🎵</span> Music</a>
+                        <a href="maintenance.html"><span class="d-icon">🍳</span> Cuisine</a>
+                    </div>
+                </div>
+                <div class="nav-item">
+                    <button class="nav-link">Nos Apps <span class="caret">▼</span></button>
+                    <div class="dropdown">
+                        <a href="clock.html"><span class="d-icon">🌍</span> Worldtime</a>
+                        <a href="converter.html"><span class="d-icon">🔁</span> Converter</a>
+                        <a href="meteo.html"><span class="d-icon">⛅</span> Météo</a>
+                        <a href="caddy3.html"><span class="d-icon">🛒</span> Caddy</a>
+                        <a href="timer.html"><span class="d-icon">⏱️</span> Timer</a>
+                        <a href="draw.html"><span class="d-icon">🎨</span> Draw</a>
+                        <a href="radio.html"><span class="d-icon">📻</span> Radio</a>
+                        <a href="notes.html"><span class="d-icon">📝</span> Notes</a>
+                        <a href="https://k-gou09.github.io/KGP_Compta/index.html" target="_blank"><span class="d-icon">🧮</span> Compta</a>
+                        <a href="https://k-gou09.github.io/KGP_QRcode/" target="_blank"><span class="d-icon">🔳</span> QRcode</a>
+                        <a href="https://k-gou09.github.io/KGP_SHA/" target="_blank"><span class="d-icon">🔐</span> SHA</a>
+                    </div>
+                </div>
+                <div class="nav-item">
+                    <button class="nav-link">Support <span class="caret">▼</span></button>
+                    <div class="dropdown">
+                        <a href="https://www.facebook.com/nc.prod.794?locale=fr_FR" target="_blank"><span class="d-icon">📘</span> Facebook</a>
+                        <a href="https://www.youtube.com/@kgpsound" target="_blank"><span class="d-icon">▶️</span> YouTube</a>
+                        <a href="https://github.com/k-gou09" target="_blank"><span class="d-icon">🐙</span> GitHub</a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+    
+    <!-- ================= LAYOUT ================= -->
+    <div class="layout">
+        
+        <!-- ===== SIDEBAR GAUCHE : Catégories ===== -->
+        <aside class="sidebar sidebar-left reveal">
+            <h3>Catégories</h3>
+            <a class="side-link" href="home.html"><span class="s-icon">🏠</span> Home</a>
+            <a class="side-link" href="maintenance.html"><span class="s-icon">💻</span> I.T</a>
+            <a class="side-link" href="maintenance.html"><span class="s-icon">🎓</span> Tuto</a>
+            <a class="side-link" href="maintenance.html"><span class="s-icon">📰</span> News</a>
+            <a class="side-link" href="maintenance.html"><span class="s-icon">🎵</span> Music</a>
+            <a class="side-link" href="maintenance.html"><span class="s-icon">🍳</span> Cuisine</a>
+        </aside>
+        
+        <!-- ===== MAIN : KGP PHOTOBOOTH ===== -->
+        <main>
+            <div class="page-head reveal">
+                <div>
+                    <h1 class="page-title">KGP <span class="accent">PHOTOBOOTH</span></h1>
+                    <p class="page-sub">Filtres vidéo temps réel · Détection de visage IA · Photo & Vidéo</p>
+                </div>
+                <span class="new-badge">★ NOUVEAU</span>
+            </div>
+            
+            <div class="pb-shell reveal">
+                <!-- Scène vidéo -->
+                <div class="pb-stage" id="pb-stage">
+                    <video id="pb-video" autoplay playsinline muted></video>
+                    <canvas id="pb-canvas"></canvas>
+                    <div class="pb-grid-overlay" id="pb-grid"></div>
+                    <div class="pb-flash" id="pb-flash"></div>
+                    <div class="pb-countdown" id="pb-countdown"><span id="pb-count-num">3</span></div>
+                    
+                    <div class="pb-placeholder" id="pb-placeholder">
+                        <div class="big">📷</div>
+                        <p>CLIQUEZ SUR « DÉMARRER » POUR ACTIVER LA CAMÉRA</p>
+                    </div>
+                    
+                    <div class="pb-status" id="pb-status">
+                        <span class="rec-dot"></span>
+                        <span id="pb-status-text">HORS LIGNE</span>
+                    </div>
+                    <div class="pb-rec-indicator" id="pb-rec">
+                        <span class="rec-dot"></span> REC <span id="pb-rec-time">00:00</span>
+                    </div>
+                </div>
+                
+                <!-- Actions -->
+                <div class="pb-actions">
+                    <button class="pb-btn primary" id="pb-start">▶ Démarrer</button>
+                    <button class="pb-btn toggle" id="pb-mirror" title="Miroir (M)">🪞 Miroir</button>
+                    <button class="pb-shutter" id="pb-shutter" disabled title="Prendre une photo (Espace)"></button>
+                    <button class="pb-btn record" id="pb-record" disabled title="Enregistrer une vidéo (V)">⏺ Vidéo</button>
+                    <button class="pb-btn" id="pb-fullscreen" title="Plein écran (F)">⛶ Plein écran</button>
+                    <button class="pb-btn danger" id="pb-stop" disabled>⏹ Arrêter</button>
+                </div>
+                
+                <!-- Onglets -->
+                <div class="pb-tabs">
+                    <button class="pb-tab active" data-tab="filters">🎨 Filtres</button>
+                    <button class="pb-tab" data-tab="accessories">🎭 Accessoires</button>
+                    <button class="pb-tab" data-tab="settings">⚙️ Options</button>
+                </div>
+                
+                <!-- Panneau Filtres -->
+                <div class="pb-panel active" id="panel-filters">
+                    <h4>Préréglages (cumulables)</h4>
+                    <div class="chip-grid" id="pb-presets">
+                        <button class="chip" data-preset="grayscale"><span class="c-ico">⚫</span>Noir & Blanc</button>
+                        <button class="chip" data-preset="sepia"><span class="c-ico">🟤</span>Sépia</button>
+                        <button class="chip" data-preset="invert"><span class="c-ico">🔄</span>Négatif</button>
+                        <button class="chip" data-preset="vintage"><span class="c-ico">📼</span>Vintage</button>
+                        <button class="chip" data-preset="cyberpunk"><span class="c-ico">🌆</span>Cyberpunk</button>
+                        <button class="chip" data-preset="cold"><span class="c-ico">❄️</span>Froid</button>
+                        <button class="chip" data-preset="warm"><span class="c-ico">🔥</span>Chaud</button>
+                        <button class="chip" data-preset="drama"><span class="c-ico">🎬</span>Dramatique</button>
+                        <button class="chip" data-preset="dream"><span class="c-ico">💭</span>Rêve</button>
+                        <button class="chip" data-preset="pop"><span class="c-ico">🎪</span>Pop</button>
+                        <button class="chip" data-preset="cartoon"><span class="c-ico">✏️</span>Cartoon</button>
+                        <button class="chip" data-preset="matrix"><span class="c-ico">🟩</span>Matrix</button>
+                    </div>
+                    
+                    <h4>Réglages manuels</h4>
+                    <div class="slider-row">
+                        <label>Luminosité</label>
+                        <input type="range" id="sl-brightness" min="40" max="200" value="100">
+                        <span class="val" id="v-brightness">100%</span>
+                    </div>
+                    <div class="slider-row">
+                        <label>Contraste</label>
+                        <input type="range" id="sl-contrast" min="40" max="220" value="100">
+                        <span class="val" id="v-contrast">100%</span>
+                    </div>
+                    <div class="slider-row">
+                        <label>Saturation</label>
+                        <input type="range" id="sl-saturate" min="0" max="300" value="100">
+                        <span class="val" id="v-saturate">100%</span>
+                    </div>
+                    <div class="slider-row">
+                        <label>Teinte</label>
+                        <input type="range" id="sl-hue" min="0" max="360" value="0">
+                        <span class="val" id="v-hue">0°</span>
+                    </div>
+                    <div class="slider-row">
+                        <label>Flou</label>
+                        <input type="range" id="sl-blur" min="0" max="10" value="0">
+                        <span class="val" id="v-blur">0px</span>
+                    </div>
+                    <div style="text-align:right;">
+                        <button class="pb-btn" id="pb-reset-filters">↺ Réinitialiser les filtres</button>
+                    </div>
+                </div>
+                
+                <!-- Panneau Accessoires -->
+                <div class="pb-panel" id="panel-accessories">
+                    <h4>Accessoires (détection de visage IA)</h4>
+                    <div class="chip-grid" id="pb-accessories">
+                        <button class="chip active" data-acc="none"><span class="c-ico">🚫</span>Aucun</button>
+                        <button class="chip" data-acc="cat"><span class="c-ico">🐱</span>Oreilles chat</button>
+                        <button class="chip" data-acc="hat"><span class="c-ico">🎩</span>Chapeau</button>
+                        <button class="chip" data-acc="glasses"><span class="c-ico">👓</span>Lunettes</button>
+                        <button class="chip" data-acc="mustache"><span class="c-ico">🥸</span>Moustache</button>
+                        <button class="chip" data-acc="crown"><span class="c-ico">👑</span>Couronne</button>
+                        <button class="chip" data-acc="mask"><span class="c-ico">🎭</span>Masque</button>
+                        <button class="chip" data-acc="devil"><span class="c-ico">😈</span>Cornes</button>
+                        <button class="chip" data-acc="halo"><span class="c-ico">😇</span>Auréole</button>
+                    </div>
+                    <p id="pb-ai-status" style="margin-top:16px; font-size:0.8rem; color:var(--text-faint);">
+                        ⏳ Chargement de l'IA de détection de visage…
+                    </p>
+                </div>
+                
+                <!-- Panneau Options -->
+                <div class="pb-panel" id="panel-settings">
+                    <h4>Options de capture</h4>
+                    <div class="opt-grid">
+                        <label class="opt">
+                            <span>
+                                <span class="o-label">Grille des tiers</span>
+                                <div class="o-sub">Aide à la composition</div>
+                            </span>
+                            <span class="switch"><input type="checkbox" id="opt-grid"><span class="track"></span></span>
+                        </label>
+                        <label class="opt">
+                            <span>
+                                <span class="o-label">Son d'obturation</span>
+                                <div class="o-sub">Bip à la capture</div>
+                            </span>
+                            <span class="switch"><input type="checkbox" id="opt-sound" checked><span class="track"></span></span>
+                        </label>
+                        <label class="opt">
+                            <span>
+                                <span class="o-label">Miroir par défaut</span>
+                                <div class="o-sub">Mode selfie</div>
+                            </span>
+                            <span class="switch"><input type="checkbox" id="opt-mirror" checked><span class="track"></span></span>
+                        </label>
+                        <div class="opt" style="cursor:default;">
+                            <span>
+                                <span class="o-label">Retardateur</span>
+                                <div class="o-sub">Avant la photo</div>
+                            </span>
+                            <select class="pb-select" id="opt-timer">
+                                <option value="0">Désactivé</option>
+                                <option value="3" selected>3 s</option>
+                                <option value="5">5 s</option>
+                                <option value="10">10 s</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="kbd-hints">
+                        <span><kbd>ESPACE</kbd> Photo</span>
+                        <span><kbd>V</kbd> Vidéo</span>
+                        <span><kbd>M</kbd> Miroir</span>
+                        <span><kbd>F</kbd> Plein écran</span>
+                        <span><kbd>G</kbd> Grille</span>
+                    </div>
+                </div>
+                
+                <!-- Galerie -->
+                <div class="pb-gallery">
+                    <div class="pb-gallery-head">
+                        <h4>🖼️ Mes captures</h4>
+                        <span class="count" id="pb-gal-count">0 élément</span>
+                    </div>
+                    <div class="gallery-grid" id="pb-gallery-grid">
+                        <div class="g-empty">Aucune capture pour le moment — amusez-vous ! 🎉</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <!-- ===== SIDEBAR DROITE : Nos Apps + Support ===== -->
+        <aside class="sidebar sidebar-right reveal">
+            <h3>Nos Apps</h3>
+            <a class="app-card" href="clock.html">
+                <span class="app-badge">KGP</span>
+                <span class="app-info">
+                    <span class="app-name">🌍 Worldtime</span>
+                    <span class="app-status"><span class="dot-online"></span> online</span>
+                </span>
+            </a>
+            <a class="app-card" href="converter.html">
+                <span class="app-badge">KGP</span>
+                <span class="app-info">
+                    <span class="app-name">🔁 Converter</span>
+                    <span class="app-status"><span class="dot-online"></span> online</span>
+                </span>
+            </a>
+            <a class="app-card" href="meteo.html">
+                <span class="app-badge">KGP</span>
+                <span class="app-info">
+                    <span class="app-name">⛅ Météo</span>
+                    <span class="app-status"><span class="dot-online"></span> online</span>
+                </span>
+            </a>
+            <a class="app-card" href="caddy3.html">
+                <span class="app-badge">KGP</span>
+                <span class="app-info">
+                    <span class="app-name">🛒 Caddy</span>
+                    <span class="app-status"><span class="dot-online"></span> online</span>
+                </span>
+            </a>
+            <a class="app-card" href="timer.html">
+                <span class="app-badge">KGP</span>
+                <span class="app-info">
+                    <span class="app-name">⏱️ Timer</span>
+                    <span class="app-status"><span class="dot-online"></span> online</span>
+                </span>
+            </a>
+            <a class="app-card" href="draw.html">
+                <span class="app-badge">KGP</span>
+                <span class="app-info">
+                    <span class="app-name">🎨 Draw</span>
+                    <span class="app-status"><span class="dot-online"></span> online</span>
+                </span>
+            </a>
+            <a class="app-card" href="radio.html">
+                <span class="app-badge">KGP</span>
+                <span class="app-info">
+                    <span class="app-name">📻 Radio</span>
+                    <span class="app-status"><span class="dot-online"></span> online</span>
+                </span>
+            </a>
+            <a class="app-card" href="notes.html">
+                <span class="app-badge">KGP</span>
+                <span class="app-info">
+                    <span class="app-name">📝 Notes</span>
+                    <span class="app-status"><span class="dot-online"></span> online</span>
+                </span>
+            </a>
+            <a class="app-card" href="https://k-gou09.github.io/KGP_Compta/index.html" target="_blank">
+                <span class="app-badge">KGP</span>
+                <span class="app-info">
+                    <span class="app-name">🧮 Compta</span>
+                    <span class="app-status"><span class="dot-online"></span> online</span>
+                </span>
+            </a>
+            <a class="app-card" href="https://k-gou09.github.io/KGP_QRcode/" target="_blank">
+                <span class="app-badge">KGP</span>
+                <span class="app-info">
+                    <span class="app-name">🔳 QRcode</span>
+                    <span class="app-status"><span class="dot-online"></span> online</span>
+                </span>
+            </a>
+            <a class="app-card" href="https://k-gou09.github.io/KGP_SHA/" target="_blank">
+                <span class="app-badge">KGP</span>
+                <span class="app-info">
+                    <span class="app-name">🔐 SHA</span>
+                    <span class="app-status"><span class="dot-online"></span> online</span>
+                </span>
+            </a>
+            
+            <div class="support-block">
+                <h3>Support</h3>
+                <a class="side-link" href="https://www.facebook.com/nc.prod.794?locale=fr_FR" target="_blank"><span class="s-icon">📘</span> Facebook</a>
+                <a class="side-link" href="https://www.youtube.com/@kgpsound" target="_blank"><span class="s-icon">▶️</span> YouTube</a>
+                <a class="side-link" href="https://github.com/k-gou09" target="_blank"><span class="s-icon">🐙</span> GitHub</a>
+            </div>
+        </aside>
+    </div>
+    
+    <!-- ================= FOOTER ================= -->
+    <footer>
+        <div class="footer-inner">
+            <div class="f-brand reveal">
+                <div class="f-logo">K-GOU <span>PROD</span></div>
+                <div class="f-glitch">!#?%&amp; $#@!?{}</div>
+                <p>Studio créatif — Expériences digitales immersives. Applications web, outils et expérimentations interactives.</p>
+            </div>
+            <div class="f-links reveal">
+                <h4>Liens Utiles</h4>
+                <a href="https://github.com/k-gou09" target="_blank">🐙 GITHUB</a>
+                <a href="https://www.facebook.com/nc.prod.794?locale=fr_FR" target="_blank">📘 FACEBOOK</a>
+                <a href="https://www.youtube.com/@kgpsound" target="_blank">▶️ YOUTUBE</a>
+            </div>
+            <div class="f-links reveal">
+                <h4>Navigation</h4>
+                <a href="home.html">🏠 Home</a>
+                <a href="maintenance.html">💻 I.T</a>
+                <a href="maintenance.html">🎵 Music</a>
+                <a href="maintenance.html">🍳 Cuisine</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <a href="https://www.facebook.com/nc.prod.794" target="_blank">K-gou_Prod</a> · Studio · © 2026 K-GOU PROD
+        </div>
+    </footer>
+    
+    <!-- ================= SCRIPT : PHOTOBOOTH ================= -->
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        
+        /* ---------- Menu burger mobile ---------- */
+        const burger = document.getElementById('burger');
+        const mainNav = document.getElementById('mainNav');
+        burger.addEventListener('click', () => mainNav.classList.toggle('open'));
+        
+        /* ---------- Scroll reveal ---------- */
+        const io = new IntersectionObserver(entries => {
+            entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+        }, { threshold: 0.08 });
+        document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+        
+        /* ============================================================
+           KGP PHOTOBOOTH — Logique complète
+        ============================================================ */
+        const $ = id => document.getElementById(id);
+        
+        const video = $('pb-video'), canvas = $('pb-canvas'), ctx = canvas.getContext('2d');
+        const stage = $('pb-stage'), placeholder = $('pb-placeholder');
+        const statusEl = $('pb-status'), statusText = $('pb-status-text');
+        const flash = $('pb-flash'), countdown = $('pb-countdown'), countNum = $('pb-count-num');
+        const gridOverlay = $('pb-grid');
+        const recIndicator = $('pb-rec'), recTime = $('pb-rec-time');
+        const btnStart = $('pb-start'), btnStop = $('pb-stop'), btnShutter = $('pb-shutter');
+        const btnRecord = $('pb-record'), btnMirror = $('pb-mirror'), btnFullscreen = $('pb-fullscreen');
+        const galleryGrid = $('pb-gallery-grid'), galCount = $('pb-gal-count');
+        const aiStatus = $('pb-ai-status');
+        
+        const state = {
+            stream: null,
+            live: false,
+            faceApiReady: false,
+            detection: null,
+            mirror: true,
+            presets: new Set(),
+            accessory: 'none',
+            adj: { brightness: 100, contrast: 100, saturate: 100, hue: 0, blur: 0 },
+            recording: false,
+            recorder: null,
+            recChunks: [],
+            recStart: 0,
+            recTimer: null,
+            captures: [],
+            animId: null
+        };
+        
+        /* ---------- Chargement Face-API ---------- */
+        (async function loadAI() {
+            try {
+                if (typeof faceapi === 'undefined') throw new Error('lib manquante');
+                const MODEL_URL = 'https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js@master/weights/';
+                await Promise.all([
+                    faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
+                    faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL)
+                ]);
+                state.faceApiReady = true;
+                aiStatus.innerHTML = '✅ IA prête — sélectionnez un accessoire !';
+                aiStatus.style.color = 'var(--green)';
+            } catch (e) {
+                aiStatus.innerHTML = '⚠️ IA non disponible (connexion requise au 1er chargement). Les filtres restent fonctionnels.';
+                aiStatus.style.color = 'var(--yellow)';
+            }
+        })();
+        
+        /* ---------- Démarrer / Arrêter ---------- */
+        async function startCamera() {
+            try {
+                statusText.textContent = 'ACCÈS CAMÉRA…';
+                state.stream = await navigator.mediaDevices.getUserMedia({
+                    video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: 'user' },
+                    audio: false
+                });
+                video.srcObject = state.stream;
+                video.onloadedmetadata = () => {
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    state.live = true;
+                    placeholder.style.display = 'none';
+                    statusEl.classList.add('live');
+                    statusText.textContent = state.faceApiReady ? 'EN LIGNE · IA OK' : 'EN LIGNE';
+                    btnStart.disabled = true; btnShutter.disabled = false;
+                    btnRecord.disabled = false; btnStop.disabled = false;
+                    renderLoop();
+                    if (state.faceApiReady) detectLoop();
+                };
+            } catch (err) {
+                statusText.textContent = '❌ ' + err.name;
+                alert('Impossible d\'accéder à la caméra.\nVérifiez les permissions du navigateur.\n\n(' + err.message + ')');
+            }
+        }
+        
+        function stopCamera() {
+            if (state.recording) toggleRecord();
+            if (state.stream) state.stream.getTracks().forEach(t => t.stop());
+            state.stream = null; state.live = false; state.detection = null;
+            if (state.animId) cancelAnimationFrame(state.animId);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            placeholder.style.display = 'flex';
+            statusEl.classList.remove('live');
+            statusText.textContent = 'HORS LIGNE';
+            btnStart.disabled = false; btnShutter.disabled = true;
+            btnRecord.disabled = true; btnStop.disabled = true;
+        }
+        
+        /* ---------- Boucle de rendu ---------- */
+        function buildFilter() {
+            const f = [];
+            const P = state.presets;
+            if (P.has('grayscale')) f.push('grayscale(1)');
+            if (P.has('sepia')) f.push('sepia(0.9)');
+            if (P.has('invert')) f.push('invert(1)');
+            if (P.has('vintage')) f.push('sepia(0.45)', 'contrast(1.08)', 'brightness(0.95)', 'saturate(1.2)');
+            if (P.has('cyberpunk')) f.push('hue-rotate(260deg)', 'saturate(1.8)', 'contrast(1.25)');
+            if (P.has('cold')) f.push('hue-rotate(180deg)', 'saturate(1.2)', 'brightness(1.02)');
+            if (P.has('warm')) f.push('sepia(0.25)', 'saturate(1.4)', 'hue-rotate(-10deg)');
+            if (P.has('drama')) f.push('contrast(1.5)', 'brightness(0.85)', 'saturate(1.15)');
+            if (P.has('dream')) f.push('blur(1.5px)', 'brightness(1.12)', 'saturate(1.3)');
+            if (P.has('pop')) f.push('saturate(2.2)', 'contrast(1.2)');
+            if (P.has('cartoon')) f.push('saturate(1.9)', 'contrast(1.6)');
+            if (P.has('matrix')) f.push('hue-rotate(90deg)', 'saturate(1.6)', 'contrast(1.15)', 'brightness(0.95)');
+            
+            const a = state.adj;
+            if (a.brightness !== 100) f.push(`brightness(${a.brightness/100})`);
+            if (a.contrast !== 100) f.push(`contrast(${a.contrast/100})`);
+            if (a.saturate !== 100) f.push(`saturate(${a.saturate/100})`);
+            if (a.hue !== 0) f.push(`hue-rotate(${a.hue}deg)`);
+            if (a.blur > 0) f.push(`blur(${a.blur}px)`);
+            
+            return f.length ? f.join(' ') : 'none';
+        }
+        
+        function renderLoop() {
+            if (!state.live) return;
+            ctx.save();
+            ctx.filter = buildFilter();
+            if (state.mirror) {
+                ctx.translate(canvas.width, 0);
+                ctx.scale(-1, 1);
+            }
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            ctx.restore();
+            ctx.filter = 'none';
+            
+            if (state.detection && state.accessory !== 'none') drawAccessory();
+            
+            state.animId = requestAnimationFrame(renderLoop);
+        }
+        
+        /* ---------- Détection visage ---------- */
+        async function detectLoop() {
+            if (!state.live || !state.faceApiReady) return;
+            try {
+                state.detection = await faceapi
+                    .detectSingleFace(video, new faceapi.TinyFaceDetectorOptions({ inputSize: 224, scoreThreshold: 0.5 }))
+                    .withFaceLandmarks();
+            } catch (e) { state.detection = null; }
+            setTimeout(detectLoop, 120);
+        }
+        
+        /* ---------- Dessin des accessoires ---------- */
+        function center(pts) {
+            const s = pts.reduce((a,p)=>({x:a.x+p.x, y:a.y+p.y}), {x:0,y:0});
+            return { x: s.x/pts.length, y: s.y/pts.length };
+        }
+        
+        function drawAccessory() {
+            const d = state.detection;
+            if (!d) return;
+            const box = d.detection.box;
+            const lm = d.landmarks;
+            const jaw = lm.getJawOutline();
+            const leftEye = lm.getLeftEye(), rightEye = lm.getRightEye();
+            const nose = lm.getNose(), mouth = lm.getMouth();
+            
+            // Le canvas est miroité → on re-miroite les coordonnées si nécessaire
+            const W = canvas.width;
+            const mx = x => state.mirror ? W - x : x;
+            
+            ctx.save();
+            ctx.lineWidth = Math.max(2, box.width * 0.02);
+            
+            switch (state.accessory) {
+                case 'cat': {
+                    const s = box.width * 0.28;
+                    [[jaw[0], 1], [jaw[16], -1]].forEach(([pt, dir]) => {
+                        const x = mx(pt.x), y = pt.y;
+                        ctx.fillStyle = '#6b4423';
+                        ctx.beginPath();
+                        ctx.moveTo(x - s*0.5*dir, y);
+                        ctx.lineTo(x + s*0.1*dir, y - s*1.1);
+                        ctx.lineTo(x + s*0.7*dir, y);
+                        ctx.closePath(); ctx.fill();
+                        ctx.fillStyle = '#ffb6c1';
+                        ctx.beginPath();
+                        ctx.moveTo(x - s*0.25*dir, y - s*0.1);
+                        ctx.lineTo(x + s*0.1*dir, y - s*0.75);
+                        ctx.lineTo(x + s*0.45*dir, y - s*0.1);
+                        ctx.closePath(); ctx.fill();
+                    });
+                    break;
+                }
+                case 'hat': {
+                    const x = mx(box.x + box.width/2), y = box.y + box.height*0.05;
+                    const w = box.width * 0.95, h = box.height * 0.45;
+                    ctx.fillStyle = '#15151f';
+                    ctx.beginPath();
+                    ctx.ellipse(x, y, w/2, h*0.16, 0, 0, Math.PI*2); ctx.fill();
+                    ctx.beginPath();
+                    ctx.moveTo(x - w*0.34, y);
+                    ctx.lineTo(x - w*0.28, y - h*0.85);
+                    ctx.lineTo(x + w*0.28, y - h*0.85);
+                    ctx.lineTo(x + w*0.34, y);
+                    ctx.closePath(); ctx.fill();
+                    ctx.fillStyle = '#a855f7';
+                    ctx.fillRect(x - w*0.31, y - h*0.24, w*0.62, h*0.12);
+                    break;
+                }
+                case 'glasses': {
+                    const lc = center(leftEye), rc = center(rightEye);
+                    const r = Math.abs(leftEye[0].x - leftEye[3].x) * 1.6;
+                    ctx.strokeStyle = '#0d0d15'; ctx.lineWidth = r*0.22;
+                    ctx.fillStyle = 'rgba(120,180,255,0.28)';
+                    [[lc],[rc]].forEach(([c]) => {
+                        ctx.beginPath();
+                        ctx.arc(mx(c.x), c.y, r, 0, Math.PI*2);
+                        ctx.fill(); ctx.stroke();
+                    });
+                    ctx.beginPath();
+                    ctx.moveTo(mx(lc.x) + (state.mirror?-r:r), lc.y);
+                    ctx.lineTo(mx(rc.x) - (state.mirror?-r:r), rc.y);
+                    ctx.stroke();
+                    break;
+                }
+                case 'mustache': {
+                    const mc = center(mouth), nb = nose[3];
+                    const w = Math.abs(mouth[0].x - mouth[6].x) * 1.6;
+                    const y = nb.y + (mc.y - nb.y) * 0.35;
+                    ctx.fillStyle = '#3d2817';
+                    [-1, 1].forEach(dir => {
+                        ctx.beginPath();
+                        ctx.moveTo(mx(mc.x), y);
+                        ctx.quadraticCurveTo(mx(mc.x + dir*w*0.3), y - 12, mx(mc.x + dir*w*0.55), y + 4);
+                        ctx.quadraticCurveTo(mx(mc.x + dir*w*0.3), y + 16, mx(mc.x), y + 6);
+                        ctx.closePath(); ctx.fill();
+                    });
+                    break;
+                }
+                case 'crown': {
+                    const x = mx(box.x + box.width/2), y = box.y - box.height*0.12;
+                    const w = box.width * 0.75, h = box.height * 0.3;
+                    ctx.fillStyle = '#ffd700'; ctx.strokeStyle = '#b8860b';
+                    ctx.beginPath();
+                    ctx.moveTo(x - w/2, y + h);
+                    ctx.lineTo(x - w/2, y + h*0.3);
+                    ctx.lineTo(x - w*0.25, y + h*0.6);
+                    ctx.lineTo(x, y);
+                    ctx.lineTo(x + w*0.25, y + h*0.6);
+                    ctx.lineTo(x + w/2, y + h*0.3);
+                    ctx.lineTo(x + w/2, y + h);
+                    ctx.closePath(); ctx.fill(); ctx.stroke();
+                    ctx.fillStyle = '#e31837';
+                    ctx.beginPath(); ctx.arc(x, y + h*0.35, h*0.12, 0, Math.PI*2); ctx.fill();
+                    break;
+                }
+                case 'mask': {
+                    const eyeY = box.y + box.height * 0.38;
+                    const cx = mx(box.x + box.width/2);
+                    ctx.fillStyle = 'rgba(10,10,20,0.78)';
+                    ctx.beginPath();
+                    ctx.ellipse(cx, eyeY, box.width*0.46, box.height*0.16, 0, 0, Math.PI*2);
+                    ctx.fill();
+                    ctx.globalCompositeOperation = 'destination-out';
+                    [box.x + box.width*0.3, box.x + box.width*0.7].forEach(ex => {
+                        ctx.beginPath();
+                        ctx.ellipse(mx(ex), eyeY, box.width*0.1, box.height*0.09, 0, 0, Math.PI*2);
+                        ctx.fill();
+                    });
+                    ctx.globalCompositeOperation = 'source-over';
+                    break;
+                }
+                case 'devil': {
+                    const s = box.width * 0.22;
+                    [[jaw[2], 1], [jaw[14], -1]].forEach(([pt, dir]) => {
+                        const x = mx(pt.x), y = pt.y;
+                        ctx.fillStyle = '#dc2626';
+                        ctx.beginPath();
+                        ctx.moveTo(x - s*0.4*dir, y);
+                        ctx.quadraticCurveTo(x + s*0.5*dir, y - s*0.5, x + s*0.2*dir, y - s*1.3);
+                        ctx.quadraticCurveTo(x + s*0.6*dir, y - s*0.3, x + s*0.5*dir, y);
+                        ctx.closePath(); ctx.fill();
+                    });
+                    break;
+                }
+                case 'halo': {
+                    const x = mx(box.x + box.width/2), y = box.y - box.height*0.15;
+                    ctx.strokeStyle = '#ffd700'; ctx.lineWidth = box.width*0.05;
+                    ctx.shadowColor = '#ffd700'; ctx.shadowBlur = 18;
+                    ctx.beginPath();
+                    ctx.ellipse(x, y, box.width*0.32, box.height*0.08, 0, 0, Math.PI*2);
+                    ctx.stroke();
+                    ctx.shadowBlur = 0;
+                    break;
+                }
+            }
+            ctx.restore();
+        }
+        
+        /* ---------- Son d'obturation ---------- */
+        function shutterSound() {
+            if (!$('opt-sound').checked) return;
+            try {
+                const ac = new (window.AudioContext || window.webkitAudioContext)();
+                const o = ac.createOscillator(), g = ac.createGain();
+                o.connect(g); g.connect(ac.destination);
+                o.type = 'square'; o.frequency.value = 880;
+                g.gain.setValueAtTime(0.12, ac.currentTime);
+                g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.12);
+                o.start(); o.stop(ac.currentTime + 0.12);
+            } catch (e) {}
+        }
+        
+        /* ---------- Capture photo ---------- */
+        function capturePhoto() {
+            if (!state.live) return;
+            flash.classList.add('go');
+            setTimeout(() => flash.classList.remove('go'), 350);
+            shutterSound();
+            
+            const dataUrl = canvas.toDataURL('image/png');
+            state.captures.unshift({ type: 'photo', data: dataUrl, ts: Date.now() });
+            if (state.captures.length > 12) state.captures.pop();
+            saveGallery();
+            renderGallery();
+        }
+        
+        function captureWithTimer() {
+            const delay = parseInt($('opt-timer').value, 10);
+            if (!delay) { capturePhoto(); return; }
+            let n = delay;
+            countdown.classList.add('on');
+            countNum.textContent = n;
+            countNum.style.animation = 'none'; void countNum.offsetWidth; countNum.style.animation = '';
+            const iv = setInterval(() => {
+                n--;
+                if (n <= 0) {
+                    clearInterval(iv);
+                    countdown.classList.remove('on');
+                    capturePhoto();
+                } else {
+                    countNum.textContent = n;
+                    countNum.style.animation = 'none'; void countNum.offsetWidth; countNum.style.animation = '';
+                }
+            }, 1000);
+        }
+        
+        /* ---------- Enregistrement vidéo ---------- */
+        function toggleRecord() {
+            if (!state.live) return;
+            if (!state.recording) {
+                try {
+                    const stream = canvas.captureStream(30);
+                    const mime = MediaRecorder.isTypeSupported('video/webm;codecs=vp9') ? 'video/webm;codecs=vp9' : 'video/webm';
+                    state.recorder = new MediaRecorder(stream, { mimeType: mime });
+                    state.recChunks = [];
+                    state.recorder.ondataavailable = e => { if (e.data.size) state.recChunks.push(e.data); };
+                    state.recorder.onstop = () => {
+                        const blob = new Blob(state.recChunks, { type: 'video/webm' });
+                        const url = URL.createObjectURL(blob);
+                        state.captures.unshift({ type: 'video', data: url, ts: Date.now(), blob });
+                        if (state.captures.length > 12) state.captures.pop();
+                        renderGallery();
+                    };
+                    state.recorder.start();
+                    state.recording = true;
+                    state.recStart = Date.now();
+                    btnRecord.classList.add('on');
+                    btnRecord.innerHTML = '⏹ Stop';
+                    recIndicator.classList.add('on');
+                    state.recTimer = setInterval(() => {
+                        const s = Math.floor((Date.now() - state.recStart) / 1000);
+                        recTime.textContent = String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0');
+                    }, 500);
+                } catch (e) {
+                    alert('Enregistrement vidéo non supporté par ce navigateur.');
+                }
+            } else {
+                state.recorder.stop();
+                state.recording = false;
+                clearInterval(state.recTimer);
+                btnRecord.classList.remove('on');
+                btnRecord.innerHTML = '⏺ Vidéo';
+                recIndicator.classList.remove('on');
+            }
+        }
+        
+        /* ---------- Galerie ---------- */
+        function saveGallery() {
+            try {
+                const photos = state.captures.filter(c => c.type === 'photo').map(c => c.data);
+                localStorage.setItem('kgp_photobooth', JSON.stringify(photos));
+            } catch (e) { /* quota dépassé → on ignore */ }
+        }
+        function loadGallery() {
+            try {
+                const saved = JSON.parse(localStorage.getItem('kgp_photobooth') || '[]');
+                state.captures = saved.map(d => ({ type: 'photo', data: d, ts: 0 }));
+            } catch (e) { state.captures = []; }
+        }
+        function renderGallery() {
+            galCount.textContent = state.captures.length + ' élément' + (state.captures.length > 1 ? 's' : '');
+            if (!state.captures.length) {
+                galleryGrid.innerHTML = '<div class="g-empty">Aucune capture pour le moment — amusez-vous ! 🎉</div>';
+                return;
+            }
+            galleryGrid.innerHTML = '';
+            state.captures.forEach((c, i) => {
+                const item = document.createElement('div');
+                item.className = 'g-item';
+                if (c.type === 'photo') {
+                    item.innerHTML = `<img src="${c.data}" alt="capture"><span class="g-type">PHOTO</span>`;
+                    item.onclick = () => downloadItem(c, i);
+                } else {
+                    item.innerHTML = `<video src="${c.data}" muted loop onmouseover="this.play()" onmouseout="this.pause()"></video><span class="g-type">VIDÉO</span>`;
+                    item.onclick = () => downloadItem(c, i);
+                }
+                const del = document.createElement('button');
+                del.className = 'g-del';
+                del.textContent = '✕';
+                del.onclick = (e) => { e.stopPropagation(); state.captures.splice(i, 1); saveGallery(); renderGallery(); };
+                item.appendChild(del);
+                galleryGrid.appendChild(item);
+            });
+        }
+        function downloadItem(c, i) {
+            const a = document.createElement('a');
+            a.href = c.type === 'photo' ? c.data : c.data;
+            a.download = `kgp-photobooth-${c.type}-${Date.now()}.${c.type === 'photo' ? 'png' : 'webm'}`;
+            a.click();
+        }
+        
+        /* ---------- Événements UI ---------- */
+        btnStart.addEventListener('click', startCamera);
+        btnStop.addEventListener('click', stopCamera);
+        btnShutter.addEventListener('click', captureWithTimer);
+        btnRecord.addEventListener('click', toggleRecord);
+        
+        btnMirror.addEventListener('click', () => {
+            state.mirror = !state.mirror;
+            btnMirror.classList.toggle('on', state.mirror);
+        });
+        btnMirror.classList.add('on'); // miroir par défaut
+        
+        btnFullscreen.addEventListener('click', () => {
+            if (!document.fullscreenElement) stage.requestFullscreen?.();
+            else document.exitFullscreen?.();
+        });
+        
+        // Onglets
+        document.querySelectorAll('.pb-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.pb-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.pb-panel').forEach(p => p.classList.remove('active'));
+                tab.classList.add('active');
+                $('panel-' + tab.dataset.tab).classList.add('active');
+            });
+        });
+        
+        // Presets (cumulables)
+        document.querySelectorAll('#pb-presets .chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                const p = chip.dataset.preset;
+                if (state.presets.has(p)) { state.presets.delete(p); chip.classList.remove('active'); }
+                else { state.presets.add(p); chip.classList.add('active'); }
+            });
+        });
+        
+        // Accessoires
+        document.querySelectorAll('#pb-accessories .chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                document.querySelectorAll('#pb-accessories .chip').forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                state.accessory = chip.dataset.acc;
+                if (state.accessory !== 'none' && !state.faceApiReady) {
+                    aiStatus.innerHTML = '⏳ L\'IA charge encore… patientez quelques secondes.';
+                }
+            });
+        });
+        
+        // Sliders
+        ['brightness','contrast','saturate','hue','blur'].forEach(key => {
+            const sl = $('sl-' + key), val = $('v-' + key);
+            sl.addEventListener('input', () => {
+                state.adj[key] = parseInt(sl.value, 10);
+                val.textContent = sl.value + (key === 'hue' ? '°' : key === 'blur' ? 'px' : '%');
+            });
+        });
+        
+        $('pb-reset-filters').addEventListener('click', () => {
+            state.presets.clear();
+            document.querySelectorAll('#pb-presets .chip').forEach(c => c.classList.remove('active'));
+            state.adj = { brightness: 100, contrast: 100, saturate: 100, hue: 0, blur: 0 };
+            ['brightness','contrast','saturate','hue','blur'].forEach(key => {
+                $('sl-' + key).value = state.adj[key];
+                $('v-' + key).textContent = state.adj[key] + (key === 'hue' ? '°' : key === 'blur' ? 'px' : '%');
+            });
+        });
+        
+        // Options
+        $('opt-grid').addEventListener('change', e => gridOverlay.classList.toggle('on', e.target.checked));
+        $('opt-mirror').addEventListener('change', e => {
+            state.mirror = e.target.checked;
+            btnMirror.classList.toggle('on', state.mirror);
+        });
+        
+        // Raccourcis clavier
+        document.addEventListener('keydown', e => {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+            switch (e.code) {
+                case 'Space': e.preventDefault(); if (state.live) captureWithTimer(); break;
+                case 'KeyV': if (state.live) toggleRecord(); break;
+                case 'KeyM': btnMirror.click(); break;
+                case 'KeyF': btnFullscreen.click(); break;
+                case 'KeyG':
+                    $('opt-grid').checked = !$('opt-grid').checked;
+                    gridOverlay.classList.toggle('on', $('opt-grid').checked);
+                    break;
+            }
+        });
+        
+        /* ---------- Init ---------- */
+        loadGallery();
+        renderGallery();
+    });
+    </script>
+</body>
+</html>

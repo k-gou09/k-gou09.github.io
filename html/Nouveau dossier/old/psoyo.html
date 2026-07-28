@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<style>
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: #0d0211; }
+::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #bf00ff, #7a00cc); border-radius: 5px; border: 2px solid #0d0211; }
+::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #d400ff, #bf00ff); }
+
+
+
+
+</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recette : Poulet au Soyo Caramélisé - K-gou prod</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome pour les icônes -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <!-- Polices modernes : Inter pour le texte, Playfair Display pour les titres -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+
+    <style>
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: #0d0211; }
+::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #bf00ff, #7a00cc); border-radius: 5px; border: 2px solid #0d0211; }
+::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #d400ff, #bf00ff); }
+        :root {
+            --color-bg: #0d0211;
+            --color-bg-alt: #10101A;
+            --color-card: #161728;
+            --color-text: #E0E0E0;
+            --color-text-muted: #8892b0;
+            --color-accent: #7C3AED; /* Violet */
+            --color-accent-light: #A78BFA;
+            --gradient-main: linear-gradient(90deg, #7C3AED, #DB2777);
+        }
+
+        body {
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        .tech-font {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .gradient-text {
+            background-image: var(--gradient-main);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .article-content h2, .article-content h3 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+        }
+        
+        .article-content p {
+            font-size: 1.125rem;
+            line-height: 1.75rem;
+            color: #D1D5DB;
+        }
+
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+        }
+        .animate-on-scroll.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="bg-[var(--color-bg)]">
+    
+    <!-- Section de Navigation -->
+    <nav class="fixed w-full z-50 bg-black/60 backdrop-blur-lg border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="#" class="text-2xl font-bold gradient-text tech-font">K-gou Prod</a>
+                <a href="news.html#psoyo" class="hidden md:inline-block bg-purple-600/20 text-white px-5 py-2 rounded-full font-medium border border-purple-500 hover:bg-purple-600/40 transition-all duration-300 group">
+                    Retour <i class="fas fa-arrow-right ml-1 group-hover:translate-x-1 transition-transform"></i>
+                </a>
+                <div class="md:hidden flex items-center">
+                    <button id="hamburger-button" class="text-white focus:outline-none z-[60]">
+                        <i id="hamburger-icon" class="fas fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="mobile-menu" class="md:hidden fixed top-0 left-0 w-full h-screen bg-black/95 flex flex-col items-center justify-center space-y-8 transform translate-x-full transition-transform duration-300 ease-in-out z-50">
+            <a href="news.html#psoyo" class="text-3xl font-bold hover:text-purple-400 transition-colors duration-300 mt-8 border-t border-gray-700 pt-6">Retour</a>
+        </div>
+    </nav>
+
+    <!-- Header Héroïque -->
+    <header class="relative h-[60vh] md:h-[80vh] flex items-center justify-center text-center text-white overflow-hidden">
+        <!-- EMPLACEMENT PHOTO : PHOTO ALLÉCHANTE DU POULET AU SOYO -->
+        <div class="absolute inset-0 bg-gray-900">
+             <img src="../img/psoy.png" alt="Plat de poulet au soyo" class="w-full h-full object-cover opacity-30">
+        </div>
+        <div class="relative z-10 p-4">
+            <h1 class="text-5xl md:text-8xl font-bold tech-font gradient-text mb-4 animate-on-scroll">
+                Poulet au Soyo
+            </h1>
+            <p class="text-xl md:text-3xl text-gray-200 animate-on-scroll" data-delay="200">
+                L'Umami dans toute sa splendeur.
+            </p>
+        </div>
+    </header>
+
+    <!-- NOUVELLE STRUCTURE DE CONTENU RECETTE -->
+    <main class="bg-[var(--color-bg-alt)] text-white" id="article-start">
+        <div class="max-w-7xl mx-auto px-6 py-16">
+            <div class="lg:grid lg:grid-cols-3 lg:gap-12">
+                
+                <!-- Colonne de Gauche : Fiche Recette & Ingrédients (Sticky) -->
+                <aside class="lg:col-span-1 lg:sticky lg:top-24 h-fit mb-8 lg:mb-0">
+                    <div class="bg-[var(--color-card)] p-6 rounded-xl border border-gray-800 mb-8">
+                        <h3 class="text-2xl font-bold tech-font mb-4 text-white">Fiche Recette</h3>
+                        <div class="space-y-4 text-gray-300">
+                            <div class="flex items-center"><i class="fas fa-clock w-6 text-purple-400"></i><span>Préparation : <strong>15 min</strong></span></div>
+                            <div class="flex items-center"><i class="fas fa-fire-alt w-6 text-purple-400"></i><span>Cuisson : <strong>30 min</strong></span></div>
+                            <div class="flex items-center"><i class="fas fa-star w-6 text-purple-400"></i><span>Difficulté : <strong>Facile</strong></span></div>
+                            <div class="flex items-center"><i class="fas fa-utensils w-6 text-purple-400"></i><span>Pour <strong>4 personnes</strong></span></div>
+                        </div>
+                    </div>
+                    <div class="bg-[var(--color-card)] p-6 rounded-xl border border-gray-800">
+                        <h3 class="text-2xl font-bold tech-font mb-4 text-white">Ingrédients</h3>
+                        <ul class="space-y-3 text-gray-300">
+                            <li class="flex items-center"><i class="fas fa-check-circle mr-3 text-purple-400"></i>4 cuisses de poulet</li>
+                            <li class="flex items-center"><i class="fas fa-check-circle mr-3 text-purple-400"></i>150 ml de sauce soja (soyo)</li>
+                            <li class="flex items-center"><i class="fas fa-check-circle mr-3 text-purple-400"></i>2 oignons</li>
+                            <li class="flex items-center"><i class="fas fa-check-circle mr-3 text-purple-400"></i>4 gousses d'ail</li>
+                            <li class="flex items-center"><i class="fas fa-check-circle mr-3 text-purple-400"></i>1 morceau de gingembre frais (3 cm)</li>
+                            <li class="flex items-center"><i class="fas fa-check-circle mr-3 text-purple-400"></i>2 cuillères à soupe de sucre</li>
+                            <li class="flex items-center"><i class="fas fa-check-circle mr-3 text-purple-400"></i>1 cuillère à soupe d'huile</li>
+                            <li class="flex items-center"><i class="fas fa-check-circle mr-3 text-purple-400"></i>Poivre, ciboulette ou oignon nouveau</li>
+                        </ul>
+                    </div>
+                </aside>
+
+                <!-- Colonne de Droite : Contenu de l'Article -->
+                <article class="lg:col-span-2 article-content">
+                    <section class="animate-on-scroll">
+                        <h2 class="text-4xl gradient-text">Un voyage pour les papilles.</h2>
+                        <p class="mt-4">
+                            Oubliez le poulet du dimanche. Aujourd'hui, on fait décoller les saveurs avec une recette qui est une véritable caresse pour le palais : le Poulet au Soyo. Un plat d'une simplicité désarmante, mais d'une richesse incroyable. Le secret ? Un équilibre parfait entre le salé de la sauce soja, le sucré du caramel, et le piquant de l'ail et du gingembre. Préparez-vous à une explosion de saveurs umami.
+                        </p>
+                    </section>
+                    
+                    <!-- Bannière d'Ambiance Pleine Largeur -->
+                    <section class="relative my-16 h-64 flex items-center justify-center text-center text-white rounded-lg overflow-hidden animate-on-scroll">
+                        <!-- EMPLACEMENT PHOTO : IMAGE DES INGRÉDIENTS CLÉS -->
+                        <div class="absolute inset-0 bg-gray-900">
+                            <img src="../img/psoying.png" alt="Ingrédients" class="w-full h-full object-cover opacity-40">
+                        </div>
+                        <p class="relative text-3xl md:text-4xl font-bold tech-font z-10 mt-16">Simple. Rapide. Inoubliable.</p>
+                    </section>
+
+                    <!-- Section Étapes de Préparation -->
+                    <section class="animate-on-scroll">
+                        <h2 class="text-4xl gradient-text">La Préparation, Étape par Étape</h2>
+                        <div class="mt-8 space-y-8">
+                            <!-- Étape 1 -->
+                            <div class="flex items-start space-x-4">
+                                <span class="text-6xl font-bold gradient-text tech-font leading-none">01</span>
+                                <div>
+                                    <h3 class="text-2xl text-white">Préparer les Aromates</h3>
+                                    <p class="mt-1 text-gray-400">Émincez finement les oignons. Hachez l'ail et râpez le gingembre. Mettez de côté. C'est la base de toute la saveur de votre plat.</p>
+                                </div>
+                            </div>
+                             <!-- Étape 2 -->
+                            <div class="flex items-start space-x-4">
+                                <span class="text-6xl font-bold gradient-text tech-font leading-none">02</span>
+                                <div>
+                                    <h3 class="text-2xl text-white">Saisir le Poulet</h3>
+                                    <p class="mt-1 text-gray-400">Dans une cocotte ou une grande poêle chaude avec un filet d'huile, faites dorer les cuisses de poulet sur toutes les faces. Il faut obtenir une belle coloration. Retirez le poulet et réservez.</p>
+                                </div>
+                            </div>
+                            <!-- Étape 3 -->
+                            <div class="flex items-start space-x-4">
+                                <span class="text-6xl font-bold gradient-text tech-font leading-none">03</span>
+                                <div>
+                                    <h3 class="text-2xl text-white">Créer la Sauce</h3>
+                                    <p class="mt-1 text-gray-400">Dans la même cocotte, faites revenir les oignons jusqu'à ce qu'ils deviennent translucides. Ajoutez l'ail et le gingembre et faites cuire 1 minute. Remettez le poulet, puis versez la sauce soja, le sucre et un verre d'eau. Poivrez généreusement.</p>
+                                </div>
+                            </div>
+                             <!-- Étape 4 -->
+                            <div class="flex items-start space-x-4">
+                                <span class="text-6xl font-bold gradient-text tech-font leading-none">04</span>
+                                <div>
+                                    <h3 class="text-2xl text-white">Laisser Mijoter</h3>
+                                    <p class="mt-1 text-gray-400">Couvrez et laissez mijoter à feu doux pendant environ 30 minutes. Le poulet doit être tendre et la sauce légèrement épaissie. En fin de cuisson, retirez le couvercle pour faire réduire la sauce si nécessaire.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Le Secret du Chef -->
+                    <section class="mt-16 animate-on-scroll">
+                        <blockquote class="my-8 p-6 border-l-4 border-purple-500 bg-[var(--color-card)]/50 rounded-r-lg">
+                            <h3 class="text-2xl gradient-text mb-2"><i class="fas fa-lightbulb mr-2"></i>Le Secret du Chef</h3>
+                            <p class="italic text-gray-300">Pour un poulet encore plus tendre et parfumé, faites-le mariner au moins 30 minutes (ou une nuit au frigo) dans un mélange de sauce soja, d'ail et de gingembre avant de le cuire. Le résultat est divin !</p>
+                        </blockquote>
+                    </section>
+
+                    <!-- Conclusion -->
+                    <section class="mt-16 text-center animate-on-scroll">
+                        <h2 class="text-4xl gradient-text">Servez et Dégustez.</h2>
+                        <p class="mt-4">Accompagnez ce plat d'un riz blanc parfumé et de quelques légumes verts croquants. Parsemez de ciboulette ou d'oignon nouveau ciselé juste avant de servir. Ce n'est pas juste un dîner, c'est une expérience. Bon appétit !</p>
+                    </section>
+                </article>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Pied de page -->
+    <footer class="bg-[var(--color-bg)] border-t border-gray-800 py-8">
+        <div class="max-w-7xl mx-auto px-6 text-center text-gray-500">
+            <p class="font-bold text-lg text-white mb-4 tech-font">K-gou Prod</p>
+            <div class="flex justify-center space-x-6 mb-6">
+                <a href="https://www.facebook.com/nc.prod.794" target="_blank" class="hover:text-white transition-colors"><i class="fab fa-facebook-f text-xl"></i></a>
+                <a href="#" target="_blank" class="hover:text-white transition-colors"><i class="fab fa-github text-xl"></i></a>
+            </div>
+            <p class="text-sm">© 2024 K-gou Prod. Tous droits réservés.</p>
+        </div>
+    </footer>
+    
+    <!-- Bouton pour remonter en haut -->
+    <button id="scroll-to-top" class="fixed bottom-5 right-5 w-12 h-12 bg-purple-600 text-white rounded-full flex items-center justify-center shadow-lg hover:bg-purple-700 transition-all duration-300 opacity-0 translate-y-4">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const hamburgerButton = document.getElementById('hamburger-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const hamburgerIcon = document.getElementById('hamburger-icon');
+            
+            const toggleMenu = () => {
+                mobileMenu.classList.toggle('translate-x-full');
+                hamburgerIcon.classList.toggle('fa-bars');
+                hamburgerIcon.classList.toggle('fa-xmark');
+                document.body.classList.toggle('overflow-hidden', !mobileMenu.classList.contains('translate-x-full'));
+            };
+
+            hamburgerButton.addEventListener('click', toggleMenu);
+            mobileMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', toggleMenu));
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const delay = parseInt(entry.target.dataset.delay) || 0;
+                        setTimeout(() => {
+                            entry.target.classList.add('is-visible');
+                        }, delay);
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+
+            const scrollToTopButton = document.getElementById('scroll-to-top');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 400) {
+                    scrollToTopButton.classList.remove('opacity-0', 'translate-y-4');
+                } else {
+                    scrollToTopButton.classList.add('opacity-0', 'translate-y-4');
+                }
+            });
+            scrollToTopButton.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        });
+    </script>    
+</body>
+</html>
+
+

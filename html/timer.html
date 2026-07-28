@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>K-gou prod | KGP Timer</title>
+        <!-- Tailwind CSS via CDN -->
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        
+        <!-- TON FICHIER CSS -->
+        <link rel="stylesheet" href="../css/news.css">
+        
+        <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
+
+        <style>
+            /* --- Styles d'origine du template --- */
+            .home-text {
+                color: #6b21a8; 
+                font-family: 'Permanent Marker', cursive;
+                font-size: 2rem;
+                font-weight: bold;
+                margin-left: 10px;
+            }
+                
+            .home-mess, .home-mess1 {
+                text-align: center;
+                font-family: 'Permanent Marker', cursive;
+                font-weight: bold;
+                padding-bottom: 15px;
+            }
+            .home-mess { font-size: 2rem; }
+            .home-mess1 { font-size: 1.5rem; }    
+
+            .btn-nano {
+                background: linear-gradient(145deg, #1a1a2a, #0a0a1a);
+                color: #ffffff;
+                border: 1px solid #807f7f;
+                padding: 10px 24px;
+                font-size: 14px;
+                font-weight: bold;
+                border-radius: 8px;
+                cursor: pointer;
+                position: relative;
+                overflow: hidden;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+            }
+
+            .btn-nano::before {
+                content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+                transition: left 0.6s ease;
+            }
+
+            .btn-nano:hover::before { left: 100%; }
+            .btn-nano:hover, .btn-nano.active-tab {
+                box-shadow: 0 0 20px rgba(168, 85, 247, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+                border-color: #a855f7; color: #a855f7;
+            }
+
+            /* --- Styles Animation Hacker --- */
+            #hack-title {
+                margin-top: 15px; line-height: 1.2; font-family: monospace; font-size: 1.3rem;
+                color: #a855f7; letter-spacing: 2px; white-space: nowrap; overflow: hidden;
+                border-right: 4px solid #a855f7; width: 0; opacity: 0; transition: opacity 1s ease-out;
+            }
+            .start-typing {
+                opacity: 1 !important;
+                animation: typing 1.5s steps(13) forwards, blink .5s step-end infinite alternate;
+            }
+            @keyframes typing { from { width: 0 } to { width: 14ch } }
+            @keyframes blink { 50% { border-color: transparent } }
+
+            /* --- Masquer toutes les Scrollbars --- */
+            * { scrollbar-width: none; -ms-overflow-style: none; }
+            *::-webkit-scrollbar { display: none; }
+
+            /* ========================================= */
+            /*        STYLES SPÉCIFIQUES APP TIMER       */
+            /* ========================================= */
+            
+            .app-chassis {
+                background: linear-gradient(to bottom, #111115, #08080a);
+                border: 2px solid #2d2d35;
+                border-radius: 12px;
+                box-shadow: 0 20px 40px rgba(0,0,0,0.9), inset 0 2px 2px rgba(255,255,255,0.05);
+            }
+
+            .cyber-input {
+                background: #050505; border: 1px solid #333; color: #a855f7;
+                box-shadow: inset 0 2px 5px rgba(0,0,0,1);
+            }
+            .cyber-input:focus { border-color: #a855f7; outline: none; box-shadow: inset 0 0 5px rgba(168,85,247,0.3); }
+
+            /* Écran LED */
+            .led-screen {
+                background: #020005; 
+                border: 2px solid #111; border-top: 4px solid #000; border-radius: 8px;
+                box-shadow: inset 0 0 30px rgba(168, 85, 247, 0.1);
+                position: relative;
+                overflow: hidden;
+            }
+            
+            /* Scanlines par dessus l'écran */
+            .led-screen::after {
+                content: ''; position: absolute; inset: 0;
+                background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.3) 2px, rgba(0,0,0,0.3) 4px);
+                pointer-events: none;
+            }
+
+            /* Texte LED Néon */
+            .led-text {
+                font-family: 'Courier New', Courier, monospace;
+                color: #a855f7;
+                text-shadow: 0 0 10px #a855f7, 0 0 20px #a855f7, 0 0 40px rgba(168, 85, 247, 0.6);
+                font-weight: bold;
+                letter-spacing: 2px;
+            }
+
+            /* Animation d'Alerte (Fin du Minuteur) */
+            .alarm-active .led-screen {
+                box-shadow: inset 0 0 50px rgba(239, 68, 68, 0.5);
+                border-color: #ef4444;
+                animation: pulse-alarm 1s infinite;
+            }
+            .alarm-active .led-text {
+                color: #ef4444;
+                text-shadow: 0 0 10px #ef4444, 0 0 20px #ef4444, 0 0 40px rgba(239, 68, 68, 0.8);
+            }
+            @keyframes pulse-alarm {
+                0%, 100% { opacity: 1; }
+                50% { opacity: 0.5; }
+            }
+
+        </style>
+    </head>
+    <body class="bg-black text-white">
+
+        <!-- Section de Navigation -->
+        <nav class="fixed w-full z-50 bg-black bg-opacity-60 backdrop-filter backdrop-blur-lg border-b border-gray-800">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-20 items-center">
+                    <!-- Logo GAUCHE -->
+                    <div class="flex-shrink-0 flex items-center">
+                        <a href="javascript:void(0)" class="home-link flex items-center">
+                            <span class="text-4xl font-bold tech-font">KGP</span><span id="kpg-subtitle" class="home-text">timer</span>
+                        </a>
+                    </div>
+
+                    <!-- Menu DROITE -->
+                    <div class="flex items-center">
+                        <div class="hidden md:block">
+                            <div class="ml-10 flex items-center space-x-8"></div>
+                        </div>
+
+                        <div class="md:hidden flex items-center">
+                            <button id="hamburger-button" class="text-white focus:outline-none">
+                                <i id="hamburger-icon" class="fas fa-bars text-2xl"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Menu Mobile -->
+            <div id="mobile-menu" class="md:hidden fixed top-0 left-0 w-full h-screen bg-black bg-opacity-95 backdrop-blur-lg flex flex-col items-center pt-24 pb-12 overflow-y-auto space-y-8 transform translate-x-full transition-transform duration-300 ease-in-out z-40">
+                
+                <!-- Catégories -->
+                <div class="flex flex-col items-center space-y-4 w-full">
+                    <h2 class="text-2xl font-semibold tech-font gradient-text1 border-b border-gray-700 pb-2 w-2/3 text-center">Catégories</h2>
+                    <a href="home.html" class="text-xl text-#b[5aca8] hover:text-purple-400 transition-colors duration-300 category-link" data-category="All"><i class="fa-regular fa-hand-point-right text-purple-800"></i> Home</a>
+                    <a href="home.html#it-news" class="text-xl text-[#b5aca8] hover:text-purple-400 transition-colors duration-300 category-link" data-category="I.T"><i class="fa-regular fa-hand-point-right text-purple-800"></i> I.T</a>
+                    <a href="home.html#Quizz" class="text-xl text-[#b5aca8] hover:text-purple-400 transition-colors duration-300 category-link" data-category="Tuto"><i class="fa-regular fa-hand-point-right text-purple-800"></i> Quiz</a>
+                    <a href="home.html#Movie" class="text-xl text-[#b5aca8] hover:text-purple-400 transition-colors duration-300 category-link" data-category="News"><i class="fa-regular fa-hand-point-right text-purple-800"></i> Movie</a>
+                    <a href="home.html#Music" class="text-xl text-[#b5aca8] hover:text-purple-400 transition-colors duration-300 category-link" data-category="Music"><i class="fa-regular fa-hand-point-right text-purple-800"></i> Music</a>
+                    <a href="home.html#Cooking" class="text-xl text-[#b5aca8] hover:text-purple-400 transition-colors duration-300 category-link" data-category="Cuisine"><i class="fa-regular fa-hand-point-right text-purple-800"></i> Cuisine</a>
+                </div>
+
+                <!-- Nos Apps -->
+                <div class="flex flex-col items-center space-y-4 w-full">
+                    <h2 class="text-2xl font-semibold tech-font gradient-text1 border-b border-gray-700 pb-2 w-2/3 text-center mt-4">Nos Apps</h2>
+                    <a href="clock.html" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">worldtime</span></a>
+                    <a href="converter.html" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">converter</span></a>
+                    <a href="meteo.html" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">meteo</span></a>
+                    <a href="caddy3.html" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">caddy</span></a>
+                    <a href="timer.html" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">timer</span></a>
+                    <a href="draw.html" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">draw</span></a>
+                    <a href="radio.html" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">radio</span></a>
+                    <a href="notes.html" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">notes</span></a>
+                    <a href="https://k-gou09.github.io/KGP_Compta/index.html" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">Compta</span></a>
+                    <a href="https://k-gou09.github.io/KGP_QRcode/" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">QRcode</span></a>
+                    <a href="https://k-gou09.github.io/KGP_SHA/" class="text-lg text-[#b5aca8] hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i> KGP <span class="text-purple-600">SHA</span></a>
+                </div>
+
+                <!-- Support -->
+                <div class="flex flex-col items-center space-y-5 w-full">
+                    <h2 class="text-2xl font-semibold tech-font gradient-text1 border-b border-gray-700 pb-2 w-2/3 text-center mt-4">Support</h2>
+                    <a href="https://www.facebook.com/nc.prod.794?locale=fr_FR" target="_blank" class="text-xl text-[#b5aca8] hover:text-purple-400 transition-colors duration-300 flex items-center w-36"><i class="fab fa-facebook text-blue-600 text-2xl w-10"></i> Facebook</a>
+                    <a href="https://www.youtube.com/@kgpsound" target="_blank" class="text-xl text-[#b5aca8] hover:text-purple-400 transition-colors duration-300 flex items-center w-36"><i class="fab fa-youtube text-red-600 text-2xl w-10"></i> YouTube</a>
+                    <a href="https://github.com/k-gou09" target="_blank" class="text-xl text-[#b5aca8] hover:text-purple-400 transition-colors duration-300 flex items-center w-36 mb-10"><i class="fab fa-github text-white text-2xl w-10"></i> GitHub</a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Section Principale du Fil d'Actualité -->
+        <main class="flex h-screen pt-20">
+            <!-- Colonne de Gauche -->
+            <aside class="w-1/5 h-full bg-gray-900 bg-opacity-30 p-6 border-r border-gray-700 hidden sm:block overflow-y-auto pb-10">
+                <h2 class="text-xl font-semibold tech-font gradient-text1 mb-6 ">Catégories</h2>
+
+                <ul class="space-y-3" style="color: #b5aca8;">
+                    <li><a href="home.html" class="hover:text-purple-400 transition-colors duration-300 category-link" data-category="All"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp;Home</a></li>
+                    <li><a href="home.html#it-news" class="hover:text-purple-400 transition-colors duration-300 category-link" data-category="I.T"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp;I.T</a></li>
+                    <li><a href="home.html#Quizz" class="hover:text-purple-400 transition-colors duration-300 category-link" data-category="Tuto"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp;Quiz</a></li>
+                    <li><a href="home.html#Movie" class="hover:text-purple-400 transition-colors duration-300 category-link" data-category="News"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp;Movie</a></li>
+                    <li><a href="home.html#Music" class="hover:text-purple-400 transition-colors duration-300 category-link" data-category="Music"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp;Music</a></li>
+                    <li><a href="home.html#Cooking" class="hover:text-purple-400 transition-colors duration-300 category-link" data-category="Cuisine"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp;Cuisine</a></li>
+                </ul>
+                <div class="mt-10">
+                    <h3 class="text-lg font-medium tech-font gradient-text1 mb-3">Nos Apps</h3>
+                    <ul class="space-y-3" style="color: #b5aca8;">
+                        <li><a href="clock.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">worldtime</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="converter.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">converter</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="qrcode.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">qrcode</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="meteo.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">meteo</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="caddy3.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">caddy</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="timer.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">timer</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="draw.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">draw</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="radio.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">radio</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="notes.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">notes</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="gps.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">gps</span>&nbsp;<span class="text-xm text-green-800"><sup>online</sup></span></a></li>
+                        <li><a href="https://k-gou09.github.io/KGP_Compta/index.html" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">Compta</span></a></li>
+                        <li><a href="https://k-gou09.github.io/KGP_QRcode/" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">QRcode</span></a></li>
+                        <li><a href="https://k-gou09.github.io/KGP_SHA/" class="hover:text-purple-400 transition-colors duration-300"><i class="fa-regular fa-hand-point-right text-purple-800"></i>&nbsp;&nbsp; KGP <span class="text-purple-800">SHA</span></a></li>
+                    </ul>
+                </div>
+            </aside>
+
+            <!-- Colonne Centrale (APP TIMER) -->
+            <section id="news-feed" class="flex-1 h-full overflow-y-auto bg-opacity-50 p-6 md:p-8">
+                
+                <!-- EN-TETE -->
+                <div class="mb-8 flex flex-col items-center">
+                    <div class="flex items-center justify-center space-x-4 bg-black bg-opacity-40 border border-gray-700 rounded-xl p-4 shadow-xl w-fit mx-auto">
+                        <img src="../img/v.svg" alt="Chef" class="w-16 h-16">                
+                        <h1 id="kpg-header" class="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold tech-font gradient-text1 text-center">K-GOU PROD</h1>
+                        <img src="../img/v.svg" alt="Chef" class="w-16 h-16">
+                    </div>
+
+                    <!-- Animation Hacker CENTRE -->
+                    <div id="anim" class="hidden sm:flex flex-1 justify-center">
+                        <h2 id="hack-title">!#?%& $#@!?{}</h2>
+                    </div>
+                </div>
+
+                <!-- MODULE TIMER -->
+                <div class="w-full flex flex-col items-center justify-center pb-20">
+                    <div id="app-container" class="app-chassis w-full max-w-2xl flex flex-col mx-auto overflow-hidden">
+                        
+                        <!-- Onglets -->
+                        <div class="bg-black/50 border-b border-gray-800 p-3 flex justify-center gap-4">
+                            <button id="tab-chrono" class="btn-nano active-tab"><i class="fas fa-stopwatch"></i> CHRONOMÈTRE</button>
+                            <button id="tab-timer" class="btn-nano"><i class="fas fa-hourglass-half"></i> MINUTEUR</button>
+                        </div>
+
+                        <!-- Zone Principale -->
+                        <div class="p-6 md:p-10 flex flex-col items-center gap-8">
+                            
+                            <!-- ECRAN LED GÉANT -->
+                            <div class="led-screen w-full py-8 sm:py-12 flex justify-center items-center">
+                                <!-- Mode Chrono -->
+                                <div id="display-chrono" class="led-text text-4xl sm:text-6xl md:text-7xl">
+                                    00:00:00<span class="text-2xl sm:text-4xl text-purple-800">.000</span>
+                                </div>
+                                <!-- Mode Timer -->
+                                <div id="display-timer" class="led-text text-5xl sm:text-7xl md:text-8xl hidden">
+                                    00:00:00
+                                </div>
+                            </div>
+
+                            <!-- INPUTS MINUTEUR -->
+                            <div id="timer-inputs" class="hidden w-full flex justify-center gap-2 sm:gap-4">
+                                <div class="flex flex-col items-center">
+                                    <label class="text-xs font-mono text-gray-500 mb-1">HEURES</label>
+                                    <input type="number" id="input-h" min="0" max="99" value="0" class="cyber-input w-16 sm:w-20 text-center py-2 rounded text-xl font-bold font-mono">
+                                </div>
+                                <span class="text-2xl font-bold text-purple-800 mt-6">:</span>
+                                <div class="flex flex-col items-center">
+                                    <label class="text-xs font-mono text-gray-500 mb-1">MINUTES</label>
+                                    <input type="number" id="input-m" min="0" max="59" value="5" class="cyber-input w-16 sm:w-20 text-center py-2 rounded text-xl font-bold font-mono">
+                                </div>
+                                <span class="text-2xl font-bold text-purple-800 mt-6">:</span>
+                                <div class="flex flex-col items-center">
+                                    <label class="text-xs font-mono text-gray-500 mb-1">SECONDES</label>
+                                    <input type="number" id="input-s" min="0" max="59" value="0" class="cyber-input w-16 sm:w-20 text-center py-2 rounded text-xl font-bold font-mono">
+                                </div>
+                            </div>
+
+                            <!-- BOUTONS DE CONTRÔLE -->
+                            <div class="flex flex-wrap justify-center gap-4 border-t border-gray-800 pt-8 w-full">
+                                <button id="btn-start" class="btn-nano border-green-700 text-green-400 hover:text-green-300 w-28 sm:w-32 justify-center"><i class="fas fa-play"></i> START</button>
+                                <button id="btn-pause" class="btn-nano border-yellow-700 text-yellow-400 hover:text-yellow-300 w-28 sm:w-32 justify-center hidden"><i class="fas fa-pause"></i> PAUSE</button>
+                                <button id="btn-reset" class="btn-nano border-red-900 text-red-500 hover:text-red-400 w-28 sm:w-32 justify-center"><i class="fas fa-redo"></i> RESET</button>
+                                
+                                <!-- BOUTON SONNERIE -->
+                                <button id="btn-sound" class="btn-nano border-blue-900 text-blue-500 hover:text-blue-400 w-12 sm:w-16 justify-center" title="Activer/Désactiver l'alarme sonore">
+                                    <i id="sound-icon" class="fas fa-bell"></i>
+                                </button>
+                            </div>
+
+                        </div>
+                        
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- Colonne de Droite -->
+            <aside class="w-1/5 h-full bg-gray-900 bg-opacity-30 p-6 border-l border-gray-700 hidden lg:block">
+                <h2 class="text-xl font-semibold tech-font gradient-text1 mb-6 mt-6">Liens Utiles</h2>
+                <ul class="space-y-3">
+                    <li><a href="https://github.com/k-gou09" class="hover:text-purple-400 transition-colors duration-300"><i class="fab fa-github" style="color: white;"></i>&nbsp;&nbsp;&nbsp;GITHUB</a></li>
+                    <li><a href="https://www.facebook.com/nc.prod.794?locale=fr_FR" class="hover:text-purple-400 transition-colors duration-300"><i class="fab fa-facebook" style="color: blue;"></i>&nbsp;&nbsp;&nbsp;FACEBOOK</a></li>
+                    <li><a href="https://www.youtube.com/@kgpsound" class="hover:text-purple-400 transition-colors duration-300"><i class="fab fa-youtube" style="color: rgb(245, 3, 3);"></i>&nbsp;&nbsp;&nbsp;YOUTUBE</a></li>
+                </ul>
+                <div class="mt-20 p-4 rounded-lg">
+                    <a href="maintenance.html"><img src="../img/log_kgp1.png" alt="Logo KGP" class="w-full h-auto" style="border-radius: 35%;"></a>                
+                </div>
+            </aside>
+        </main>
+
+        <!-- Footer -->
+        <p class="fixed left-2 bottom-2 z-10 bg-black bg-opacity-80 text-white text-xs px-2 py-1 rounded-md flex items-center gap-1 tech-font border border-gray-800">
+            K-gou_Prod
+            <img src="../img/v.svg" alt="Logo" class="w-4 h-4 inline-block filter brightness-0 invert">
+            <a href="https://www.facebook.com/nc.prod.794" class="text-purple-400 underline hover:text-purple-300" target="_blank">Studio</a>
+        </p>
+
+        <!-- Scripts -->
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+
+                // --- Menu Hamburger & Anim Hacker ---
+                const hamburgerButton = document.getElementById('hamburger-button');
+                const mobileMenu = document.getElementById('mobile-menu');
+                if(hamburgerButton && mobileMenu) {
+                    hamburgerButton.addEventListener('click', () => {
+                        mobileMenu.classList.toggle('translate-x-full');
+                    });
+                }
+                
+                // ===================================
+                // LOGIQUE KGP TIMER (Chrono / Minuteur / Audio)
+                // ===================================
+                
+                let currentMode = 'chrono'; 
+                
+                let chronoInterval;
+                let chronoTime = 0; 
+                let isChronoRunning = false;
+                let chronoStartOffset = 0;
+
+                let timerInterval;
+                let timerTotalMs = 0; 
+                let timerRemainingMs = 0;
+                let isTimerRunning = false;
+                let timerEndTimestamp = 0;
+
+                // --- Variables Audio ---
+                let isSoundEnabled = true; // L'alarme est activée par défaut
+                let audioCtx = null;
+                let alarmIntervalId = null;
+
+                // DOM Elements
+                const tabChrono = document.getElementById('tab-chrono');
+                const tabTimer = document.getElementById('tab-timer');
+                
+                const dispChrono = document.getElementById('display-chrono');
+                const dispTimer = document.getElementById('display-timer');
+                const inputsTimer = document.getElementById('timer-inputs');
+                const appContainer = document.getElementById('app-container');
+                
+                const btnStart = document.getElementById('btn-start');
+                const btnPause = document.getElementById('btn-pause');
+                const btnReset = document.getElementById('btn-reset');
+                
+                const btnSound = document.getElementById('btn-sound');
+                const soundIcon = document.getElementById('sound-icon');
+
+                // Utilitaire formatage
+                function pad(num, size = 2) { return num.toString().padStart(size, '0'); }
+
+                // --- GESTION DU SON (Web Audio API) ---
+                
+                // Déverrouille le contexte audio (nécessaire à cause des règles de sécurité des navigateurs)
+                function unlockAudioContext() {
+                    if (!audioCtx) {
+                        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    }
+                    if (audioCtx.state === 'suspended') {
+                        audioCtx.resume();
+                    }
+                }
+
+                btnSound.addEventListener('click', () => {
+                    unlockAudioContext(); // Déverrouille au clic
+                    isSoundEnabled = !isSoundEnabled;
+                    
+                    if (isSoundEnabled) {
+                        soundIcon.classList.remove('fa-bell-slash');
+                        soundIcon.classList.add('fa-bell');
+                        btnSound.classList.replace('text-gray-500', 'text-blue-500');
+                        btnSound.classList.replace('border-gray-700', 'border-blue-900');
+                    } else {
+                        soundIcon.classList.remove('fa-bell');
+                        soundIcon.classList.add('fa-bell-slash');
+                        btnSound.classList.replace('text-blue-500', 'text-gray-500');
+                        btnSound.classList.replace('border-blue-900', 'border-gray-700');
+                        stopAlarmSound(); // Coupe le son s'il était en train de sonner
+                    }
+                });
+
+                function playBeep() {
+                    if (!audioCtx) return;
+                    if (audioCtx.state === 'suspended') audioCtx.resume();
+                    
+                    // Création du bip "Hacker"
+                    const oscillator = audioCtx.createOscillator();
+                    const gainNode = audioCtx.createGain();
+                    
+                    oscillator.type = 'square';
+                    oscillator.frequency.setValueAtTime(880, audioCtx.currentTime); // Fréquence Note A5
+                    gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime); // Volume à 10%
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioCtx.destination);
+                    
+                    oscillator.start();
+                    oscillator.stop(audioCtx.currentTime + 0.15); // Le bip dure 0.15 seconde
+                }
+
+                function startAlarmSound() {
+                    if (!isSoundEnabled) return;
+                    playBeep(); 
+                    alarmIntervalId = setInterval(playBeep, 600); // Répète le bip toutes les 600ms
+                }
+
+                function stopAlarmSound() {
+                    if (alarmIntervalId) {
+                        clearInterval(alarmIntervalId);
+                        alarmIntervalId = null;
+                    }
+                }
+
+                // --- GESTION DES ONGLETS ---
+                tabChrono.addEventListener('click', () => {
+                    if (isChronoRunning || isTimerRunning) return; 
+                    currentMode = 'chrono';
+                    tabChrono.classList.add('active-tab');
+                    tabTimer.classList.remove('active-tab');
+                    
+                    dispChrono.classList.remove('hidden');
+                    dispTimer.classList.add('hidden');
+                    inputsTimer.classList.add('hidden');
+                });
+
+                tabTimer.addEventListener('click', () => {
+                    if (isChronoRunning || isTimerRunning) return;
+                    currentMode = 'timer';
+                    tabTimer.classList.add('active-tab');
+                    tabChrono.classList.remove('active-tab');
+                    
+                    dispChrono.classList.add('hidden');
+                    dispTimer.classList.add('hidden'); 
+                    inputsTimer.classList.remove('hidden');
+                    inputsTimer.classList.add('flex');
+                    
+                    if(timerRemainingMs > 0) {
+                        inputsTimer.classList.add('hidden');
+                        inputsTimer.classList.remove('flex');
+                        dispTimer.classList.remove('hidden');
+                    }
+                });
+
+                // --- CHRONOMÈTRE ---
+                function updateChronoDisplay(timeInMs) {
+                    let ms = timeInMs % 1000;
+                    let s = Math.floor(timeInMs / 1000) % 60;
+                    let m = Math.floor(timeInMs / (1000 * 60)) % 60;
+                    let h = Math.floor(timeInMs / (1000 * 60 * 60));
+                    
+                    dispChrono.innerHTML = `${pad(h)}:${pad(m)}:${pad(s)}<span class="text-2xl sm:text-4xl text-purple-800">.${pad(ms, 3)}</span>`;
+                }
+
+                // --- MINUTEUR ---
+                function updateTimerDisplay(timeInMs) {
+                    if (timeInMs <= 0) {
+                        dispTimer.innerHTML = `00:00:00`;
+                        return;
+                    }
+                    let totalSec = Math.ceil(timeInMs / 1000);
+                    let s = totalSec % 60;
+                    let m = Math.floor(totalSec / 60) % 60;
+                    let h = Math.floor(totalSec / 3600);
+                    dispTimer.innerHTML = `${pad(h)}:${pad(m)}:${pad(s)}`;
+                }
+
+                function triggerAlarm() {
+                    appContainer.classList.add('alarm-active');
+                    dispTimer.innerHTML = `TIME OUT`;
+                    startAlarmSound();
+                }
+
+                function stopAlarm() {
+                    appContainer.classList.remove('alarm-active');
+                    stopAlarmSound();
+                }
+
+                // --- BOUTONS D'ACTION ---
+                btnStart.addEventListener('click', () => {
+                    unlockAudioContext(); // IMPORTANT : Autorise l'audio en arrière-plan
+                    btnStart.classList.add('hidden');
+                    btnPause.classList.remove('hidden');
+                    stopAlarm();
+
+                    if (currentMode === 'chrono') {
+                        if (!isChronoRunning) {
+                            isChronoRunning = true;
+                            chronoStartOffset = Date.now() - chronoTime;
+                            chronoInterval = setInterval(() => {
+                                chronoTime = Date.now() - chronoStartOffset;
+                                updateChronoDisplay(chronoTime);
+                            }, 10); 
+                        }
+                    } 
+                    else if (currentMode === 'timer') {
+                        if (!isTimerRunning) {
+                            if (timerRemainingMs === 0) {
+                                // parseInt sécurise les entrées (empêche l'injection de code)
+                                let h = parseInt(document.getElementById('input-h').value) || 0;
+                                let m = parseInt(document.getElementById('input-m').value) || 0;
+                                let s = parseInt(document.getElementById('input-s').value) || 0;
+                                timerTotalMs = ((h * 3600) + (m * 60) + s) * 1000;
+                                timerRemainingMs = timerTotalMs;
+                            }
+
+                            if (timerRemainingMs > 0) {
+                                isTimerRunning = true;
+                                inputsTimer.classList.add('hidden');
+                                inputsTimer.classList.remove('flex');
+                                dispTimer.classList.remove('hidden');
+                                
+                                timerEndTimestamp = Date.now() + timerRemainingMs;
+                                updateTimerDisplay(timerRemainingMs);
+
+                                timerInterval = setInterval(() => {
+                                    timerRemainingMs = timerEndTimestamp - Date.now();
+                                    if (timerRemainingMs <= 0) {
+                                        clearInterval(timerInterval);
+                                        timerRemainingMs = 0;
+                                        isTimerRunning = false;
+                                        btnStart.classList.remove('hidden');
+                                        btnPause.classList.add('hidden');
+                                        triggerAlarm();
+                                    } else {
+                                        updateTimerDisplay(timerRemainingMs);
+                                    }
+                                }, 100);
+                            } else {
+                                btnStart.classList.remove('hidden');
+                                btnPause.classList.add('hidden');
+                            }
+                        }
+                    }
+                });
+
+                btnPause.addEventListener('click', () => {
+                    btnPause.classList.add('hidden');
+                    btnStart.classList.remove('hidden');
+                    
+                    if (currentMode === 'chrono' && isChronoRunning) {
+                        isChronoRunning = false;
+                        clearInterval(chronoInterval);
+                    } 
+                    else if (currentMode === 'timer' && isTimerRunning) {
+                        isTimerRunning = false;
+                        clearInterval(timerInterval);
+                    }
+                });
+
+                btnReset.addEventListener('click', () => {
+                    btnPause.classList.add('hidden');
+                    btnStart.classList.remove('hidden');
+                    stopAlarm();
+
+                    if (currentMode === 'chrono') {
+                        isChronoRunning = false;
+                        clearInterval(chronoInterval);
+                        chronoTime = 0;
+                        updateChronoDisplay(0);
+                    } 
+                    else if (currentMode === 'timer') {
+                        isTimerRunning = false;
+                        clearInterval(timerInterval);
+                        timerRemainingMs = 0;
+                        updateTimerDisplay(0);
+                        
+                        dispTimer.classList.add('hidden');
+                        inputsTimer.classList.remove('hidden');
+                        inputsTimer.classList.add('flex');
+                    }
+                });
+
+            });
+        </script>
+    </body>
+</html>

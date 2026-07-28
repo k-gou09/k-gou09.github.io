@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz 3</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts for a modern look -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: #0d0211; }
+::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #bf00ff, #7a00cc); border-radius: 5px; border: 2px solid #0d0211; }
+::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #d400ff, #bf00ff); }
+        html {
+            scroll-behavior: smooth;
+        }
+        /* Custom styles for the dark theme and overall feel */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111827; /* gray-900 */
+            color: #d1d5db; /* gray-300 */
+        }
+
+        /* Custom scrollbar for a more integrated look */
+        
+        
+        
+        
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+
+        <!-- Header Section -->
+        <header class="flex justify-between items-center mb-10 pb-4 border-b border-gray-700">
+            <h1 class="text-3xl md:text-4xl font-black tracking-tighter">
+                <span class="bg-gradient-to-r from-fuchsia-600 via-purple-500 to-pink-500 text-transparent bg-clip-text">
+                    k-gou prod
+                </span>
+            </h1>
+            <a href="../news.html#quizz3" rel="noopener noreferrer" class="bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 transition-colors duration-300">
+                Retour
+            </a>
+        </header>
+
+        <!-- Results Section (hidden by default) -->
+        <div id="results-container" class="hidden text-center bg-gray-800 p-8 rounded-2xl shadow-2xl mb-8">
+            <h2 class="text-3xl font-bold mb-4">Votre résultat</h2>
+            <p class="text-5xl font-black mb-6" id="score-display"></p>
+            <p class="text-xl text-gray-300" id="score-message"></p>
+            <div class="mt-8 flex flex-col sm:flex-row justify-center items-center gap-4">
+                <button type="button" id="restart-btn" class="w-full sm:w-auto bg-indigo-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-indigo-500 transition-colors duration-300">
+                    Recommencer le quiz
+                </button>
+                <a href="#quiz-form" class="w-full sm:w-auto bg-gray-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-gray-500 transition-colors duration-300">
+                    Voir les réponses
+                </a>
+            </div>
+        </div>
+
+        <main id="quiz-container">
+            <h2 class="text-2xl font-bold text-center mb-2">Quiz | Culture & Vie Quotidienne</h2>
+            <p class="text-center text-gray-400 mb-8">Êtes-vous un vrai Calédonien dans l'âme ?</p>
+            
+            <form id="quiz-form" class="space-y-8">
+                <!-- Questions will be dynamically inserted here by JavaScript -->
+            </form>
+
+            <!-- Validation Button -->
+            <div class="mt-12 text-center">
+                <button type="button" id="submit-btn" class="bg-green-600 text-white text-xl font-bold py-3 px-8 rounded-lg hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition-all duration-300 transform hover:scale-105">
+                    Valider mes réponses
+                </button>
+            </div>
+        </main>
+
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <button id="scroll-to-top-btn" title="Remonter en haut" class="hidden fixed bottom-6 right-6 bg-indigo-600 text-white w-12 h-12 rounded-full shadow-lg hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 transition-all duration-300 flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
+        </svg>
+    </button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const quizData = [
+                {
+                    question: "Que signifie l'expression locale 'Ta i' ?",
+                    name: "q1",
+                    answers: [
+                        { text: "Bonjour", points: -1 },
+                        { text: "Merci", points: -1 },
+                        { text: "tu vois", points: 2 },
+                        { text: "S'il vous plaît", points: -2 }
+                    ]
+                },
+                {
+                    question: "Qu'est-ce qu'un 'nakamal' ?",
+                    name: "q2",
+                    answers: [
+                        { text: "Une épicerie de quartier", points: -1 },
+                        { text: "Un bar à kava", points: 2 },
+                        { text: "La maison du chef de la tribu", points: 0 },
+                        { text: "Un bateau de pêche traditionnel", points: -2 }
+                    ]
+                },
+                {
+                    question: "Le geste de 'faire la coutume' est un acte de...",
+                    name: "q3",
+                    answers: [
+                        { text: "Défiance et de provocation", points: -2 },
+                        { text: "Respect, d'échange et de parole", points: 2 },
+                        { text: "Paiement pour un service rendu", points: -1 },
+                        { text: "Demande en mariage", points: -1 }
+                    ]
+                },
+                {
+                    question: "La 'Chaîne Centrale' est... ?",
+                    name: "q4",
+                    answers: [
+                        { text: "Une chaîne de supermarchés", points: -2 },
+                        { text: "Le massif montagneux qui parcourt la Grande Terre", points: 2 },
+                        { text: "Un ensemble d'îlots entre Lifou et Maré", points: -1 },
+                        { text: "Le nom du récif barrière principal", points: -1 }
+                    ]
+                },
+                {
+                    question: "La 'Number One' est une marque très populaire de...",
+                    name: "q5",
+                    answers: [
+                        { text: "Bière locale", points: 2 },
+                        { text: "Limonade", points: -1 },
+                        { text: "Eau en bouteille", points: -1 },
+                        { text: "Cigarettes", points: -2 }
+                    ]
+                },
+                {
+                    question: "Une 'case' traditionnelle kanak est de forme...",
+                    name: "q6",
+                    answers: [
+                        { text: "Carrée", points: -1 },
+                        { text: "Rectangulaire", points: -1 },
+                        { text: "Circulaire", points: 2 },
+                        { text: "Triangulaire", points: -2 }
+                    ]
+                },
+                {
+                    question: "Qu'est-ce qu'un 'manou' ?",
+                    name: "q7",
+                    answers: [
+                        { text: "Un couteau de chasse", points: -1 },
+                        { text: "Un morceau de tissu coloré porté comme un paréo", points: 2 },
+                        { text: "Un petit panier tressé", points: 0 },
+                        { text: "Un chapeau de paille", points: -2 }
+                    ]
+                },
+                {
+                    question: "L'igname est particulièrement importante dans la culture kanak car elle...",
+                    name: "q8",
+                    answers: [
+                        { text: "Sert de monnaie d'échange", points: 0 },
+                        { text: "Rythme le calendrier social et les cérémonies", points: 2 },
+                        { text: "Est utilisée pour construire les cases", points: -2 },
+                        { text: "Est un puissant poison", points: -2 }
+                    ]
+                },
+                {
+                    question: "Si un Calédonien vous dit qu'il va 'en brousse', où va-t-il ?",
+                    name: "q9",
+                    answers: [
+                        { text: "Dans un bar du centre-ville", points: -2 },
+                        { text: "N'importe où en dehors de Nouméa et son agglomération", points: 2 },
+                        { text: "Dans la forêt tropicale dense", points: 0 },
+                        { text: "À la chasse", points: -1 }
+                    ]
+                },
+                {
+                    question: "Le 'Parc de la Rivière Bleue' est célèbre pour son paysage de...",
+                    name: "q10",
+                    answers: [
+                        { text: "Plage de sable noir", points: -1 },
+                        { text: "Forêt noyée et sa terre rouge", points: 2 },
+                        { text: "Dunes de sable blanc", points: -2 },
+                        { text: "Champs de lave", points: -1 }
+                    ]
+                },
+                {
+                    question: "Que fait-on lors de la 'Fête du ver de bancoule' à Farino ?",
+                    name: "q11",
+                    answers: [
+                        { text: "On relâche des vers dans la nature", points: -2 },
+                        { text: "On participe à des concours de dégustation de larves", points: 2 },
+                        { text: "On élit le plus beau ver de l'année", points: -1 },
+                        { text: "On court pour échapper aux vers", points: -2 }
+                    ]
+                },
+                {
+                    question: "Un 'Zoreille' est un terme familier pour désigner...",
+                    name: "q12",
+                    answers: [
+                        { text: "Un Kanak des îles", points: -1 },
+                        { text: "Un Caldoche de la brousse", points: -1 },
+                        { text: "Un Français de métropole récemment arrivé", points: 2 },
+                        { text: "Un touriste australien", points: -2 }
+                    ]
+                },
+                {
+                    question: "Quelle île est surnommée 'l'île la plus proche du paradis' ?",
+                    name: "q13",
+                    answers: [
+                        { text: "Lifou", points: -1 },
+                        { text: "L'Île des Pins", points: 0 },
+                        { text: "Maré", points: -1 },
+                        { text: "Ouvéa", points: 2 }
+                    ]
+                },
+                {
+                    question: "Comment appel t'on la sculpture qui orne le toit des cases traditionnelle kanak",
+                    name: "q14",
+                    answers: [
+                        { text: "Le totem", points: -1 },
+                        { text: "Le mana", points: 0 },
+                        { text: "La 'flèche faîtière'", points: 2 },
+                        { text: "L'oracle", points: -2 }
+                    ]
+                },
+                {
+                    question: "Quelle île est surnommée 'l'île la plus proche du paradis' ?",
+                    name: "q15",
+                    answers: [
+                        { text: "Lifou", points: -1 },
+                        { text: "L'Île des Pins", points: 0 },
+                        { text: "Maré", points: -1 },
+                        { text: "Ouvéa", points: 2 }
+                    ]
+                },
+                {
+                    question: "Le 'Mwâ kâ' est un...",
+                    name: "q16",
+                    answers: [
+                        { text: "Plat à base de roussette", points: -1 },
+                        { text: "Grand poteau sculpté qui représente le clan", points: 2 },
+                        { text: "Chef de tribu très respecté", points: 0 },
+                        { text: "Chant de bienvenue traditionnel", points: -1 }
+                    ]
+                },
+                {
+                    question: "Quel est l'accompagnement quasi-obligatoire de tout repas Caledonien  ?",
+                    name: "q17",
+                    answers: [
+                        { text: "Le riz", points: 2 },
+                        { text: "La purée de pommes de terre", points: -1 },
+                        { text: "La semoule", points: 1 },
+                        { text: "Les frites", points: -2 }
+                    ]
+                },
+                {
+                    question: "Quelle est la capitale de la Province Nord ?",
+                    name: "q18",
+                    answers: [
+                        { text: "Nouméa", points: -2 },
+                        { text: "Koné", points: 2 },
+                        { text: "Wé (Lifou)", points: -1 },
+                        { text: "La Foa", points: -1 }
+                    ]
+                },
+                {
+                    question: "L'îlot Maître, près de Nouméa, est connu pour...",
+                    name: "q19",
+                    answers: [
+                        { text: "Son phare historique", points: 0 },
+                        { text: "Son hôtel sur pilotis au dessus de l'eau", points: 2 },
+                        { text: "Être une réserve d'oiseaux", points: -1 },
+                        { text: "Ses ruines d'un ancien bagne", points: -2 }
+                    ]
+                },
+                {
+                    question: "Le 'pilou' est une danse traditionnelle kanak qui était autrefois...",
+                    name: "q20",
+                    answers: [
+                        { text: "Une danse pour attirer la pluie", points: 0 },
+                        { text: "Associée à des événements importants comme la guerre ou le deuil...", points: 2 },
+                        { text: "Une danse de séduction", points: -1 },
+                        { text: "Uniquement dansée par les enfants", points: -2 }
+                    ]
+                }
+            ];
+
+            const quizForm = document.getElementById('quiz-form');
+            const submitBtn = document.getElementById('submit-btn');
+            const quizContainer = document.getElementById('quiz-container');
+            const resultsContainer = document.getElementById('results-container');
+            const scoreDisplay = document.getElementById('score-display');
+            const scoreMessage = document.getElementById('score-message');
+            const restartBtn = document.getElementById('restart-btn');
+            const scrollToTopBtn = document.getElementById('scroll-to-top-btn');
+
+            // Function to load and display the quiz questions
+            function loadQuiz() {
+                quizForm.innerHTML = ''; // Clear previous questions
+                quizData.forEach((q, index) => {
+                    const questionElement = document.createElement('div');
+                    questionElement.className = 'bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700';
+
+                    const questionText = document.createElement('p');
+                    questionText.className = 'text-xl font-bold mb-5';
+                    // Utiliser textContent est plus sûr pour éviter les injections XSS
+                    questionText.textContent = `${index + 1}. ${q.question}`;
+
+                    const answersContainer = document.createElement('div');
+                    answersContainer.className = 'space-y-3';
+
+                    q.answers.forEach(answer => {
+                        const label = document.createElement('label');
+                        label.className = 'block bg-gray-700 p-4 rounded-lg cursor-pointer hover:bg-gray-600 has-[:checked]:bg-indigo-600 has-[:checked]:ring-2 has-[:checked]:ring-indigo-400 transition-all duration-200';
+
+                        const radio = document.createElement('input');
+                        radio.type = 'radio';
+                        radio.name = q.name;
+                        radio.value = answer.points;
+                        radio.className = 'hidden';
+
+                        const span = document.createElement('span');
+                        span.className = 'text-lg';
+                        span.textContent = answer.text; // Utiliser textContent est plus sûr
+
+                        label.appendChild(radio);
+                        label.appendChild(span);
+                        answersContainer.appendChild(label);
+                    });
+
+                    questionElement.appendChild(questionText);
+                    questionElement.appendChild(answersContainer);
+                    quizForm.appendChild(questionElement);
+                });
+                 // Re-enable submit button
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+            
+            // Function to calculate and display results
+            function showResults() {
+                const selectedAnswers = quizForm.querySelectorAll('input[type="radio"]:checked');
+                
+                if (selectedAnswers.length < quizData.length) {
+                    alert("Veuillez répondre à toutes les questions avant de valider !");
+                    return;
+                }
+
+                let score = 0;
+                let userPositiveScore = 0;
+                selectedAnswers.forEach(input => {
+                    const points = parseInt(input.value, 10);
+                    score += points;
+                    if (points > 0) {
+                        userPositiveScore += points;
+                    }
+                });
+
+                const maxPositiveScore = quizData.reduce((total, question) => {
+                    const maxPoints = Math.max(0, ...question.answers.map(a => a.points));
+                    return total + maxPoints;
+                }, 0);
+
+                scoreDisplay.textContent = `${userPositiveScore} / ${maxPositiveScore} points`;
+
+                let message = '';
+                const percentage = (userPositiveScore / maxPositiveScore) * 100;
+
+                if (percentage === 100) {
+                    message = "Score parfait ! Vous parlez le calédonien mieux que personne ! Tata !";
+                    scoreDisplay.className = 'text-5xl font-black mb-6 text-green-400';
+                } else if (percentage >= 75) {
+                    message = "Excellent score ! Vous êtes prêt à 'barrer la route' avec les locaux.";
+                    scoreDisplay.className = 'text-5xl font-black mb-6 text-purple-500';
+                } else if (percentage >= 50) {
+                    message = "Bon score ! Vous ne serez pas perdu en brousse.";
+                    scoreDisplay.className = 'text-5xl font-black mb-6 text-yellow-400';
+                } else if (percentage >= 25) {
+                    message = "C'est un début. Un petit tour au marché de Nouméa pour pratiquer s'impose !";
+                    scoreDisplay.className = 'text-5xl font-black mb-6 text-orange-400';
+                } else {
+                    message = "Oups... Vous êtes un vrai 'Zoreille' ! Il faut vous immerger un peu plus.";
+                    scoreDisplay.className = 'text-5xl font-black mb-6 text-red-500';
+                }
+                scoreMessage.textContent = message;
+
+                // Cacher le bouton de validation, afficher les résultats et les corrections
+                submitBtn.parentElement.classList.add('hidden');
+                resultsContainer.classList.remove('hidden');
+
+                quizData.forEach((q, index) => {
+                    const questionElement = quizForm.children[index];
+                    if (!questionElement) return;
+
+                    const answerLabels = questionElement.querySelectorAll('label');
+                    const answersData = q.answers;
+                    const correctAnswer = answersData.reduce((prev, current) => (current.points > prev.points) ? current : prev);
+
+                    answerLabels.forEach((label, i) => {
+                        const radio = label.querySelector('input');
+                        const answerData = answersData[i];
+                        radio.disabled = true;
+                        label.classList.remove('cursor-pointer', 'hover:bg-gray-600', 'has-[:checked]:bg-indigo-600', 'has-[:checked]:ring-2', 'has-[:checked]:ring-indigo-400');
+                        label.classList.add('cursor-default');
+                        const isSelected = radio.checked;
+                        const isCorrect = answerData.points === correctAnswer.points && correctAnswer.points > 0;
+
+                        if (isSelected) {
+                            if (isCorrect) {
+                                // Réponse correcte sélectionnée : fond et cadre verts
+                                label.classList.add('bg-green-600', 'text-white', 'ring-2', 'ring-green-400');
+                            } else {
+                                // Réponse incorrecte sélectionnée : cadre rouge
+                                label.classList.add('ring-2', 'ring-red-500');
+                            }
+                        } else if (isCorrect) {
+                            // La bonne réponse (non sélectionnée) : cadre vert pour la signaler
+                            label.classList.add('ring-2', 'ring-green-500');
+                        } else {
+                            // Les autres mauvaises réponses : opacité réduite
+                            label.classList.add('opacity-60');
+                        }
+                    });
+                });
+
+                // Scroll to top to see results
+                window.scrollTo(0, 0);
+            }
+
+            // Function to restart the quiz
+            function restartQuiz() {
+                resultsContainer.classList.add('hidden');
+                submitBtn.parentElement.classList.remove('hidden');
+                loadQuiz();
+                window.scrollTo(0, 0);
+            }
+
+            // Event Listeners
+            submitBtn.addEventListener('click', showResults);
+            restartBtn.addEventListener('click', restartQuiz);
+
+            // --- Scroll to Top Button Logic ---
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    scrollToTopBtn.classList.remove('hidden');
+                } else {
+                    scrollToTopBtn.classList.add('hidden');
+                }
+            });
+            scrollToTopBtn.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            // Initial load of the quiz
+            loadQuiz();
+        });
+    </script>
+</body>
+</html>
+
+
